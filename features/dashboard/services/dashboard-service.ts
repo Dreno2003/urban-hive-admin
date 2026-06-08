@@ -1,5 +1,5 @@
 import { apiClient } from "@/shared/lib/api-client"
-import { type DashboardSummaryResponse } from "../types"
+import { type DashboardSummaryResponse, type UpcomingBookingsResponse, type SpaceOccupancyResponse } from "../types"
 
 export const dashboardService = {
   /**
@@ -33,5 +33,51 @@ export const dashboardService = {
         month: "May",
       },
     }
+  },
+
+  /**
+   * Fetches the list of upcoming bookings for today.
+   * Currently returns mock data matching the design.
+   */
+  getUpcomingBookings: async (): Promise<UpcomingBookingsResponse> => {
+    // In a real implementation:
+    // return apiClient.get<UpcomingBookingsResponse>("/dashboard/upcoming-bookings");
+
+    // Simulating API latency
+    await new Promise((resolve) => setTimeout(resolve, 600))
+
+    return {
+      totalCount: 20,
+      bookings: [
+        {
+          id: "1",
+          clientName: "Adaeze Okonkwo",
+          time: "8:00 AM",
+        },
+        {
+          id: "2",
+          clientName: "Adaeze Okonkwo",
+          time: "8:00 AM",
+        },
+      ],
+    }
+  },
+
+  /**
+   * Fetches the workspace category occupancy stats.
+   * Currently returns mock data matching the design.
+   */
+  getSpaceOccupancy: async (): Promise<SpaceOccupancyResponse> => {
+    // In a real implementation:
+    // return apiClient.get<SpaceOccupancyResponse>("/dashboard/space-occupancy");
+
+    // Simulating API latency
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    return [
+      { id: "shortlets", name: "Shortlets", occupied: 8, capacity: 10, free: 2 },
+      { id: "offices", name: "Offices", occupied: 8, capacity: 10, free: 2 },
+      { id: "boardrooms", name: "Boardrooms", occupied: 8, capacity: 10, free: 2 },
+    ]
   },
 }

@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react"
 import { InsetCard } from "@/shared/components/ui/inset-card"
 import { useDashboardSummary } from "@/features/dashboard/hooks/use-dashboard-summary"
 import { Skeleton } from "@/shared/components/ui/skeleton"
+import { UpcomingBookingsCard } from "@/features/dashboard/components/upcoming-bookings-card"
+import { SpaceOccupancyCard } from "@/features/dashboard/components/space-occupancy-card"
 
 export default function DashboardContent() {
   const [currentDate, setCurrentDate] = useState("Tuesday, May 12, 2026")
@@ -41,6 +43,7 @@ export default function DashboardContent() {
 
       {/* Main Content Area */}
       <div className="flex-1 w-full mx-auto px-8 md:px-12 py-8 relative z-10 -mt-[4.5rem]">
+        {/* Top Metrics Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
             // Premium skeleton loaders reuse InsetCard wrapper structure
@@ -92,6 +95,19 @@ export default function DashboardContent() {
               )}
             </>
           )}
+        </div>
+
+        {/* Second Row — Upcoming Bookings (wide) + Space Occupancy (narrow) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          {/* Upcoming today — takes 2/3 of the row */}
+          <div className="lg:col-span-2">
+            <UpcomingBookingsCard />
+          </div>
+
+          {/* Space Occupancy — takes 1/3 of the row */}
+          <div className="lg:col-span-1">
+            <SpaceOccupancyCard />
+          </div>
         </div>
       </div>
     </div>
