@@ -61,8 +61,8 @@ export function Sidebar({
   ]
 
   const bottomItems: SidebarItem[] = [
-    { label: "Settings", href: "/dashboard/settings", icon: "settings" },
-    { label: "Log out", href: "/create-account", icon: "x2" },
+    { label: "Settings", href: "/dashboard/settings", icon: "cog" },
+    { label: "Log out", href: "/create-account", icon: "logoutLeft" },
   ]
 
   const renderLink = (item: SidebarItem) => {

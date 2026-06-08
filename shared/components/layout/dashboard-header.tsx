@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation"
 import { Icon } from "@/shared/components/ui/icon"
 import { UserProfileDropdownMenu } from "@/shared/components/dropdowns/user-profile-dropdown-menu"
 import { cn } from "@/shared/lib/utils"
+import { Input } from "../ui/input"
+import { Button } from "../ui/button"
 
 interface DashboardHeaderProps {
   isCollapsed: boolean
@@ -72,44 +74,37 @@ export function DashboardHeader({
       </div>
 
       {/* Right Side: Search, Notifications, Profile */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-5 md:gap-6">
         {/* Search Input */}
-        <div className="relative hidden sm:block w-[240px] md:w-[320px]">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <div className="relative hidden sm:block w-[260px] md:w-[380px]">
+          {/* <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <Icon
               name="search"
-              size={16}
-              className={cn(
-                "transition-colors",
-                isScrolled ? "text-gray-400" : "text-white/60"
-              )}
+              size={20}
+              className="text-[#5F606A]"
             />
-          </div>
-          <input
+          </div> */}
+          <Input
+            icon={<Icon name="search" size={20} className="text-icon-default" />}
             type="text"
             placeholder="Search dashboard"
-            className={cn(
-              "w-full pl-10 pr-4 py-2.5 rounded-full text-[14px] font-medium border transition-all duration-200 outline-none",
-              isScrolled
-                ? "bg-gray-100 border-transparent text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-gray-200"
-                : "bg-white/10 border-white/10 text-white placeholder:text-white/60 focus:bg-white/20 focus:border-white/20"
-            )}
+            className="w-full h-[46px] pl-12 pr-4 rounded-full text-[15px] font-medium    border-none outline-none transition-all duration-200 ]"
           />
         </div>
 
         {/* Notification Button */}
-        <button
+        <Button
+        size={'icon-lg'}
+        variant={'secondary'}
           className={cn(
-            "p-2.5 rounded-full border transition-all duration-200 flex items-center justify-center relative hover:opacity-85 cursor-pointer",
+            "s rounded-full flex items-center hover:!bg-white justify-center transition-all duration-200 cursor-pointer text-secondary-foreground",
             isScrolled
-              ? "bg-gray-50 border-gray-100 text-gray-900 hover:bg-gray-100"
-              : "bg-white/10 border-white/10 text-white hover:bg-white/20"
+              ? "bg-white border border-gray-100 "
+              : "bg-white border-transparent  "
           )}
         >
-          <Icon name="bell" size={16} />
-          {/* Badge indicator */}
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#ffc107] ring-1 ring-white" />
-        </button>
+          <Icon name="bell2" size={20} />
+        </Button>
 
         {/* Profile Dropdown */}
         <UserProfileDropdownMenu isDarkBackground={!isScrolled} />

@@ -30,36 +30,37 @@ export const UserProfileDropdownMenu = ({ isDarkBackground = false }: UserProfil
       <Popover>
         <PopoverTrigger asChild>
           <button className={cn(
-            "flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-full border transition-all cursor-pointer text-left focus:outline-none select-none",
-            isDarkBackground 
-              ? "bg-white/10 hover:bg-white/20 border-white/10 text-white" 
-              : "bg-gray-50 hover:bg-gray-100 border-gray-100 text-gray-900"
+            "flex items-center gap-3 transition-all cursor-pointer text-left focus:outline-none select-none border-none bg-transparent hover:opacity-90",
+            isDarkBackground ? "text-white" : "text-gray-900"
           )}>
-            <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-[11px] font-bold ring-2 ring-blue-400/20 overflow-hidden shrink-0">
+            <div className="h-10 w-10 rounded-full bg-[#5D25FF] flex items-center justify-center text-white text-[13px] font-bold ring-2 ring-[#4AD2FF] overflow-hidden shrink-0">
               {profile?.avatar ? (
                 <img src={profile.avatar} alt="Avatar" className="h-full w-full object-cover" />
               ) : (
                 getInitials()
               )}
             </div>
-            <div className="flex flex-col pr-1">
+            <div className="flex flex-col gap-0.5">
               <span className={cn(
-                "text-xs font-semibold leading-tight",
+                "text-[15px] font-bold leading-none tracking-wide",
                 isDarkBackground ? "text-white" : "text-gray-900"
               )}>
                 {firstName}
               </span>
               <span className={cn(
-                "text-[10px] leading-tight",
-                isDarkBackground ? "text-white/60" : "text-gray-500"
+                "text-[12px] inline-block mt-1 leading-none font-normal",
+                isDarkBackground ? "text-white/70" : "text-gray-500"
               )}>
                 Admin
               </span>
             </div>
             <Icon
               name="chevronDown"
-              size={14}
-              className={isDarkBackground ? "text-white/80" : "text-gray-400"}
+              size={20}
+              className={cn(
+                "transition-colors",
+                isDarkBackground ? "text-white" : "text-gray-400"
+              )}
             />
           </button>
         </PopoverTrigger>
