@@ -1,0 +1,42 @@
+#!/bin/bash
+for f in i18n/dictionaries/*.json; do
+  jq '.settings += {
+    "allBookings": "All bookings",
+    "showingResults": "Showing {count} result(s)",
+    "searchBooking": "Search booking",
+    "tableSpace": "Space",
+    "tableAmount": "Amount",
+    "tableDate": "Date",
+    "tablePaymentStatus": "Payment status",
+    "tableAction": "Action",
+    "noBookingsMatch": "No bookings match your search.",
+    "viewAction": "View",
+    "bookingDetailsTitle": "Booking details",
+    "spaceLabel": "Space",
+    "spaceTypeLabel": "Space type",
+    "checkInLabel": "Check in",
+    "checkOutLabel": "Check out",
+    "durationLabel": "Duration",
+    "amountPaidLabel": "Amount paid",
+    "cancellationPeriodLabel": "Cancellation period",
+    "datePaidLabel": "Date paid",
+    "reportProperty": "Report this property",
+    "downloadInvoice": "Download invoice",
+    "cancelBooking": "Cancel booking",
+    "filterBookings": "Filter",
+    "filterStatus": "Status",
+    "filterSpaceType": "Space type",
+    "filterDate": "Date",
+    "statusConfirmed": "Confirmed",
+    "statusCompleted": "Completed",
+    "statusCancelled": "Cancelled",
+    "typeBoardroom": "Boardroom",
+    "typeShortlet": "Shortlet",
+    "typeOffice": "Office",
+    "dateStart": "Start date",
+    "dateEnd": "End date",
+    "filterReset": "Reset",
+    "filterApply": "Apply"
+  }' "$f" > tmp.json && mv tmp.json "$f"
+done
+echo "Dictionaries updated."

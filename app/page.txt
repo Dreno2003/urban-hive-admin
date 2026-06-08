@@ -1,0 +1,184 @@
+import React from "react"
+import { HomeHero } from "@/features/home/components/home-hero"
+import { PropertyCarouselSection } from "@/features/home/components/property-section"
+import { NewsletterSection } from "@/features/home/components/newsletter-section"
+import { LargeLogoBanner } from "@/features/home/components/large-logo-banner"
+
+// Mock Data for properties
+const popularShortlets = [
+  {
+    id: "1",
+    title: "Luxury 3 Bedroom Apartment",
+    location: "Ikoyi, Lagos",
+    price: 150000,
+    currency: "NGN",
+    guests: 6,
+    bedrooms: 3,
+    bathrooms: 3,
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800",
+    tags: ["New", "Featured"]
+  },
+
+   {
+    id: "dw1",
+    title: "Luxury 3 Bedroom Apartment",
+    location: "Ikoyi, Lagos",
+    price: 150000,
+    currency: "NGN",
+    guests: 6,
+    bedrooms: 3,
+    bathrooms: 3,
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800",
+    tags: ["New", "Featured"]
+  }, {
+    id: "1231",
+    title: "Luxury 3 Bedroom Apartment",
+    location: "Ikoyi, Lagos",
+    price: 150000,
+    currency: "NGN",
+    guests: 6,
+    bedrooms: 3,
+    bathrooms: 3,
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800",
+    tags: ["New", "Featured"]
+  }, {
+    id: "1asd3",
+    title: "Luxury 3 Bedroom Apartment",
+    location: "Ikoyi, Lagos",
+    price: 150000,
+    currency: "NGN",
+    guests: 6,
+    bedrooms: 3,
+    bathrooms: 3,
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800",
+    tags: ["New", "Featured"]
+  }, {
+    id: "1i8",
+    title: "Luxury 3 Bedroom Apartment",
+    location: "Ikoyi, Lagos",
+    price: 150000,
+    currency: "NGN",
+    guests: 6,
+    bedrooms: 3,
+    bathrooms: 3,
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800",
+    tags: ["New", "Featured"]
+  },
+
+    {
+    id: "323",
+    title: "Luxury 3 Bedroom Apartment",
+    location: "Ikoyi, Lagos",
+    price: 150000,
+    currency: "NGN",
+    guests: 6,
+    bedrooms: 3,
+    bathrooms: 3,
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800",
+    tags: ["New", "Featured"]
+  },
+
+    {
+    id: "34",
+    title: "Luxury 3 Bedroom Apartment",
+    location: "Ikoyi, Lagos",
+    price: 150000,
+    currency: "NGN",
+    guests: 6,
+    bedrooms: 3,
+    bathrooms: 3,
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800",
+    tags: ["New", "Featured"]
+  },
+  {
+    id: "2",
+    title: "Cozy Studio in Victoria Island",
+    location: "VI, Lagos",
+    price: 45000,
+    currency: "NGN",
+    guests: 2,
+    bedrooms: 1,
+    bathrooms: 1,
+    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=800",
+    tags: ["Instant Book"]
+  },
+  {
+    id: "3",
+    title: "Modern Penthouse with City View",
+    location: "Lekki, Lagos",
+    price: 120000,
+    currency: "NGN",
+    guests: 4,
+    bedrooms: 2,
+    bathrooms: 2,
+    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=800"
+  }
+]
+
+const officeSpaces = [
+  {
+    id: "4",
+    title: "Premium Coworking Desk",
+    location: "Yaba, Lagos",
+    price: 5000,
+    currency: "NGN",
+    guests: 1,
+    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800",
+    tags: ["Fast Internet"]
+  },
+  {
+    id: "5",
+    title: "Private Office for 10",
+    location: "Ikeja, Lagos",
+    price: 50000,
+    currency: "NGN",
+    guests: 10,
+    image: "https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&q=80&w=800",
+    tags: ["Daily Rate"]
+  },
+  {
+    id: "6",
+    title: "Executive Boardroom",
+    location: "Banana Island, Lagos",
+    price: 25000,
+    currency: "NGN",
+    guests: 15,
+    image: "https://images.unsplash.com/photo-1431540015161-0bf868a2d407?auto=format&fit=crop&q=80&w=800"
+  },
+ 
+]
+
+export default function HomePage() {
+  return (
+    <div className=" w-full">
+    {/* <div className="flex flex-col w-full"> */}
+      {/* Hero Section */}
+      <HomeHero />
+
+      {/* Popular Shortlets Section */}
+      <div className='md:pt-0 space-y-14'>
+
+      <PropertyCarouselSection 
+        title="Popular shortlets in Lagos" 
+        properties={popularShortlets} 
+        />
+
+
+      {/* Office Spaces Section */}
+      <PropertyCarouselSection 
+        title="Featured office spaces" 
+        properties={officeSpaces} 
+        />
+
+
+          <PropertyCarouselSection 
+        title="Popular Bedrooms in Lagos" 
+        properties={officeSpaces} 
+        />
+        </div>
+
+      {/* Newsletter Section */}
+      <NewsletterSection />
+    </div>
+  )
+}

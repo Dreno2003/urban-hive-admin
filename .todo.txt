@@ -1,0 +1,283 @@
+* work on the flow
+* implement lang on space header
+* implement  select country dialog
+* implement a compoennt for like - 
+* make the proper ty carousel snap
+* implement auto detect lang for internalis  - 
+* implement dynamic service type (sidebar) - done
+* implement space location map section - done
+  - component: features/space/components/space-map.tsx
+  - approach: Google Maps Embed API (iframe, no SDK, no API key for basic embed)
+  - iframe src: https://maps.google.com/maps?q={lat},{lng}&z=15&output=embed
+  - "View on map" link: https://maps.google.com/?q={lat},{lng} (opens Google Maps)
+  - props: lat, lng, label (e.g. "Wuse 2 Abuja")
+  - upgrade path: swap iframe for react-map-gl + Mapbox if custom styling needed
+
+
+
+QUESTIONS
+* research about the map and then tell sir about it.
+* What will trigger the get feadback dialog
+
+
+"use client";
+
+import { useState } from "react";
+import { Icon, IconName } from "@/shared/components/ui/icon";
+import { Button } from "@/shared/components/ui/button";
+import { cn } from "@/shared/lib/utils";
+import { Input } from "@/shared/components/ui/input";
+import type { Dictionary } from "@/i18n/get-dictionary";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/popover";
+import { Calendar } from "@/shared/components/ui/calendar";
+import { format } from "date-fns";
+import { DateRange } from "react-day-picker";
+
+interface SearchBarProps {
+  dict: Dictionary
+}
+
+export function SearchBar({ dict }: SearchBarProps) {
+  const { search } = dict as any
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [location, setLocation] = useState("");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: undefined,
+    to: undefined,
+  });
+  const [guests, setGuests] = useState({
+    adults: 1,
+    children: 0,
+    infants: 0,
+  });
+
+  const categories: { id: string; label: string; icon: IconName }[] = [
+    { id: "all", label: search.allSpaces, icon: "widget" },
+    { id: "shortlet", label: search.shortlet, icon: "home" },
+    { id: "office", label: search.office, icon: "chair2" },
+    { id: "boardroom", label: search.boardroom, icon: "chair" },
+  ];
+
+  const formatDisplayDate = () => {
+    if (dateRange?.from) {
+      if (dateRange.to) {
+        return `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d")}`;
+      }
+      return `${format(dateRange.from, "MMM d")}, ${search.addDates}`;
+    }
+    return "";
+  };
+
+  const totalGuests = guests.adults + guests.children;
+  const guestDisplay = totalGuests > 0 ? `${totalGuests} ${search.guests}${guests.infants > 0 ? `, ${guests.infants} ${search.infants}` : ""}` : "";
+
+  const handleGuestChange = (type: keyof typeof guests, delta: number) => {
+    setGuests(prev => ({
+      ...prev,
+      [type]: Math.max(type === "adults" ? 1 : 0, prev[type] + delta)
+    }));
+  };
+
+  return (
+    <div className="w-full max-w-6xl bg-white rounded-[28px] md:rounded-[32px] sshadow shadow-gray-200 px-4 py-4 md:p-4 flex flex-col gap-4 md:gap-6">
+      {/* Search Header: Categories */}
+      <div className="flex h-[48px] justify-between">
+        <div className="flex items-center bg-gray-50 rounded-full p-2 gap-1 overflow-x-auto no-scrollbar">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={cn(
+                "px-4 md:px-6 cursor-pointer py-2.5 rounded-full text-xs md:text-sm font-medium transition-all flex items-center gap-2 whitespace-nowrap",
+                activeCategory === cat.id
+                  ? "bg-white text-primary-500!"
+                  : "text-[#808080]!",
+              )}
+            >
+              <Icon
+                name={cat.icon}
+                size={17}
+                color="#808080"
+                className={cn(
+                  activeCategory === cat.id ? "text-primary-500" : "text-gray-400",
+                  "hidden md:block",
+                )}
+              />
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        <Button className="hidden md:flex">
+          <Icon name="search" size={18} />
+          <span>{search.search}</span>
+        </Button>
+      </div>
+
+      <div className="h-[.4px] bg-gray-200" />
+
+      {/* Search Body: Inputs */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+        <div className="flex flex-col gap-2 relative">
+          <span className="text-sm font-medium text-gray-900">{search.where}</span>
+          <Input
+            icon={<Icon name="search" size={18} className="text-black" />}
+            type="text"
+            placeholder={search.searchLocation}
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+            className="focus-visible:ring-primary-500/20"
+          />
+
+          {/* Suggestions Dropdown */}
+          {showSuggestions && (
+            <div className="absolute top-[calc(100%+12px)] left-0 w-full md:w-[360px] bg-white rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-5 z-50 border border-gray-100 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-body-lg font-bold text-foreground">{search.suggestions}</h3>
+                <div className="flex items-center gap-2">
+                  <Icon name="map2" size={19} className="text-foreground" />
+                  <span className="text-xs font-medium text-gray-500">Abuja</span>
+                  <span className="size-1.5 rounded-full bg-gray-300 inline-block"/>
+                  <button className="text-xs font-bold text-primary cursor-pointer hover:opacity-80 transition-opacity">
+                    {search.change}
+                  </button>
+                </div>
+              </div>
+
+              <div className="h-px bg-gray-200 mb-4" />
+
+              <button
+                onClick={() => {
+                  setLocation(search.nearby);
+                  setShowSuggestions(false);
+                }}
+                className="flex items-center gap-3.5 w-full hover:bg-gray-50 p-2 -ml-2 rounded-2xl transition-colors text-left"
+              >
+                <div className="shrink-0 w-11 h-11 rounded-full bg-secondary flex items-center justify-center">
+                  <Icon name="locationPin" size={22} className="text-foreground" />
+
+                  {/* <Icon name="mapPin" size={22} className="text-gray-600" /> */}
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-[15px] font-medium text-gray-900 leading-tight">{search.nearby}</p>
+                  <p className="text-xs text-secondary-foreground mt-1">{search.findAround}</p>
+                </div>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* When */}
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-gray-900">{search.when}</span>
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="relative group cursor-pointer">
+                <Input
+                  icon={<Icon name="calendar" size={18} className="text-black" />}
+                  type="text"
+                  placeholder={search.addDates}
+                  value={formatDisplayDate()}
+                  readOnly
+                  className="focus-visible:ring-primary-500/20 cursor-pointer pointer-events-none!"
+                />
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 border-none bg-white rounded-[32px] shadow-lg shadow-gray-300 overflow-hidden" align="center" sideOffset={12}>
+              <div className="flex flex-col">
+                <Calendar
+                  mode="range"
+                  selected={dateRange}
+                  onSelect={setDateRange}
+                  numberOfMonths={1}
+                  className="border-none shadow-none p-6 pb-2"
+                />
+                
+                <div className="h-px bg-gray-200 mx-3" />
+                <div className="flex justify-between items-center p-6 pt-4 borderd-t border-gray-100 bg-white">
+                   <div className="flex flex-col gap-1.5">
+                      <span className="text-[11px] font-medium text-gray-500  tracking-wider">{search.checkIn}</span>
+                      <button className="px-5 py-2.5 bg-gray-50 rounded-full text-[13px]  text-secondary-foreground transition-colors ">
+                        {dateRange?.from ? format(dateRange.from, "MMM d, yyyy") : search.exactDay}
+                      </button>
+                   </div>
+                   <div className="flex flex-col gap-1.5 items-end">
+                      <span className="text-[11px] font-medium text-gray-500 text-right  tracking-wider">{search.checkOut}</span>
+                      <button className="px-5 py-2.5 bg-gray-50 rounded-full text-[13px]  text-secondary-foreground  transition-colors ">
+                        {dateRange?.to ? format(dateRange.to, "MMM d, yyyy") : search.exactDay}
+                      </button>
+                   </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        {/* Guest */}
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-gray-900">{search.guest}</span>
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="relative group cursor-pointer">
+                <Input
+                  icon={<Icon name="users" size={18} className="text-black" />}
+                  type="text"
+                  placeholder={search.addGuests}
+                  value={guestDisplay}
+                  readOnly
+                  className="focus-visible:ring-primary-500/20 cursor-pointer pointer-events-none!"
+                />
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-[360px] p-6 bg-white rounded-[32px] shadow-lg shadow-gray-300" align="end" sideOffset={12}>
+              <div className="flex flex-col gap-6">
+                {[
+                  { id: "adults", label: search.adults, desc: search.adultsDesc },
+                  { id: "children", label: search.children, desc: search.childrenDesc },
+                  { id: "infants", label: search.infants, desc: search.infantsDesc }
+                ].map((category, idx) => (
+                  <div key={category.id}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-base font-bold text-navy-900">{category.label}</span>
+                        <span className="text-[13px] text-gray-500">{category.desc}</span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <button
+                          onClick={() => handleGuestChange(category.id as any, -1)}
+                          disabled={category.id === "adults" ? guests.adults <= 1 : guests[category.id as keyof typeof guests] <= 0}
+                          className="size-8 rounded-full bg-gray-50 flex items-center justify-center text-navy-900 hover:bg-gray-100 disabled:opacity-30 transition-colors border border-gray-100"
+                        >
+                          <Icon name="minus" size={12} />
+                        </button>
+                        <span className="text-base font-bold w-4 text-center text-navy-900">{guests[category.id as keyof typeof guests]}</span>
+                        <button
+                          onClick={() => handleGuestChange(category.id as any, 1)}
+                          className="size-8 rounded-full bg-gray-50 flex items-center justify-center text-navy-900 hover:bg-gray-100 transition-colors border border-gray-100"
+                        >
+                          <Icon name="plus" size={12} />
+                        </button>
+                      </div>
+                    </div>
+                    {idx < 2 && <div className="h-px bg-gray-100 mt-6" />}
+                  </div>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+
+      <div className="md:hidden">
+        <div className="h-px bg-gray-100" />
+        <Button className="w-fit mt-4 rounded-full px-8 h-11 md:h-12 bg-primary-500 hover:bg-primary-600 text-white flex items-center justify-center gap-2 font-semibold md:font-bold">
+          <Icon name="search" size={18} />
+          <span>{search.search}</span>
+        </Button>
+      </div>
+    </div>
+  );
+}
