@@ -6,12 +6,14 @@ Business logic is the core functionality of your app — state management, data 
 
 ## Core Principles
 
-1. **Separation of Concerns** — Business logic lives in hooks and services, never in components
-2. **Testability** — Pure functions where possible; side effects isolated and mockable
-3. **Reusability** — Logic exported and used across multiple components
-4. **Clarity** — Naming and structure make intent obvious
-5. **Type Safety** — Full TypeScript coverage; never use `any`
+1. **Separation of Concerns** — Business logic lives in hooks and services, never in components.
+2. **Testability** — Pure functions where possible; side effects isolated and mockable.
+3. **Reusability** — Logic exported and used across multiple components.
+4. **Clarity** — Naming and structure make intent obvious.
+5. **Type Safety** — Full TypeScript coverage; never use `any`.
 6. **Internationalization (i18n)** — Internationalisation is a MUST in any feature for every static content.
+7. **Single Responsibility Principle (SRP)** — Each module, hook, page, or layout component must have one reason to change. Deconstruct massive files (like routing layout files) into focused subcomponents (e.g. `Sidebar`, `DashboardHeader`) to maintain high maintainability.
+8. **Split by Feature and Reusability** — Place domain-specific logic inside feature folders (e.g. `features/auth/`), and export generic layout structures (such as sidebars, headers, and standard wrappers) to the `shared/` directory to share them across multiple page routes.
 
 ---
 

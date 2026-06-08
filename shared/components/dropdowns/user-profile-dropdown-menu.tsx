@@ -7,8 +7,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
+import { cn } from "@/shared/lib/utils";
 
-export const UserProfileDropdownMenu = () => {
+interface UserProfileDropdownMenuProps {
+  isDarkBackground?: boolean;
+}
+
+export const UserProfileDropdownMenu = ({ isDarkBackground = false }: UserProfileDropdownMenuProps) => {
   const profile: any = null; // Stubbed since features/settings is removed
 
   const getInitials = () => {
@@ -24,22 +29,39 @@ export const UserProfileDropdownMenu = () => {
       {/* Profile Dropdown */}
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant={"secondary"} className=" w-fit px-2 py-7">
-            {/* // className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-[#F5F5F7] border border-gray-100 transition-all hover:bg-gray-100 cursor-pointer shadow-sm"> */}
-            <div className="h-8 w-8 rounded-full bg-[#F57200] flex items-center justify-center text-white text-[11px] font-bold ring-2 ring-orange-400 overflow-hidden shrink-0">
+          <button className={cn(
+            "flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-full border transition-all cursor-pointer text-left focus:outline-none select-none",
+            isDarkBackground 
+              ? "bg-white/10 hover:bg-white/20 border-white/10 text-white" 
+              : "bg-gray-50 hover:bg-gray-100 border-gray-100 text-gray-900"
+          )}>
+            <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-[11px] font-bold ring-2 ring-blue-400/20 overflow-hidden shrink-0">
               {profile?.avatar ? (
                 <img src={profile.avatar} alt="Avatar" className="h-full w-full object-cover" />
               ) : (
                 getInitials()
               )}
             </div>
-            <span className="text-sm font-medium text-gray-900">{firstName}</span>
+            <div className="flex flex-col pr-1">
+              <span className={cn(
+                "text-xs font-semibold leading-tight",
+                isDarkBackground ? "text-white" : "text-gray-900"
+              )}>
+                {firstName}
+              </span>
+              <span className={cn(
+                "text-[10px] leading-tight",
+                isDarkBackground ? "text-white/60" : "text-gray-500"
+              )}>
+                Admin
+              </span>
+            </div>
             <Icon
               name="chevronDown"
-              size={20}
-              className="text-gray-400 ml-0.5"
+              size={14}
+              className={isDarkBackground ? "text-white/80" : "text-gray-400"}
             />
-          </Button>
+          </button>
         </PopoverTrigger>
         <PopoverContent
           align="end"
