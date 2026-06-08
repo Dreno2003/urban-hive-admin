@@ -37,8 +37,8 @@ export function Sidebar({
     {
       category: "Overview",
       items: [
-        { label: "Dashboard", href: "/dashboard", icon: "grid" },
-        { label: "Onboarding guide", href: "/dashboard/onboarding", icon: "signpost1" },
+        { label: "Dashboard", href: "/dashboard", icon: "widget2" },
+        { label: "Onboarding guide", href: "/dashboard/onboarding", icon: "presentationGraph" },
       ],
     },
     {
@@ -46,16 +46,16 @@ export function Sidebar({
       items: [
         { label: "Bookings", href: "/dashboard/bookings", icon: "calendar" },
         { label: "Clients", href: "/dashboard/clients", icon: "users" },
-        { label: "Reports", href: "/dashboard/reports", icon: "globe" },
+        { label: "Reports", href: "/dashboard/reports", icon: "flag" },
       ],
     },
     {
       category: "Operations",
       items: [
-        { label: "Schedule", href: "/dashboard/schedule", icon: "calender2" },
-        { label: "Spaces", href: "/dashboard/spaces", icon: "building" },
-        { label: "Payments", href: "/dashboard/payments", icon: "link2" },
-        { label: "Communication", href: "/dashboard/communication", icon: "mail" },
+        { label: "Schedule", href: "/dashboard/schedule", icon: "clock" },
+        { label: "Spaces", href: "/dashboard/spaces", icon: "widgetOutline" },
+        { label: "Payments", href: "/dashboard/payments", icon: "creditCard" },
+        { label: "Communication", href: "/dashboard/communication", icon: "projector" },
       ],
     },
   ]
@@ -73,7 +73,7 @@ export function Sidebar({
         href={item.href}
         onClick={() => setIsMobileOpen(false)}
         className={cn(
-          "flex items-center gap-3 px-3 py-3 rounded-2xl text-[14px] font-medium transition-all duration-200 select-none group",
+          "flex items-center gap-3 px-3 py-3 rounded-[8px] text-[14px] font-medium transition-all duration-200 select-none group",
           isActive
             ? "bg-primary-50 text-primary-300 font-semibold"
             : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
@@ -98,7 +98,7 @@ export function Sidebar({
       {/* Sidebar - Desktop */}
       <aside
         className={cn(
-          "hidden md:flex flex-col bg-white border-r border-gray-100 fixed inset-y-0 left-0 z-30 transition-all duration-300 ease-in-out",
+          "hidden py-[27px] md:flex flex-col bg-white border-r border-gray-100 fixed inset-y-0 left-0 z-30 transition-all duration-300 ease-in-out",
           isCollapsed ? "w-[80px]" : "w-[260px]"
         )}
       >
@@ -106,7 +106,7 @@ export function Sidebar({
         <div className="h-[76px] px-6 flex items-center justify-between border-b border-gray-50 shrink-0">
           {!isCollapsed && (
             <Link href="/dashboard" className="flex items-center">
-              <Logo variant="color" className="w-[110px]" />
+              <Logo variant="color" className="w-[69px] h-[48px]" />
             </Link>
           )}
           <button
@@ -117,16 +117,16 @@ export function Sidebar({
             )}
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <Icon name="widget" size={18} />
+            <Icon name="verticalSlider" size={24} />
           </button>
         </div>
 
         {/* Sidebar Navigation */}
         <div className="flex-1 overflow-y-auto py-6 px-4 space-y-7 hide-scrollbar">
           {navGroups.map((group) => (
-            <div key={group.category} className="space-y-2">
+            <div key={group.category} className="space-y-2 ">
               {!isCollapsed ? (
-                <span className="text-[11px] font-semibold text-gray-400 tracking-wider uppercase px-3 select-none">
+                <span className="text-sm mb-2 inline-block font-normal text-gray-400 tracksing-wider  px-3 select-none">
                   {group.category}
                 </span>
               ) : (
