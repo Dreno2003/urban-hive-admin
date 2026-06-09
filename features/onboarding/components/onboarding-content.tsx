@@ -60,7 +60,7 @@ export default function OnboardingContent() {
 
   const handleGuideDelete = async (id: string) => {
     await deleteMutation.mutateAsync(id)
-    toast.success("Guide deleted successfully!")
+    // toast.success("Guide deleted successfully!")
   }
 
   return (

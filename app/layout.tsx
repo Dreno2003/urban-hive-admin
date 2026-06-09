@@ -1,3 +1,4 @@
+import { Toaster } from "@/shared/components/ui/sonner"
 import "./globals.css"
 import { QueryProvider } from "@/shared/components/providers/query-provider"
 
@@ -15,6 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <QueryProvider>{children}</QueryProvider>
+        <Toaster/>
       </body>
     </html>
   )

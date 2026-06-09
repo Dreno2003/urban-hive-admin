@@ -15,7 +15,9 @@ import {
 } from "@/shared/components/ui/select"
 import { OnboardingGuide, GuideCategory } from "../types"
 import { Separator } from "@/shared/components/ui/separator"
-import { Trash, Trash2 } from "lucide-react"
+import { Trash } from "lucide-react"
+import { DeleteConfirmDialog } from "@/shared/components/dialogs/delete-confirm-dialog"
+import { sonnerCard } from "@/shared/components/ui/sonner-card"
 
 export interface AddEditGuideDialogProps {
   open: boolean
@@ -42,6 +44,7 @@ const guideSchema = Yup.object().shape({
 
 export function AddEditGuideDialog({ open, onOpenChange, guide, onSubmit, onDelete }: AddEditGuideDialogProps) {
   const isEditing = !!guide
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
 
   const formik = useFormik({
     initialValues: { title: "", fileUrl: "", category: "" as GuideCategory | "" },
@@ -68,6 +71,7 @@ export function AddEditGuideDialog({ open, onOpenChange, guide, onSubmit, onDele
   }, [guide, open])
 
   return (
+    <>
     <DialogContainer dialogTitle={isEditing ? "Edit guide" : "Add guide"} className="pb-1 !px-3" open={open} onOpenChange={onOpenChange}>
       {/* <h2 className="text-[22px] font-bold text-gray-900 dark:text-gray-50 tracking-tight mb-6s">
         {isEditing ? "Edit guide" : "Add guide"}
@@ -129,12 +133,7 @@ export function AddEditGuideDialog({ open, onOpenChange, guide, onSubmit, onDele
             <Button
               type="button"
               variant="link"
-              onClick={async () => {
-                if (confirm("Are you sure you want to delete this guide?")) {
-                  await onDelete(guide.id)
-                  onOpenChange(false)
-                }
-              }}
+              onClick={() => { onOpenChange(false); setDeleteDialogOpen(true) }}
               className="h-12 flex-1 hover:no-underline rounded-full text-[14px] text-destructive"
             >
 
@@ -164,5 +163,24 @@ export function AddEditGuideDialog({ open, onOpenChange, guide, onSubmit, onDele
         </div>
       </form>
     </DialogContainer>
+
+    {isEditing && onDelete && guide && (
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        itemName={guide.title}
+        onConfirm={async () => {
+          try {
+            await onDelete(guide.id)
+            setDeleteDialogOpen(false)
+            onOpenChange(false)
+            sonnerCard.success(`${guide.title} guide has been deleted successfully`)
+          } catch {
+            sonnerCard.failed("Failed to delete guide. Please try again.")
+          }
+        }}
+      />
+    )}
+    </>
   )
 }

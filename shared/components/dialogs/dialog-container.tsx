@@ -24,6 +24,7 @@ export interface DialogContainerProps {
   showClose?: boolean
   dialogTitle?:string
   children: React.ReactNode
+  isShowTopSeparator?:boolean
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -53,6 +54,7 @@ export function DialogContainer({
   showClose = true,
   dialogTitle,
   children,
+  isShowTopSeparator = true
 }: DialogContainerProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -93,7 +95,10 @@ export function DialogContainer({
             )}
 
           </div>
-          <Separator className="my-3 !bg-[#D2Ds5DA]" />
+          {
+            isShowTopSeparator &&  <Separator className="my-3 !bg-[#D2Ds5DA]" />
+          }
+          
           {children}</div>
         {/* <div className={cn("px-3 md:px-8 py-8", className)}>{children}</div> */}
       </DialogContent>
