@@ -18,7 +18,7 @@ export function BookingsContent() {
   const totalPages = list?.totalPages ?? 1
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex-1 bg-white flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="w-full px-8 md:px-12 pt-8 pb-12 mt-[76px]">
 
         {/* ── Page Header ─────────────────────────────────── */}
@@ -28,7 +28,8 @@ export function BookingsContent() {
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">All confirmed, pending, and past bookings</p>
           </div>
           <Button className="rounded-full h-[42px] px-5 bg-primary text-white hover:bg-primary/90 text-sm font-medium gap-2">
-            <Icon name="download" size={15} />
+            {/* <Icon name="" size={15} /> */}
+            put donwload icon here
             Export CSV
           </Button>
         </div>
@@ -36,7 +37,7 @@ export function BookingsContent() {
         {/* ── Summary Cards ───────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
           {/* Active bookings */}
-          <InsetCard title="Active bookings">
+          <InsetCard title="Active bookings" insetClassName="bg-white " className="bg-[#F2F2F7]">
             {summaryLoading ? (
               <div className="flex flex-col gap-2">
                 <Skeleton className="h-9 w-12 bg-gray-200 dark:bg-gray-800" />
@@ -52,7 +53,7 @@ export function BookingsContent() {
           </InsetCard>
 
           {/* Check-ins today */}
-          <InsetCard title="Check-ins today">
+          <InsetCard title="Check-ins today" insetClassName="bg-white " className="bg-[#F2F2F7]">
             {summaryLoading ? (
               <div className="flex flex-col gap-2">
                 <Skeleton className="h-9 w-12 bg-gray-200 dark:bg-gray-800" />
@@ -76,7 +77,9 @@ export function BookingsContent() {
                 <ChevronDown className="size-4" />
               </button>
             }
+            insetClassName="bg-white " className="bg-[#F2F2F7]"
           >
+
             {summaryLoading ? (
               <Skeleton className="h-[80px] w-full bg-gray-200 dark:bg-gray-800 rounded-xl" />
             ) : (
