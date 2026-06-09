@@ -35,8 +35,8 @@ export function BookingsBarChart({ data }: { data: BookingsThisYearData[] }) {
                 className={cn(
                   "w-full rounded-[3px] transition-colors duration-150",
                   isHovered
-                    ? "bg-gray-700 dark:bg-gray-300"
-                    : "bg-gray-300 dark:bg-gray-600"
+                    ? "bg-gray-800 dark:bg-gray-300"
+                    : "bg-gray-700 dark:bg-gray-600"
                 )}
                 style={{ height: `${heightPct}%` }}
               />
