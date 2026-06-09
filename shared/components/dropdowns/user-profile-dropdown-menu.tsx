@@ -11,9 +11,10 @@ import { cn } from "@/shared/lib/utils";
 
 interface UserProfileDropdownMenuProps {
   isDarkBackground?: boolean;
+  isHomeDashBoard?:boolean
 }
 
-export const UserProfileDropdownMenu = ({ isDarkBackground = false }: UserProfileDropdownMenuProps) => {
+export const UserProfileDropdownMenu = ({ isDarkBackground = false, isHomeDashBoard }: UserProfileDropdownMenuProps) => {
   const profile: any = null; // Stubbed since features/settings is removed
 
   const getInitials = () => {
@@ -43,13 +44,15 @@ export const UserProfileDropdownMenu = ({ isDarkBackground = false }: UserProfil
             <div className="flex flex-col gap-0.5">
               <span className={cn(
                 "text-[15px] font-bold leading-none tracking-wide",
-                isDarkBackground ? "text-white" : "text-gray-900"
+                isDarkBackground ? "text-white" : "text-gray-900",
+                !isHomeDashBoard && 'text-foreground'
               )}>
                 {firstName}
               </span>
               <span className={cn(
                 "text-[12px] inline-block mt-1 leading-none font-normal",
-                isDarkBackground ? "text-white/70" : "text-gray-500"
+                isDarkBackground ? "text-white/70" : "text-gray-500",
+                !isHomeDashBoard && 'text-foreground'
               )}>
                 Admin
               </span>
@@ -59,7 +62,8 @@ export const UserProfileDropdownMenu = ({ isDarkBackground = false }: UserProfil
               size={20}
               className={cn(
                 "transition-colors",
-                isDarkBackground ? "text-white" : "text-gray-400"
+                isDarkBackground ? "text-white" : "text-gray-400",
+                !isHomeDashBoard && 'text-foreground'
               )}
             />
           </button>

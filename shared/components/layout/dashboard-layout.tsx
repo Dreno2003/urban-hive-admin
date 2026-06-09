@@ -5,9 +5,13 @@ import { Sidebar } from "@/shared/components/layout/sidebar"
 import { DashboardHeader } from "@/shared/components/layout/dashboard-header"
 import { cn } from "@/shared/lib/utils"
 
+
+
 export default function DashboardLayout({
   children,
+  isHomeDashBoard = false
 }: {
+  isHomeDashBoard?:boolean
   children: React.ReactNode
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -41,11 +45,14 @@ export default function DashboardLayout({
         )}
       >
         {/* Sticky/Responsive Top Header */}
+        {/* <div className='border-b relative border-green-500'> */}
         <DashboardHeader
+          isHomeDashBoard={isHomeDashBoard}
           isCollapsed={isCollapsed}
           isScrolled={isScrolled}
           setIsMobileOpen={setIsMobileOpen}
-        />
+          />
+          {/* </div> */}
 
         {/* Content Viewport */}
         <main className="flex-1 flex flex-col pt-0 relative">

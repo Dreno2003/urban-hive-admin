@@ -2,6 +2,7 @@
 
 import React from "react"
 import { Icon } from "@/shared/components/ui/icon"
+import { InsetCard } from "@/shared/components/ui/inset-card"
 import { cn } from "@/shared/lib/utils"
 import { OnboardingGuide, GuideTheme } from "../types"
 
@@ -53,19 +54,13 @@ export function OnboardingGuideCard({
   const theme = THEME_CONFIGS[guide.theme] ?? THEME_CONFIGS.blue
 
   return (
-    <div
-      className={cn(
-        "rounded-[28px] p-2 flex flex-col gap-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
-        theme.outerBg,
-        theme.outerBorder,
-        className
-      )}
-    >
-      {/* Outer Card Header */}
-      <div className="flex justify-between items-center px-4 pt-3 pb-1 select-none">
+    <InsetCard
+      title={
         <span className={cn("text-[13px] font-semibold tracking-tight uppercase opacity-80", theme.headerText)}>
           Onboarding guide
         </span>
+      }
+      headerExtra={
         <button
           onClick={() => onEdit(guide)}
           className={cn(
@@ -75,28 +70,32 @@ export function OnboardingGuideCard({
         >
           Edit guide
         </button>
-      </div>
+      }
+      className={cn(
+        "transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+        theme.outerBg,
+        theme.outerBorder,
+        className
+      )}
+      insetClassName="bg-white dark:bg-gray-950 border border-gray-50 dark:border-gray-900/50 shadow-[0_2px_8px_rgba(0,0,0,0.01)] flex-row justify-between items-center min-h-0 py-[22px] px-6"
+    >
+      <h3 className="text-[17px] sm:text-[18px] font-semibold text-gray-800 dark:text-gray-200 tracking-tight font-sans max-w-[70%] leading-snug">
+        {guide.title}
+      </h3>
 
-      {/* Inner Card (White Container) */}
-      <div className="bg-white dark:bg-gray-950 rounded-[22px] px-6 py-[22px] flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.01)] border border-gray-50 dark:border-gray-900/50">
-        <h3 className="text-[17px] sm:text-[18px] font-semibold text-gray-800 dark:text-gray-200 tracking-tight font-sans max-w-[70%] leading-snug">
-          {guide.title}
-        </h3>
-        
-        <a
-          href={guide.fileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-gray-500 hover:text-primary-300 dark:text-gray-400 dark:hover:text-primary-300 transition-colors duration-200 group/link shrink-0 cursor-pointer"
-        >
-          <span className="text-[14px] font-semibold group-hover/link:underline">Open file</span>
-          <Icon
-            name="share"
-            size={16}
-            className="text-gray-400 group-hover/link:text-primary-300 mt-0.5 transition-colors duration-200"
-          />
-        </a>
-      </div>
-    </div>
+      <a
+        href={guide.fileUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-1.5 text-gray-500 hover:text-primary-300 dark:text-gray-400 dark:hover:text-primary-300 transition-colors duration-200 group/link shrink-0 cursor-pointer"
+      >
+        <span className="text-[14px] font-semibold group-hover/link:underline">Open file</span>
+        <Icon
+          name="share"
+          size={16}
+          className="text-gray-400 group-hover/link:text-primary-300 mt-0.5 transition-colors duration-200"
+        />
+      </a>
+    </InsetCard>
   )
 }

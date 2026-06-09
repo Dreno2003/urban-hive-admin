@@ -7,15 +7,18 @@ import { UserProfileDropdownMenu } from "@/shared/components/dropdowns/user-prof
 import { cn } from "@/shared/lib/utils"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
+import { Separator } from "../ui/separator"
 
 interface DashboardHeaderProps {
   isCollapsed: boolean
   isScrolled: boolean
   setIsMobileOpen: (open: boolean) => void
+  isHomeDashBoard?: boolean
 }
 
 export function DashboardHeader({
   isCollapsed,
+  isHomeDashBoard,
   isScrolled,
   setIsMobileOpen,
 }: DashboardHeaderProps) {
@@ -39,76 +42,92 @@ export function DashboardHeader({
   }
 
   return (
-    <header
-      className={cn(
-        "h-[76px] px-6 fixed top-0 right-0 z-20 flex items-center justify-between transition-all duration-300 ease-in-out border-b",
-        isCollapsed ? "md:w-[calc(100%-80px)]" : "md:w-[calc(100%-260px)]",
-        "w-full",
-        isScrolled
-          ? "bg-white/80 backdrop-blur-md border-gray-100 shadow-sm"
-          : "bg-transparent border-transparent"
-      )}
-    >
-      {/* Left Side: Hamburger (Mobile) / Page Title (Desktop) */}
-      <div className="flex items-center gap-4">
-        <button
-          onClick={() => setIsMobileOpen(true)}
-          className={cn(
-            "p-2 rounded-xl transition-colors md:hidden cursor-pointer",
-            isScrolled
-              ? "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-              : "text-white hover:bg-white/10"
-          )}
-        >
-          <Icon name="grid" size={20} />
-        </button>
+    <div >
 
-        <h2
-          className={cn(
-            "text-lg font-bold tracking-tight select-none transition-colors hidden md:block",
-            isScrolled ? "text-gray-900" : "text-white"
-          )}
-        >
-          {getPageTitle()}
-        </h2>
-      </div>
+      <header
+        className={cn(
+          "h-[76px]  fixed  top-0 right-0 z-20 flex transition-all duration-300 ease-in-out border-b ",
+          isCollapsed ? "md:w-[calc(100%-80px)]" : "md:w-[calc(100%-260px)]",
+          "w-full",
+          isScrolled
+            ? "bg-white/80 backdrop-blur-md border-gray-100 shadow-sm"
+            : "bg-transparent border-transparent",
+          !isHomeDashBoard && "border-b !border-gray-200"
 
-      {/* Right Side: Search, Notifications, Profile */}
-      <div className="flex items-center gap-5 md:gap-6">
-        {/* Search Input */}
-        <div className="relative hidden sm:block w-[260px] md:w-[380px]">
-          {/* <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+
+        )}
+      >
+
+
+        <div className="container-wrapper w-full flex items-center justify-between">
+
+          {/* Left Side: Hamburger (Mobile) / Page Title (Desktop) */}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsMobileOpen(true)}
+              className={cn(
+                "p-2 rounded-xl transition-colors md:hidden cursor-pointer",
+                isScrolled
+                  ? "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+                  : "text-white hover:bg-white/10"
+              )}
+            >
+              <Icon name="grid" size={20} />
+            </button>
+
+            <h2
+              className={cn(
+                "text-lg font-normal tracking-tight select-none transition-colors hidden md:block",
+                isScrolled ? "text-foreground" : "text-white",
+                !isHomeDashBoard && 'text-foreground'
+                // isScrolled && !isHomeDashBoard ? "text-gray-900" : "text",
+              )}
+            >
+              {getPageTitle()}
+            </h2>
+          </div>
+
+          {/* Right Side: Search, Notifications, Profile */}
+          <div className="flex items-center gap-5 md:gap-6">
+            {/* Search Input */}
+            <div className="relative hidden sm:block w-[260px] md:w-[380px]">
+              {/* <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <Icon
               name="search"
               size={20}
               className="text-[#5F606A]"
             />
           </div> */}
-          <Input
-            icon={<Icon name="search" size={20} className="text-icon-default" />}
-            type="text"
-            placeholder="Search dashboard"
-            className="w-full h-[46px] pl-12 pr-4 rounded-full text-[15px] font-medium    border-none outline-none transition-all duration-200 ]"
-          />
+              <Input
+                icon={<Icon name="search" size={20} className="text-icon-default" />}
+                type="text"
+                placeholder="Search dashboard"
+                className="w-full h-[46px] pl-12 pr-4 rounded-full text-[15px] font-medium    border-none outline-none transition-all duration-200 ]"
+              />
+            </div>
+
+            {/* Notification Button */}
+            <Button
+              size={'icon-lg'}
+              variant={'secondary'}
+              className={cn(
+                "s rounded-full flex items-center hover:!bg-white justify-center transition-all duration-200 cursor-pointer text-secondary-foreground",
+                isScrolled
+                  ? "bg-white border border-gray-100 "
+                  : "bg-white border-transparent  ",
+                !isHomeDashBoard && '!bg-secondary'
+              )}
+            >
+              <Icon name="bell2" size={20} />
+            </Button>
+
+            {/* Profile Dropdown */}
+            <UserProfileDropdownMenu isHomeDashBoard={isHomeDashBoard} isDarkBackground={!isScrolled} />
+          </div>
+
         </div>
+      </header>
 
-        {/* Notification Button */}
-        <Button
-        size={'icon-lg'}
-        variant={'secondary'}
-          className={cn(
-            "s rounded-full flex items-center hover:!bg-white justify-center transition-all duration-200 cursor-pointer text-secondary-foreground",
-            isScrolled
-              ? "bg-white border border-gray-100 "
-              : "bg-white border-transparent  "
-          )}
-        >
-          <Icon name="bell2" size={20} />
-        </Button>
-
-        {/* Profile Dropdown */}
-        <UserProfileDropdownMenu isDarkBackground={!isScrolled} />
-      </div>
-    </header>
+    </div>
   )
 }

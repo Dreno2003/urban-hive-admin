@@ -64,27 +64,25 @@ export default function OnboardingContent() {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 pb-16">
+    <div className="flex-1 container-wrapper bg-white flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 pb-16">
       {/* Brand-Themed Banner Header */}
       <section
-        className="relative pt-[116px] pb-16 px-8 md:px-12 flex flex-col justify-end shrink-0"
-        style={{
-          background: `linear-gradient(135deg, rgba(104, 39, 73, 0.95) 0%, rgba(78, 29, 55, 0.9) 50%, rgba(46, 17, 32, 0.95) 100%), url('/images/landing-page-images/home-img.jpg') center/cover no-repeat`,
-        }}
+        className="content-top-padding pb-16  flex flex-col justify-end shrink-0"
+     
       >
-        <div className="max-w-[1400px] w-full mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div className="max w-full mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div className="space-y-1.5">
-            <h1 className="text-white text-[25px] sm:text-[30px] font-bold tracking-tight">
+            <h1 className="text-[30px] font-bold tracking-tight">
               Onboarding guide
             </h1>
-            <p className="text-white/70 text-sm md:text-[15px] font-medium font-sans">
+            <p className="text-secondary-foreground 0 text-sm md:text-[16px] font-medium font-sans">
               Clients onboarding and management checklist
             </p>
           </div>
 
           <Button
             onClick={handleAddClick}
-            className="h-10 px-5 gap-1.5 font-semibold bg-white hover:bg-white/95 text-primary-500 rounded-full transition-all duration-200 self-start sm:self-center shadow-md cursor-pointer border border-white/20 shrink-0"
+            className="h-10 px-5 gap-1.5 font-medium rounded-full transition-all duration-200 self-start sm:self-center shadow-md cursor-pointer border border-white/20 shrink-0"
           >
             <Icon name="plus" size={16} />
             <span>Add guide</span>
@@ -93,7 +91,7 @@ export default function OnboardingContent() {
       </section>
 
       {/* Main Grid Viewport */}
-      <div className="flex-1 w-full max-w-[1400px] mx-auto px-8 md:px-12 py-8 relative z-10 -mt-[4.5rem]">
+      <div className="flex-1 w-full  py-8 relative z-10 -mt-[4.5rem]">
         {isLoading ? (
           /* High-Fidelity Skeletons matching Card theme distribution */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

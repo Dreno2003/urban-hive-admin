@@ -48,7 +48,7 @@
   --color-primary-700: #4E1D37;
   --color-primary-800: #3A1629;
   --color-primary-900: #2E1120;
-  
+
   /* ─────────────────────────────────────────
      PRIMARY — YELLOW / GOLD
   ───────────────────────────────────────── */
@@ -161,7 +161,7 @@
   --color-green-800: #166534;
   --color-green-900: #14532D;
   --color-icon-default: #25292F;
-  --color-icon-success:#00C950;
+  --color-icon-success: #00C950;
   /* --color-icon-default:#25292F; */
   /* #6D7280 */
   /* ─────────────────────────────────────────
@@ -239,8 +239,13 @@
 }
 
 @layer utilities {
+  .content-top-padding {
+    @apply pt-[90px];
+  }
+
   .container-wrapper {
-    @apply mx-auto md:max-w-[1024px] lg:max-w-[1280px] xl:px-0 px-4;
+    @apply  px-6;
+    /* @apply mx-auto md:max-w-[1024px] lg:max-w-[1280px] xl:px-0 px-4; */
     /* @apply mx-auto md:max-w-[1024px] lg:max-w-[1280px] xl:max-w-[1440px] px-4; */
   }
 

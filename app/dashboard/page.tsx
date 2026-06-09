@@ -6,7 +6,7 @@ import DashboardContent from "./dashboard-content"
 export default function DashBoardPage() {
   return (
     <>
-      <DashboardLayout >
+      <DashboardLayout isHomeDashBoard >
 
         <DashboardContent />
       </DashboardLayout>
