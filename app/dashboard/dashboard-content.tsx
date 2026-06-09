@@ -6,6 +6,7 @@ import { useDashboardSummary } from "@/features/dashboard/hooks/use-dashboard-su
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { UpcomingBookingsCard } from "@/features/dashboard/components/upcoming-bookings-card"
 import { SpaceOccupancyCard } from "@/features/dashboard/components/space-occupancy-card"
+import { RecentPaymentsCard } from "@/features/dashboard/components/recent-payments-card"
 
 export default function DashboardContent() {
   const [currentDate, setCurrentDate] = useState("Tuesday, May 12, 2026")
@@ -108,6 +109,11 @@ export default function DashboardContent() {
           <div className="lg:col-span-1">
             <SpaceOccupancyCard />
           </div>
+        </div>
+
+        {/* Third Row — Recent Payments (full width) */}
+        <div className="mt-6">
+          <RecentPaymentsCard />
         </div>
       </div>
     </div>

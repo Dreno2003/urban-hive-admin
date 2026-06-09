@@ -35,3 +35,22 @@ export interface SpaceOccupancy {
 }
 
 export type SpaceOccupancyResponse = SpaceOccupancy[]
+
+export type PaymentStatus = "paid" | "pending" | "failed" | "refunded"
+
+export interface Payment {
+  id: string
+  clientName: string
+  space: string
+  spaceType: string
+  amount: string
+  dateRange: string
+  status: PaymentStatus
+}
+
+export interface RecentPaymentsResponse {
+  payments: Payment[]
+  totalPages: number
+  currentPage: number
+  totalCount: number
+}

@@ -1,5 +1,5 @@
 import { apiClient } from "@/shared/lib/api-client"
-import { type DashboardSummaryResponse, type UpcomingBookingsResponse, type SpaceOccupancyResponse } from "../types"
+import { type DashboardSummaryResponse, type UpcomingBookingsResponse, type SpaceOccupancyResponse, type RecentPaymentsResponse } from "../types"
 
 export const dashboardService = {
   /**
@@ -79,5 +79,42 @@ export const dashboardService = {
       { id: "offices", name: "Offices", occupied: 8, capacity: 10, free: 2 },
       { id: "boardrooms", name: "Boardrooms", occupied: 8, capacity: 10, free: 2 },
     ]
+  },
+
+  /**
+   * Fetches the paginated list of recent payments.
+   * Currently returns typed mock data matching the design.
+   */
+  getRecentPayments: async (page: number = 1): Promise<RecentPaymentsResponse> => {
+    // In a real implementation:
+    // return apiClient.get<RecentPaymentsResponse>(`/dashboard/payments?page=${page}`);
+
+    await new Promise((resolve) => setTimeout(resolve, 700))
+
+    return {
+      currentPage: page,
+      totalPages: 8,
+      totalCount: 80,
+      payments: [
+        {
+          id: "1",
+          clientName: "Adaeze Okonkwo",
+          space: "Private office A",
+          spaceType: "Office",
+          amount: "₦8,000/day",
+          dateRange: "May 5 – Jun 1, 2026",
+          status: "paid",
+        },
+        {
+          id: "2",
+          clientName: "Emeka Dike",
+          space: "Private office A",
+          spaceType: "Shortlet",
+          amount: "₦120,000/night",
+          dateRange: "May 5 – Jun 1, 2026",
+          status: "paid",
+        },
+      ],
+    }
   },
 }
