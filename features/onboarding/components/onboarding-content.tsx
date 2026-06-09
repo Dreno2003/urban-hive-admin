@@ -43,14 +43,14 @@ export default function OnboardingContent() {
   }
 
   const handleFormSubmit = async (
-    values: Omit<OnboardingGuide, "id" | "createdAt"> & { id?: string }
+    values: Omit<OnboardingGuide, "id" | "createdAt" | "theme"> & { id?: string }
   ) => {
     const isEdit = !!values.id
     const guideToSave: OnboardingGuide = {
       id: values.id ?? Math.random().toString(36).substring(2, 9),
       title: values.title,
       fileUrl: values.fileUrl,
-      theme: values.theme,
+      category: values.category,
       createdAt: activeGuide?.createdAt ?? new Date().toISOString(),
     }
 
@@ -165,10 +165,11 @@ export default function OnboardingContent() {
         ) : (
           /* Interactive Grid rendering matching guide cards */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {guides.map((guide) => (
+            {guides.map((guide, index) => (
               <OnboardingGuideCard
                 key={guide.id}
                 guide={guide}
+                index={index}
                 onEdit={handleEditClick}
               />
             ))}
