@@ -244,11 +244,12 @@
   }
 
 
-  .dialog-container-ring{
-    @apply ring-3 ring-green/40
+  .dialog-container-ring {
+    @apply ring-3 ring-white/40
   }
+
   .container-wrapper {
-    @apply  px-6;
+    @apply px-6;
     /* @apply mx-auto md:max-w-[1024px] lg:max-w-[1280px] xl:px-0 px-4; */
     /* @apply mx-auto md:max-w-[1024px] lg:max-w-[1280px] xl:max-w-[1440px] px-4; */
   }
@@ -574,3 +575,16 @@ button {
   Kitchen
 </button>
 */
+
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

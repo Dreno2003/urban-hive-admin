@@ -3,11 +3,17 @@ export type BookingPaymentStatus = "paid" | "pending" | "cancelled" | "failed"
 export interface Booking {
   id: string
   clientName: string
+  clientPhone?: string
+  clientEmail?: string
+  space?: string
   spaceType: string
   checkIn: string
   checkOut: string
+  duration?: string
   amount: string
   paymentStatus: BookingPaymentStatus
+  cancelledBy?: string
+  cancellationReason?: string
 }
 
 export interface BookingsThisYearData {

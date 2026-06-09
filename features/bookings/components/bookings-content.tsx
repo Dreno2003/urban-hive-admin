@@ -7,7 +7,10 @@ import { Button } from "@/shared/components/ui/button"
 import { Icon } from "@/shared/components/ui/icon"
 import { BookingsBarChart } from "./bookings-bar-chart"
 import { useBookingsSummary, useBookingsList } from "../hooks/use-bookings"
+import { BookingDetailDialog } from "./booking-detail-dialog"
 import { BookingsFilterPopover, type BookingFilters } from "./bookings-filter-popover"
+import { CancelBookingDialog } from "./cancel-booking-dialog"
+import type { Booking } from "../types"
 import { BookingsTable } from "./bookings-table"
 import { CalendarDays, ChevronDown } from "lucide-react"
 import { cn } from "@/shared/lib/utils"
@@ -20,6 +23,8 @@ const AVAILABLE_YEARS = [CURRENT_YEAR, CURRENT_YEAR - 1, CURRENT_YEAR - 2]
 export function BookingsContent() {
   const [page, setPage] = useState(1)
   const [filters, setFilters] = useState<BookingFilters>(EMPTY_FILTERS)
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
+  const [cancelOpen, setCancelOpen] = useState(false)
   const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR)
   const [yearDropdownOpen, setYearDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -43,7 +48,7 @@ export function BookingsContent() {
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">All confirmed, pending, and past bookings</p>
           </div>
           <Button className="rounded-full h-[42px] px-5 bg-primary text-white hover:bg-primary/90 text-sm font-medium gap-2">
-            <Icon name="bath" size={15} />
+            <Icon name="exportSquareOutline" size={15} />
             Export CSV
           </Button>
         </div>
@@ -151,10 +156,24 @@ export function BookingsContent() {
               currentPage={page}
               totalPages={totalPages}
               onPageChange={setPage}
+              onView={setSelectedBooking}
             />
           )}
         </div>
       </div>
+
+      <BookingDetailDialog
+        booking={selectedBooking}
+        open={!!selectedBooking}
+        onOpenChange={(o) => { if (!o) setSelectedBooking(null) }}
+        onCancelRequest={() => { setSelectedBooking(null); setCancelOpen(true) }}
+      />
+
+      <CancelBookingDialog
+        open={cancelOpen}
+        onOpenChange={setCancelOpen}
+        onConfirm={async () => setCancelOpen(false)}
+      />
     </div>
   )
 }

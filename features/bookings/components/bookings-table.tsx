@@ -23,9 +23,10 @@ interface BookingsTableProps {
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void
+  onView?: (booking: Booking) => void
 }
 
-export function BookingsTable({ bookings, isLoading, currentPage, totalPages, onPageChange }: BookingsTableProps) {
+export function BookingsTable({ bookings, isLoading, currentPage, totalPages, onPageChange, onView }: BookingsTableProps) {
   return (
     <>
       {/* Column headers */}
@@ -70,7 +71,7 @@ export function BookingsTable({ bookings, isLoading, currentPage, totalPages, on
                     {label}
                   </span>
                 </div>
-                <span className={cn("text-[13px] text-primary font-medium cursor-pointer hover:underline", WIDTHS[7])}>View</span>
+                <span onClick={() => onView?.(b)} className={cn("text-[13px] text-primary font-medium cursor-pointer hover:underline", WIDTHS[7])}>View</span>
               </div>
             )
           })

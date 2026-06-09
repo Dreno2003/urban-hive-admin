@@ -1,239 +1,347 @@
-"use client";
+"use client"
 
-import React from "react";
-import { DialogContainer } from "@/shared/components/dialogs/dialog-container";
-import { Button } from "@/shared/components/ui/button";
-import { Icon } from "@/shared/components/ui/icon";
-import { cn } from "@/shared/lib/utils";
-import type { Dictionary } from "@/i18n/get-dictionary";
-import { useProfile, useSendPasswordResetEmail } from "../hooks/use-settings";
-import { toast } from "sonner";
-import { Separator } from "@/shared/components/ui/separator";
+import React, { useState } from "react"
+import { DialogContainer } from "@/shared/components/dialogs/dialog-container"
+import { Button } from "@/shared/components/ui/button"
+import { Switch } from "@/shared/components/ui/switch"
+import { NotificationCard } from "@/shared/components/ui/notification-card"
+import { Textarea } from "@/shared/components/ui/textarea"
+import { PasswordInput } from "@/shared/components/ui/password-input"
+import { Icon } from "@/shared/components/ui/icon"
+import { cn } from "@/shared/lib/utils"
 
-export interface ChangePasswordDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  dict: Dictionary;
-  className?: string;
+const REFUND_PRESETS = ["25%", "50%", "75%", "100%"]
+
+interface CancelBookingDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onConfirm?: (reason: string, refundPercent: number | null, password: string) => Promise<void>
 }
 
-const COOLDOWN_KEY = "urban_hive_reset_password_cooldown_expiry";
-const COOLDOWN_DURATION_MS = 60000;
+export function CancelBookingDialog({ open, onOpenChange, onConfirm }: CancelBookingDialogProps) {
+  const [step, setStep] = useState<"details" | "password">("details")
+  const [reason, setReason] = useState("")
+  const [refundEnabled, setRefundEnabled] = useState(true)
+  const [selectedPreset, setSelectedPreset] = useState("100%")
+  const [customPercent, setCustomPercent] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
-export function ChangePasswordDialog({
-  open,
-  onOpenChange,
-  dict,
-  className,
-}: ChangePasswordDialogProps) {
-  const [state, setState] = React.useState<"sending" | "success" | "error">("sending");
-  const [cooldownSeconds, setCooldownSeconds] = React.useState(0);
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const effectivePercent = refundEnabled
+    ? selectedPreset === "custom" ? parseInt(customPercent) || 0 : parseInt(selectedPreset)
+    : null
 
-  const { data: profile } = useProfile();
-  const { mutateAsync: sendResetEmail, isPending } = useSendPasswordResetEmail();
+  const handleClose = (o: boolean) => {
+    if (!o) { setStep("details"); setReason(""); setPassword(""); setSelectedPreset("100%"); setCustomPercent("") }
+    onOpenChange(o)
+  }
 
-  const settingsDict = (dict as any).settings || {};
-
-  // Cooldown countdown timer effect
-  React.useEffect(() => {
-    if (cooldownSeconds <= 0) return;
-    const interval = setInterval(() => {
-      setCooldownSeconds((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [cooldownSeconds]);
-
-  // Main logic on dialog open / email address change
-  React.useEffect(() => {
-    if (!open) return;
-
-    const expiryStr = localStorage.getItem(COOLDOWN_KEY);
-    const expiry = expiryStr ? parseInt(expiryStr, 10) : 0;
-    const now = Date.now();
-
-    if (expiry > now) {
-      const remaining = Math.ceil((expiry - now) / 1000);
-      setCooldownSeconds(remaining);
-      setState("success");
-      return;
-    }
-
-    // Cooldown not active: reset state and trigger sending state
-    setState("sending");
-    setErrorMessage("");
-    setCooldownSeconds(0);
-
-    const email = profile?.email || "friedaodagboyi@gmail.com";
-
-    // Small delay to prevent network request spamming from accidental clicks
-    const delayTimeout = setTimeout(async () => {
-      try {
-        await sendResetEmail(email);
-        const newExpiry = Date.now() + COOLDOWN_DURATION_MS;
-        localStorage.setItem(COOLDOWN_KEY, String(newExpiry));
-        setCooldownSeconds(60);
-        setState("success");
-      } catch (err: any) {
-        setErrorMessage(err.message || "Failed to send password reset link");
-        setState("error");
-      }
-    }, 1000);
-
-    return () => {
-      clearTimeout(delayTimeout);
-    };
-  }, [open, profile?.email, sendResetEmail]);
-
-  // Resend handler
-  const handleResend = async () => {
-    const email = profile?.email || "friedaodagboyi@gmail.com";
+  const handleEnter = async () => {
+    setLoading(true)
     try {
-      await sendResetEmail(email);
-      const newExpiry = Date.now() + COOLDOWN_DURATION_MS;
-      localStorage.setItem(COOLDOWN_KEY, String(newExpiry));
-      setCooldownSeconds(60);
-      toast.success("Password reset email sent successfully");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to resend email");
+      await onConfirm?.(reason, effectivePercent, password)
+      handleClose(false)
+    } finally {
+      setLoading(false)
     }
-  };
+  }
+
+  return (
+    <DialogContainer
+      open={open}
+      onOpenChange={handleClose}
+      isShowTopSeparator={false}
+
+      contentClassName="sm:max-w-[280px] px-0"
+      className="pb-2 p-1"
+      showClose={step === "details"}
+    >
+      {step === "details" ? (
+        <>
+          <div className="flex flex-col items-center text-center pt-2 pb-5">
+            <div className="size-14 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <Icon name="x" size={22} className="text-gray-500" />
+            </div>
+            <h2 className="text-[20px] font-bold text-gray-900 tracking-tight">Cancel booking?</h2>
+            <p className="text-sm text-gray-500 mt-1">Are you sure you want to cancel this booking?</p>
+          </div>
+
+          <div className="mb-4">
+            <label className="text-[12px] text-gray-500 font-medium mb-1.5 block">Reason for cancelling</label>
+            <Textarea
+              placeholder="Enter the reason for cancelling this booking"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              className="rounded-[16px] bg-gray-50 border-0 resize-none min-h-[100px] text-[13px]"
+            />
+          </div>
+
+          <div className="flex items-center gap-3 mb-3">
+            <Switch checked={refundEnabled} onCheckedChange={setRefundEnabled} />
+            <span className="text-[14px] font-semibold text-gray-900">Refund client's payment</span>
+          </div>
+
+          {refundEnabled && (
+            <div className="flex items-center gap-2 flex-wrap mb-4">
+              {REFUND_PRESETS.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => { setSelectedPreset(p); setCustomPercent("") }}
+                  className={cn(
+                    "h-[30px] px-3.5 rounded-full text-[12.5px] font-medium border transition-colors",
+                    selectedPreset === p && selectedPreset !== "custom"
+                      ? "bg-gray-900 text-white border-gray-900"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                  )}
+                >
+                  {p}
+                </button>
+              ))}
+              <input
+                type="number"
+                min={1}
+                max={100}
+                placeholder="Enter a custom percentage?"
+                value={customPercent}
+                onFocus={() => setSelectedPreset("custom")}
+                onChange={(e) => { setCustomPercent(e.target.value); setSelectedPreset("custom") }}
+                className={cn(
+                  "h-[30px] px-3.5 rounded-full text-[12.5px] border outline-none w-[180px] placeholder:text-gray-400",
+                  selectedPreset === "custom" ? "border-gray-900" : "border-gray-200"
+                )}
+              />
+            </div>
+          )}
+
+          <NotificationCard
+            variant="dark"
+            type="info"
+            title="This will refund to client"
+            description={refundEnabled ? "Cancelling this booking will refund the client." : "Cancelling this booking will not refund the client."}
+            className="mb-5 max-w-full"
+          />
+
+          <div className="grid grid-cols-2 gap-3">
+            <Button variant="secondary-outline" onClick={() => handleClose(false)} className="h-12 rounded-full text-[14px]">
+              No, don't cancel
+            </Button>
+            <Button onClick={() => setStep("password")} className="h-12 rounded-full text-[14px] bg-primary text-white hover:bg-primary/90">
+              Yes, cancel booking
+            </Button>
+          </div>
+        </>
+      ) : (
+        <>
+          <button
+            onClick={() => setStep("details")}
+            className="flex items-center gap-1 text-[13px] font-medium text-gray-600 hover:text-gray-900 mb-6 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full px-3 py-1.5 w-fit"
+          >
+            <Icon name="chevronLeft" size={14} />
+            Back
+          </button>
+
+          <h2 className="text-[22px] font-bold text-gray-900 tracking-tight mb-1">Enter your password</h2>
+          <p className="text-sm text-gray-500 mb-6">Enter your password to complete this action</p>
+
+          <div className="mb-6">
+            <label className="text-[12px] text-gray-500 font-medium mb-1.5 block">Password</label>
+            <PasswordInput
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              isShowEndIcon
+              className="rounded-full bg-gray-50 border-0 h-[48px] text-[14px]"
+            />
+          </div>
+
+          <Button
+            onClick={handleEnter}
+            loading={loading}
+            disabled={!password}
+            className="w-full h-12 rounded-full text-[14px] bg-primary text-white hover:bg-primary/90"
+          >
+            Enter
+          </Button>
+        </>
+      )}
+    </DialogContainer>
+  )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"use client"
+
+import React, { useState } from "react"
+import { DialogContainer } from "@/shared/components/dialogs/dialog-container"
+import { Button } from "@/shared/components/ui/button"
+import { Switch } from "@/shared/components/ui/switch"
+import { NotificationCard } from "@/shared/components/ui/notification-card"
+import { Textarea } from "@/shared/components/ui/textarea"
+import { cn } from "@/shared/lib/utils"
+import { Icon } from "@/shared/components/ui/icon"
+import { Input } from "@/shared/components/ui/input"
+
+const REFUND_PRESETS = ["25%", "50%", "75%", "100%"]
+
+interface CancelBookingDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onConfirm?: (reason: string, refundPercent: number | null) => Promise<void>
+}
+
+export function CancelBookingDialog({ open, onOpenChange, onConfirm }: CancelBookingDialogProps) {
+  const [reason, setReason] = useState("")
+  const [refundEnabled, setRefundEnabled] = useState(true)
+  const [selectedPreset, setSelectedPreset] = useState<string | null>("100%")
+  const [customPercent, setCustomPercent] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [step, setStep] = useState<"details" | "password">("details")
+
+  const effectivePercent = refundEnabled
+    ? selectedPreset === "custom"
+      ? parseInt(customPercent) || 0
+      : parseInt(selectedPreset ?? "0")
+    : null
+
+  const handleConfirm = async () => {
+    setLoading(true)
+    try {
+      await onConfirm?.(reason, effectivePercent)
+      onOpenChange(false)
+      setReason("")
+      setSelectedPreset("100%")
+      setCustomPercent("")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <DialogContainer
       open={open}
       onOpenChange={onOpenChange}
-      contentClassName="!max-w-xl "
-      className={cn("px-4 py-4 w-full  mx-auto", className)}
-      showClose={state !== "sending"}
+      isShowTopSeparator={false}
+      contentClassName="sm:max-w-[480px]"
+      className="pb-2"
+      showClose={false}
     >
-      <div className="flex flex-col items-center justify-center text-center">
-        {/* ─── SENDING STATE ─────────────────────────────────────── */}
-        {/* {state === "sending" && (
-          <div className="space-y-6 w-full py-4 animate-in fade-in duration-200">
-            <div className="relative size-16 md:size-20 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mx-auto shadow-sm">
-              <Icon name="loader" size={28} className="text-primary animate-spin" />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-xl md:text-2xl font-bold text-foreground">
-                {settingsDict.sendingResetLink || "Sending password reset link..."}
-              </h2>
-              <p className="text-sm text-gray-500 max-w-xs mx-auto">
-                {settingsDict.preparingResetLink || "We are preparing to send a password reset link to your email."}
-              </p>
-            </div>
-            <div className="pt-2">
-              <Button
-                variant="secondary"
-                onClick={() => onOpenChange(false)}
-                className="w-full max-w-[280px] rounded-full h-[48px] font-semibold text-foreground bg-gray-50 hover:bg-gray-100 border border-gray-200"
-              >
-                {settingsDict.cancel || "Cancel"}
-              </Button>
-            </div>
-          </div>
-        )} */}
 
-        {/* ─── SUCCESS STATE ─────────────────────────────────────── */}
-        {/* {state === "success" && ( */}
-        <div className="space-y-4 w-full animate-in fade-in duration-300">
-          <div className="relative size-[83px]  bg-secondary rounded-full flex items-center justify-center mx-auto">
-            <Icon name="mail2" size={46} className="text-primdary" />
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-xl md:text-2xl font-bold text-foreground">
-              {settingsDict.checkEmailTitle || "Check your email"}
-            </h2>
-            <p className="text-body-base leading-relaxed text-secondary-foreground mx-auto">
-              {settingsDict.checkEmailDesc || "Check your email, a password reset link has been sent to your email."}
-            </p>
-          </div>
-          <Separator />
-          <div className="">
-            <Button
-              onClick={() => onOpenChange(false)}
-              className="w-full  rounded-full bg-primary hover:bg-primary/95 text-white font-semibold h-[48px]"
-            >
-              {settingsDict.okay || "Okay"}
-            </Button>
+      <div>
 
-            {/* Cooldown Footer */}
-            <div className="flex items-center justify-center min-h-12 mt-2">
-              {cooldownSeconds > 0 ? (
-                <span className="text-xs text-gray-500 font-medium select-none">
-                  {settingsDict.resendEmailIn
-                    ? settingsDict.resendEmailIn.replace("{seconds}", String(cooldownSeconds))
-                    : `Resend email in ${cooldownSeconds}s`}
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  disabled={isPending}
-                  onClick={handleResend}
-                  className="text-xs text-primary hover:underline font-semibold transition-all disabled:opacity-50 select-none cursor-pointer"
-                >
-                  {isPending
-                    ? (settingsDict.resending || "Resending...")
-                    : (settingsDict.resendEmail || "Resend email")}
-                </button>
-              )}
-            </div>
+
+        {/* Icon + heading */}
+        <div className="flex flex-col items-center text-center pt-2 pb-5">
+          <div className="size-[80px] rounded-full bg-gray-100 flex items-center justify-center mb-4">
+            <Icon name="x2" size={40} className="text-[#6D7280]" />
           </div>
+          <h2 className="text-[24px] font-bold t tracking-tight">Cancel booking?</h2>
+          <p className="text-sm text-secondary-foreground mt-1">Are you sure you want to cancel this booking?</p>
         </div>
-        {/* )} */}
 
-        {/* ─── ERROR STATE ───────────────────────────────────────── */}
-        {state === "error" && (
-          <div className="space-y-6 w-full py-4 animate-in fade-in duration-200">
-            <div className="relative size-16 md:size-20 bg-red-50 rounded-full flex items-center justify-center mx-auto border border-red-100">
-              <Icon name="alertCircle" size={32} className="text-red-500" />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-xl md:text-2xl font-bold text-foreground">
-                {settingsDict.failedToSendResetLink || "Failed to send link"}
-              </h2>
-              <p className="text-sm text-red-500 max-w-xs mx-auto">
-                {errorMessage}
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 pt-2 max-w-[280px] mx-auto w-full">
+        {/* Reason textarea */}
+        <div className="mb-4">
+          <label className="text-[12px]   mb-1.5 block">Reason for cancelling</label>
+          <Textarea
+            placeholder="Enter the reason for cancelling this booking"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            className="rounded-[18px] p-3 bg-gray-50 border-0 resize-none min-h-[100px] text-[13px] text-gray-700 placeholder:text-gray-400"
+          />
+        </div>
+
+        {/* Refund toggle */}
+        <div className="flex items-center gap-3 mb-3">
+          <Switch checked={refundEnabled} onCheckedChange={setRefundEnabled} />
+          <span className="text-[14px] font-semibold ">Refund client's payment</span>
+        </div>
+
+        {/* Refund percentage presets */}
+        {refundEnabled && (
+          <div className="flex items-center gap-2 flex-wrap mb-4">
+            {REFUND_PRESETS.map((p) => (
               <Button
-                onClick={() => {
-                  setState("sending");
-                  const email = profile?.email || "friedaodagboyi@gmail.com";
-                  sendResetEmail(email)
-                    .then(() => {
-                      const newExpiry = Date.now() + COOLDOWN_DURATION_MS;
-                      localStorage.setItem(COOLDOWN_KEY, String(newExpiry));
-                      setCooldownSeconds(60);
-                      setState("success");
-                    })
-                    .catch((err: any) => {
-                      setErrorMessage(err.message || "Failed to send password reset link");
-                      setState("error");
-                    });
-                }}
-                className="w-full rounded-full bg-primary hover:bg-primary/95 text-white font-semibold h-[48px]"
+                variant={'secondary'}
+                key={p}
+                onClick={() => { setSelectedPreset(p); setCustomPercent("") }}
+                className={cn(
+                  "h-[30px] px-2   rounded-full text-[12.5px] font-medium border transition-colors",
+                  selectedPreset === p && selectedPreset !== "custom"
+                    ? "bg-gray-900 text-white border-gray-900"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                )}
               >
-                {settingsDict.retry || "Retry"}
+                {p}
               </Button>
-              <Button
-                variant="secondary"
-                onClick={() => onOpenChange(false)}
-                className="w-full rounded-full h-[48px] font-semibold text-foreground bg-gray-50 hover:bg-gray-100 border border-gray-200"
-              >
-                {settingsDict.cancel || "Cancel"}
-              </Button>
-            </div>
+            ))}
+            <input
+              type="number"
+              min={1}
+              max={100}
+              placeholder="Enter a custom percentage?"
+              value={customPercent}
+              onFocus={() => setSelectedPreset("custom")}
+              onChange={(e) => { setCustomPercent(e.target.value); setSelectedPreset("custom") }}
+              className={cn(
+                "h-[30px] px-3.5 rounded-full text-[12.5px] border outline-none transition-colors w-[180px] placeholder:text-gray-400",
+                selectedPreset === "custom" ? "border-gray-900" : "border-gray-200"
+              )}
+            />
           </div>
         )}
+
+        {/* Notification card */}
+        <NotificationCard
+          variant="dark"
+          type="info"
+          title="This will refund to client"
+          description={
+            refundEnabled
+              ? `Cancelling this booking will refund the client.`
+              : "Cancelling this booking will not refund the client."
+          }
+          className="mb-5 max-w-full"
+        />
+
+        {/* Actions */}
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            variant="secondary-outline"
+            onClick={() => onOpenChange(false)}
+            className="h2 rounded-full text-[14px]"
+            disabled={loading}
+          >
+            No, don't cancel
+          </Button>
+          <Button
+            onClick={handleConfirm}
+            loading={loading}
+            className=" rounded-full text-[14px] bg-primary text-white hover:bg-primary/90"
+          >
+            Yes, cancel booking
+          </Button>
+        </div>
+
       </div>
+
     </DialogContainer>
-  );
+  )
 }

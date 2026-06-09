@@ -1,158 +1,156 @@
-import React, { useState } from "react";
-import { DialogContainer } from "@/shared/components/dialogs/dialog-container";
-import { DialogTitle } from "@/shared/components/ui/dialog";
-import { Separator } from "@/shared/components/ui/separator";
-import { Button } from "@/shared/components/ui/button";
-import { formatDate } from "@/shared/helper/format-date";
-import { formatCurrency } from "@/shared/helper/format-currency";
-import { PaymentBadge } from "./payment-status-badge";
-import type { UserBooking } from "../types";
-import { ExternalLink, Clock } from "lucide-react";
-import { ReportSpaceDialog } from "@/features/space/components/report-space-dialog";
-import type { Dictionary } from "@/i18n/get-dictionary";
-import { CancelBookingDialog } from "./cancel-booking-dialog";
+"use client"
 
-interface BookingDetailDialogProps {
-  booking: UserBooking | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  dict: Dictionary;
+import React from "react"
+import { DialogContainer } from "@/shared/components/dialogs/dialog-container"
+import { Separator } from "@/shared/components/ui/separator"
+import { Button } from "@/shared/components/ui/button"
+import { Copy } from "lucide-react"
+import { Icon } from "@/shared/components/ui/icon"
+import { cn } from "@/shared/lib/utils"
+import type { Booking, BookingPaymentStatus } from "../types"
+
+const PAYMENT_STYLE: Record<BookingPaymentStatus, { dot: string; text: string; bg: string; label: string }> = {
+  paid:      { dot: "bg-green-500",  text: "text-green-700",  bg: "bg-green-100",  label: "Paid" },
+  pending:   { dot: "bg-yellow-500", text: "text-yellow-700", bg: "bg-yellow-100", label: "Pending" },
+  cancelled: { dot: "bg-red-400",    text: "text-red-500",    bg: "bg-red-100",    label: "Refunded" },
+  failed:    { dot: "bg-red-500",    text: "text-red-700",    bg: "bg-red-100",    label: "Failed" },
 }
 
-export function BookingDetailDialog({
-  booking,
-  open,
-  onOpenChange,
-  dict,
-}: BookingDetailDialogProps) {
-  const [isReportOpen, setIsReportOpen] = useState(false);
-  const [isCancelOpen, setIsCancelOpen] = useState(false);
-  const settingsDict = (dict as any).settings || {};
+function Field({ label, children, fullWidth }: { label: string; children: React.ReactNode; fullWidth?: boolean }) {
+  return (
+    <div className={cn("flex flex-col gap-1", fullWidth && "col-span-2")}>
+      <span className="text-[11px] text-gray-400 font-medium">{label}</span>
+      <div className="text-[14px] font-medium text-gray-900 dark:text-gray-100">{children}</div>
+    </div>
+  )
+}
 
-  if (!booking) return null;
+interface BookingDetailDialogProps {
+  booking: Booking | null
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onCancelRequest: () => void
+}
+
+export function BookingDetailDialog({ booking, open, onOpenChange, onCancelRequest }: BookingDetailDialogProps) {
+  if (!booking) return null
+
+  const isCancelled = booking.paymentStatus === "cancelled"
+  const { dot, text, bg, label } = PAYMENT_STYLE[booking.paymentStatus]
 
   return (
-    <>
-      <DialogContainer open={open} onOpenChange={onOpenChange} className="!py-6">
-        <DialogTitle className="text-xl font-bold text-foreground mb-3">
-          {settingsDict.bookingDetailsTitle || "Booking details"}
-        </DialogTitle>
-
-        <Separator className="mb-4 bg-gray-50" />
-
-        <div className="flex flex-col gap-4">
-          {/* Row 1 */}
-          <div className="grid grid-cols-2 gap-3 md:gap-5 ">
-            <div>
-              <p className="text-xs text-gray-500 mb-1">{settingsDict.spaceLabel || "Space"}</p>
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-body-base font-medium text-foreground underline underline-offset-2 decoration-gray-400">
-                  {booking.title}
-                </span>
-                <ExternalLink className="w-3.5 shrink-0 h-3.5 text-gray-400" />
-              </div>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-1">{settingsDict.spaceTypeLabel || "Space type"}</p>
-              <p className="text-body-base font-medium text-foreground">
-                {booking.title.toLowerCase().includes("boardroom") ? (settingsDict.typeBoardroom || "Boardroom") : (settingsDict.typeWorkspace || "Workspace")}
-              </p>
-            </div>
-          </div>
-
-          <Separator className="bg-gray-50" />
-
-          {/* Row 2 */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <p className="text-xs text-gray-500 mb-1">{settingsDict.checkInLabel || "Check in"}</p>
-              <p className="text-body-base font-medium text-foreground">{formatDate(booking.checkIn)}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-1">{settingsDict.checkOutLabel || "Check out"}</p>
-              <p className="text-body-base font-medium text-foreground">{formatDate(booking.checkOut)}</p>
-            </div>
-          </div>
-
-          <Separator className="bg-gray-50" />
-
-          {/* Row 3 */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <p className="text-xs text-gray-500 mb-1">{settingsDict.durationLabel || "Duration"}</p>
-              <p className="text-body-base font-medium text-foreground">2 hrs/ day</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-1">{settingsDict.amountPaidLabel || "Amount paid"}</p>
-              <div className="flex items-center gap-2">
-                <span className="text-body-base font-medium text-foreground">
-                  {formatCurrency(booking.price, booking.currency)}
-                </span>
-                <PaymentBadge status={booking.status} dict={dict} />
-              </div>
-            </div>
-          </div>
-
-          <Separator className="bg-gray-50" />
-
-          {/* Row 4 */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <p className="text-xs text-gray-500 mb-1">{settingsDict.cancellationPeriodLabel || "Cancellation period"}</p>
-              <div className="flex items-center gap-2">
-                <span className="text-body-base font-medium text-foreground">1 hour</span>
-                <span className="inline-flex items-center gap-1 h-[24px] px-2 rounded-full bg-[#FFF9CC] text-[#EAB308] text-xs font-medium">
-                  <Clock className="w-3 h-3" />
-                  58:56
-                </span>
-              </div>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-1">{settingsDict.datePaidLabel || "Date paid"}</p>
-              <p className="text-body-base font-medium text-foreground">{formatDate(booking.checkIn)}</p>
-            </div>
-          </div>
+    <DialogContainer
+      dialogTitle={
+        <div className="flex items-center gap-2">
+          <span className="text-[22px] font-bold text-gray-900 dark:text-gray-50 tracking-tight">Booking details</span>
+          {isCancelled && (
+            <span className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-500 bg-gray-100 rounded-full px-2.5 py-0.5">
+              <Icon name="x" size={10} />
+              Cancelled
+            </span>
+          )}
+        </div>
+      }
+      open={open}
+      onOpenChange={onOpenChange}
+      className="!px-2 pb-2"
+    >
+      <div className="flex flex-col gap-0 mt-2">
+        {/* Row 1 — Client name + Space */}
+        <div className="grid grid-cols-2 gap-4 py-4">
+          <Field label="Client name">
+            <span className="flex items-center gap-1.5">{booking.clientName}
+              <Icon name="exportSquareOutline" className="size-3.5 text-secondary-foreground shrink-0" />
+            </span>
+          </Field>
+          <Field label="Space">
+            <span className="flex items-center gap-1.5">{booking.space ?? booking.spaceType}
+              <Icon name="exportSquareOutline" className="size-3.5 text-secondary-foreground shrink-0" />
+            </span>
+          </Field>
         </div>
 
-        <div className="mt-5">
-          <button
-            type="button"
-            onClick={() => { onOpenChange(false); setIsReportOpen(true); }}
-            className="text-primary font-bold text-sm hover:underline cursor-pointer"
-          >
-            {settingsDict.reportProperty || "Report this property"}
-          </button>
+        <Separator className="bg-gray-100" />
+
+        {/* Row 2 — Phone + Email */}
+        <div className="grid grid-cols-2 gap-4 py-4">
+          <Field label="Client phone number">
+            <span className="flex items-center gap-1.5">{booking.clientPhone ?? "—"}
+              <button onClick={() => navigator.clipboard.writeText(booking.clientPhone ?? "")} className="text-gray-400 hover:text-gray-600">
+                <Copy className="size-3.5" />
+              </button>
+            </span>
+          </Field>
+          <Field label="Client email">
+            <span className="flex items-center gap-1.5 break-all">{booking.clientEmail ?? "—"}
+              <button onClick={() => navigator.clipboard.writeText(booking.clientEmail ?? "")} className="text-gray-400 hover:text-gray-600 shrink-0">
+                <Copy className="size-3.5" />
+              </button>
+            </span>
+          </Field>
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-4">
-          <Button variant="secondary-outline" className="text-body-sm  w-full">
-            {settingsDict.downloadInvoice || "Download invoice"}
-          </Button>
-          <Button
-            className="w-full text-body-sm text-white"
-            onClick={() => {
-              onOpenChange(false);
-              setIsCancelOpen(true);
-            }}
-          >
-            {settingsDict.cancelBooking || "Cancel booking"}
-          </Button>
+        <Separator className="bg-gray-100" />
+
+        {/* Row 3 — Check in + Check out */}
+        <div className="grid grid-cols-2 gap-4 py-4">
+          <Field label="Check in">{booking.checkIn}</Field>
+          <Field label="Check out">{booking.checkOut}</Field>
         </div>
-      </DialogContainer>
 
-      <ReportSpaceDialog
-        open={isReportOpen}
-        onOpenChange={setIsReportOpen}
-        dict={dict}
-        spaceId={booking.id}
-      />
+        <Separator className="bg-gray-100" />
 
-      <CancelBookingDialog
-        open={isCancelOpen}
-        onOpenChange={setIsCancelOpen}
-        dict={dict}
-        bookingId={booking.id}
-      />
-    </>
-  );
+        {/* Row 4 — Duration + Amount paid */}
+        <div className="grid grid-cols-2 gap-4 py-4">
+          <Field label="Duration">{booking.duration ?? "—"}</Field>
+          <Field label="Amount paid">
+            <span className="flex items-center gap-2">
+              {booking.amount}
+              <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium", bg, text)}>
+                <span className={cn("size-1.5 rounded-full shrink-0", dot)} />
+                {label}
+              </span>
+            </span>
+          </Field>
+        </div>
+
+        {/* Cancelled-only rows */}
+        {isCancelled && booking.cancelledBy && (
+          <>
+            <Separator className="bg-gray-100" />
+            <div className="grid grid-cols-2 gap-4 py-4">
+              <Field label="Cancelled by">
+                <span className="flex items-center gap-1.5">{booking.cancelledBy}
+                  <Icon name="exportSquareOutline" className="size-3.5 text-secondary-foreground shrink-0" />
+                </span>
+              </Field>
+            </div>
+          </>
+        )}
+
+        {isCancelled && booking.cancellationReason && (
+          <>
+            <Separator className="bg-gray-100" />
+            <div className="py-4">
+              <Field label="Reason for cancellation" fullWidth>
+                {booking.cancellationReason}
+              </Field>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Actions */}
+      {isCancelled ? (
+        <Button onClick={() => onOpenChange(false)} className="w-full h-12 rounded-full text-[14px] bg-primary text-white hover:bg-primary/90 mt-2">
+          Close
+        </Button>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 mt-2">
+          <Button variant="secondary-outline" className="h-11 rounded-full text-[14px]">Download invoice</Button>
+          <Button onClick={onCancelRequest} className="h-11 rounded-full text-[14px] bg-primary text-white hover:bg-primary/90">Cancel booking</Button>
+        </div>
+      )}
+    </DialogContainer>
+  )
 }

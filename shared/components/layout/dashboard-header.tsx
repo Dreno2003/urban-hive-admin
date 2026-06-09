@@ -101,6 +101,7 @@ export function DashboardHeader({
               <Input
                 icon={<Icon name="search" size={20} className="text-icon-default" />}
                 type="text"
+                autoComplete="off"
                 placeholder="Search dashboard"
                 className="w-full h-[46px] pl-12 pr-4 rounded-full text-[15px] font-medium    border-none outline-none transition-all duration-200 ]"
               />

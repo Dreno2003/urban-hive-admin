@@ -9,12 +9,12 @@ const YEARLY_DATA: Record<number, number[]> = {
 }
 
 const ALL_BOOKINGS: Booking[] = [
-  { id: "00001", clientName: "Adaeze Okonkwo", spaceType: "Office",    checkIn: "2026-05-12", checkOut: "2026-05-12", amount: "₦30,000",  paymentStatus: "paid" },
-  { id: "00002", clientName: "Funmi Adeyemi",  spaceType: "Shortlet",  checkIn: "2026-05-24", checkOut: "2026-05-24", amount: "₦300,000", paymentStatus: "cancelled" },
-  { id: "00003", clientName: "Emeka Nwosu",    spaceType: "Office",    checkIn: "2026-06-01", checkOut: "2026-06-03", amount: "₦60,000",  paymentStatus: "pending" },
-  { id: "00004", clientName: "Tolu Badmus",    spaceType: "Shortlet",  checkIn: "2026-06-05", checkOut: "2026-06-07", amount: "₦150,000", paymentStatus: "paid" },
-  { id: "00005", clientName: "Chidi Okafor",   spaceType: "Boardroom", checkIn: "2026-06-10", checkOut: "2026-06-10", amount: "₦45,000",  paymentStatus: "pending" },
-  { id: "00006", clientName: "Ngozi Eze",      spaceType: "Office",    checkIn: "2026-06-12", checkOut: "2026-06-14", amount: "₦90,000",  paymentStatus: "paid" },
+  { id: "00001", clientName: "Adaeze Okonkwo", clientPhone: "+234 9138407481", clientEmail: "adaezeokonkwo@gmail.com", space: "Conference Room", spaceType: "Office",    checkIn: "2026-05-12", checkOut: "2026-05-20", duration: "2 hrs/ day", amount: "₦30,000",  paymentStatus: "paid" },
+  { id: "00002", clientName: "Funmi Adeyemi",  clientPhone: "+234 8023456789", clientEmail: "funmi.adeyemi@gmail.com",  space: "Studio A",       spaceType: "Shortlet",  checkIn: "2026-05-24", checkOut: "2026-05-24", duration: "1 day",     amount: "₦300,000", paymentStatus: "cancelled", cancelledBy: "Taiwo James", cancellationReason: "Client asked for the booking reservation to be cancelled." },
+  { id: "00003", clientName: "Emeka Nwosu",    clientPhone: "+234 7011234567", clientEmail: "emeka.nwosu@gmail.com",    space: "Open Desk 3",    spaceType: "Office",    checkIn: "2026-06-01", checkOut: "2026-06-03", duration: "3 days",    amount: "₦60,000",  paymentStatus: "pending" },
+  { id: "00004", clientName: "Tolu Badmus",    clientPhone: "+234 8134567890", clientEmail: "tolu.badmus@gmail.com",    space: "Penthouse B",    spaceType: "Shortlet",  checkIn: "2026-06-05", checkOut: "2026-06-07", duration: "2 days",    amount: "₦150,000", paymentStatus: "paid" },
+  { id: "00005", clientName: "Chidi Okafor",   clientPhone: "+234 9025678901", clientEmail: "chidi.okafor@gmail.com",   space: "Boardroom 1",    spaceType: "Boardroom", checkIn: "2026-06-10", checkOut: "2026-06-10", duration: "4 hrs",     amount: "₦45,000",  paymentStatus: "pending" },
+  { id: "00006", clientName: "Ngozi Eze",      clientPhone: "+234 8036789012", clientEmail: "ngozi.eze@gmail.com",      space: "Office Suite 2", spaceType: "Office",    checkIn: "2026-06-12", checkOut: "2026-06-14", duration: "2 days",    amount: "₦90,000",  paymentStatus: "paid" },
 ]
 
 const PAGE_SIZE = 4
