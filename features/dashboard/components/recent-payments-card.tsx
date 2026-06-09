@@ -176,7 +176,7 @@ export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
                   {/* Name */}
                   <span
                     className={cn(
-                      "text-[14px] font-medium text-gray-900 dark:text-gray-100 font-sans truncate pr-3",
+                      "text-[14px] font-medium text-secondary-foreground dark:text-gray-100 font-sans truncate pr-3",
                       COL_WIDTHS[0]
                     )}
                   >
@@ -209,7 +209,7 @@ export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
                   {/* Amount */}
                   <span
                     className={cn(
-                      "text-[13.5px] font-semibold text-gray-900 dark:text-gray-100 font-sans truncate pr-3",
+                      "text-[13.5px] text-secondary-foreground dark:text-gray-100 font-sans truncate pr-3",
                       COL_WIDTHS[3]
                     )}
                   >
