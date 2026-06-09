@@ -1,12 +1,13 @@
-export type BookingStatus = "confirmed" | "pending" | "cancelled" | "completed"
+export type BookingPaymentStatus = "paid" | "pending" | "cancelled" | "failed"
 
 export interface Booking {
   id: string
   clientName: string
-  space: string
   spaceType: string
-  dateRange: string
-  status: BookingStatus
+  checkIn: string
+  checkOut: string
+  amount: string
+  paymentStatus: BookingPaymentStatus
 }
 
 export interface BookingsThisYearData {
@@ -16,7 +17,9 @@ export interface BookingsThisYearData {
 
 export interface BookingsSummary {
   activeBookings: number
+  activeBookingsTrend: string
   checkInsToday: number
+  checkInsTrend: string
   bookingsThisYear: number
   currentYear: number
   monthlyData: BookingsThisYearData[]
