@@ -15,13 +15,13 @@ import {
 } from "../hooks/use-onboarding-guides"
 import { cn } from "@/shared/lib/utils"
 
-const SKELETON_COLORS: GuideTheme[] = ["blue", "yellow", "pink", "green"]
+const SKELETON_COLORS: GuideTheme[] = ["blue", "green", "orange", "green"]
 
 const SKELETON_THEME_CLASSES: Record<GuideTheme, { outerBg: string; outerBorder: string }> = {
   blue: { outerBg: "bg-[#f2f6ff]/60 dark:bg-blue-950/10", outerBorder: "border border-[#e1ebfe]/60 dark:border-blue-900/20" },
-  yellow: { outerBg: "bg-[#fffbf0]/60 dark:bg-yellow-950/10", outerBorder: "border border-[#fef2d0]/60 dark:border-yellow-900/20" },
-  pink: { outerBg: "bg-[#fdf3ff]/60 dark:bg-purple-950/10", outerBorder: "border border-[#fbe4fe]/60 dark:border-purple-900/20" },
-  green: { outerBg: "bg-[#f4fbf7]/60 dark:bg-green-950/10", outerBorder: "border border-[#e6f7ee]/60 dark:border-green-900/20" },
+  orange: { outerBg: "bg-[#fffbf0]/60 dark:bg-yellow-950/10", outerBorder: "border border-[#fef2d0]/60 dark:border-yellow-900/20" },
+  green: { outerBg: "bg-[#fdf3ff]/60 dark:bg-purple-950/10", outerBorder: "border border-[#fbe4fe]/60 dark:border-purple-900/20" },
+  purple: { outerBg: "bg-[#f4fbf7]/60 dark:bg-green-950/10", outerBorder: "border border-[#e6f7ee]/60 dark:border-green-900/20" },
 }
 
 export default function OnboardingContent() {
