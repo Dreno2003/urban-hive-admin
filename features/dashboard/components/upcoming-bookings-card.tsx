@@ -2,6 +2,7 @@
 
 import React from "react"
 import { InsetCard } from "@/shared/components/ui/inset-card"
+import { Button } from "@/shared/components/ui/button"
 import { Icon } from "@/shared/components/ui/icon"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { useUpcomingBookings } from "../hooks/use-upcoming-bookings"
@@ -33,10 +34,10 @@ export function UpcomingBookingsCard({ className }: UpcomingBookingsCardProps) {
 
   // Action button on the right (See schedule pill)
   const headerExtraNode = (
-    <button className="bg-[#F1F1F6] hover:bg-[#E8E8EE] dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-[13px] font-semibold px-4.5 py-1.5 rounded-full flex items-center gap-1 transition-all duration-200 cursor-pointer active:scale-95">
+    <Button variant={'secondary-outline'} size={'sm'} className="text-xs text-foreground rounded-full">
       <span>See schedule</span>
       <Icon name="chevronRight" size={13} className="text-gray-500 dark:text-gray-400 mt-0.5" />
-    </button>
+    </Button>
   )
 
   return (
@@ -44,7 +45,7 @@ export function UpcomingBookingsCard({ className }: UpcomingBookingsCardProps) {
       title={titleNode}
       headerExtra={headerExtraNode}
       hasInset={false}
-      className={cn("shadow-sm border border-gray-100 dark:border-gray-800", className)}
+      className={cn(" border border-gray-100 dark:border-gray-800", className)}
     >
       {/* Header divider */}
       <div className="border-t border-gray-100 dark:border-gray-800/80 my-1 mx-3.5" />
@@ -93,7 +94,7 @@ export function UpcomingBookingsCard({ className }: UpcomingBookingsCardProps) {
                 {/* Left vertical border indicator */}
                 <div
                   className={cn(
-                    "w-[1.5px] h-9 rounded-full shrink-0 transition-colors duration-200",
+                    "w-[3px] h-9 rounded-full shrink-0 transition-colors duration-200",
                     booking.accentColor || "bg-gray-400 dark:bg-gray-600 group-hover:bg-primary"
                   )}
                 />

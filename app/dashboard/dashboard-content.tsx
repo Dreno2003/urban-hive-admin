@@ -99,14 +99,14 @@ export default function DashboardContent() {
         </div>
 
         {/* Second Row — Upcoming Bookings (wide) + Space Occupancy (narrow) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Upcoming today — takes 2/3 of the row */}
-          <div className="lg:col-span-2">
+          <div className="">
             <UpcomingBookingsCard />
           </div>
 
           {/* Space Occupancy — takes 1/3 of the row */}
-          <div className="lg:col-span-1">
+          <div className="">
             <SpaceOccupancyCard />
           </div>
         </div>
