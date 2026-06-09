@@ -243,6 +243,10 @@
     @apply pt-[90px];
   }
 
+
+  .dialog-container-ring{
+    @apply ring-3 ring-green/40
+  }
   .container-wrapper {
     @apply  px-6;
     /* @apply mx-auto md:max-w-[1024px] lg:max-w-[1280px] xl:px-0 px-4; */
