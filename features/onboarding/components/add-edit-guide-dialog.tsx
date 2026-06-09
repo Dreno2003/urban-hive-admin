@@ -15,6 +15,7 @@ import {
 } from "@/shared/components/ui/select"
 import { OnboardingGuide, GuideCategory } from "../types"
 import { Separator } from "@/shared/components/ui/separator"
+import { Trash, Trash2 } from "lucide-react"
 
 export interface AddEditGuideDialogProps {
   open: boolean
@@ -123,37 +124,43 @@ export function AddEditGuideDialog({ open, onOpenChange, guide, onSubmit, onDele
         {/* Actions */}
 
         <Separator />
-        <div className="flex gap-3 pt-2">
+        <div className="flex justify-center flex-col gap-3 pt-2">
           {isEditing && onDelete && (
             <Button
               type="button"
-              variant="destructive"
+              variant="link"
               onClick={async () => {
                 if (confirm("Are you sure you want to delete this guide?")) {
                   await onDelete(guide.id)
                   onOpenChange(false)
                 }
               }}
-              className="h-12 flex-1 rounded-full text-[14px] font-semibold"
+              className="h-12 flex-1 hover:no-underline rounded-full text-[14px] text-destructive"
             >
-              Delete
+
+              <Trash className="size-4" />
+              Delete guide
             </Button>
           )}
-          <Button
-            type="button"
-            variant="secondary-outline"
-            onClick={() => onOpenChange(false)}
-            className="h-12 flex-1 rounded-full text-[14px] font-semibold  dark:bg-gray-800 "
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            loading={formik.isSubmitting}
-            className="h-12 flex-1 rounded-full text-[14px] font-semibold text-white bg-primary hover:bg-primary/90"
-          >
-            {isEditing ? "Save changes" : "Add guide"}
-          </Button>
+
+          <div className="flex gap-3" >
+            <Button
+              type="button"
+              variant="secondary-outline"
+              onClick={() => onOpenChange(false)}
+              className="h-12 flex-1 rounded-full text-[14px]   dark:bg-gray-800 "
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              loading={formik.isSubmitting}
+              className="h-12 flex-1 rounded-full text-[14px]  text-white bg-primary hover:bg-primary/90"
+            >
+              {isEditing ? "Save changes" : "Add guide"}
+            </Button>
+          </div>
+
         </div>
       </form>
     </DialogContainer>
