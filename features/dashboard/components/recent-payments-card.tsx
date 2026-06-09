@@ -7,6 +7,7 @@ import { Pagination } from "@/shared/components/ui/pagination"
 import { useRecentPayments } from "../hooks/use-recent-payments"
 import { cn } from "@/shared/lib/utils"
 import { type PaymentStatus } from "../types"
+import { Button } from "@/shared/components/ui/button"
 
 export interface RecentPaymentsCardProps {
   className?: string
@@ -61,7 +62,7 @@ export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
   return (
     <div
       className={cn(
-        "bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px] p-1.5 transition-all duration-200 shadow-sm",
+        "bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px]  transition-all duration-200 shadow-sm",
         className
       )}
     >
@@ -70,31 +71,31 @@ export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
         <h4 className="text-[17px] font-bold text-gray-900 dark:text-white tracking-tight font-sans">
           All payments
         </h4>
-        <button className="bg-[#F1F1F6] hover:bg-[#E8E8EE] dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-[13px] font-semibold px-4 py-1.5 rounded-full flex items-center gap-1 transition-all duration-200 cursor-pointer active:scale-95">
+        <Button variant={'secondary-outline'} size={'sm'} className=" text-sm text-secondary-foreground font-medium px-4 py-1.5 rounded-full flex items-center gap-1 transition-all duration-200 cursor-pointer ">
           <span>See all payments</span>
           <Icon
             name="chevronRight"
-            size={13}
-            className="text-gray-500 dark:text-gray-400 mt-0.5"
+            size={16}
+            className="text-[#808080] .5"
           />
-        </button>
+        </Button> 
       </div>
 
       {/* ── Table ──────────────────────────────────────────────── */}
       <div
         className={cn(
-          "bg-[#F8F9FC] dark:bg-gray-900/50 rounded-[22px] overflow-hidden transition-opacity duration-300",
+          " dark:bg-gray-900/50 overflow-hidden transition-opacity duration-300",
           isFetching && !isLoading ? "opacity-60" : "opacity-100"
         )}
       >
         {/* Column headers */}
-        <div className="flex items-center px-6 py-3.5 border-b border-gray-100 dark:border-gray-800/60">
+        <div className="flex bg-secondary items-center px-6 py-3.5 border-b border-gray-100 dark:border-gray-800/60">
           {["Name", "Space", "Space type", "Amount", "Date", "Payment status"].map(
             (col, i) => (
               <span
                 key={col}
                 className={cn(
-                  "text-[12.5px] font-semibold text-gray-500 dark:text-gray-400 font-sans uppercase tracking-wide",
+                  "text-[12.5px] font-semibold text-gray-500 dark:text-gray-400 font-sans  tracking-wide",
                   COL_WIDTHS[i],
                   i === 5 && "text-right"
                 )}
@@ -163,7 +164,10 @@ export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
                       COL_WIDTHS[2]
                     )}
                   >
+                    <div className="inline-block border p-1 px-1.5 rounded-md">
+
                     {payment.spaceType}
+                    </div>
                   </span>
 
                   {/* Amount */}

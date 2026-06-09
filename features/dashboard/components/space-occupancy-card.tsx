@@ -15,13 +15,13 @@ export function SpaceOccupancyCard({ className }: SpaceOccupancyCardProps) {
   const occupancyItems = data ?? []
 
   return (
-    <div className={cn("flex flex-col gap-4 w-full", className)}>
+    <div className={cn("flex flex-col gap-2 w-full", className)}>
       {isLoading ? (
         // Skeleton Loader matching mockup cards
         Array.from({ length: 3 }).map((_, index) => (
           <div
             key={index}
-            className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-850 rounded-[24px] p-5 px-6 flex items-center justify-between shadow-sm animate-pulse"
+            className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-850 rounded-[24px] p-5 px-6 flex items-center justify-between sm animate-pulse"
           >
             <div className="flex flex-col gap-3">
               <Skeleton className="h-4 w-20 bg-gray-200 dark:bg-gray-800" />
@@ -60,11 +60,11 @@ export function SpaceOccupancyCard({ className }: SpaceOccupancyCardProps) {
         occupancyItems.map((item) => (
           <div
             key={item.id}
-            className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800/80 rounded-[24px] p-5 px-6 flex items-center justify-between shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer"
+            className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800/80 rounded-[24px] p-5 px-6 flex items-center justify-between  group cursor-pointer"
           >
             {/* Left side: Category & Segmented Bar */}
             <div className="flex flex-col gap-2">
-              <span className="text-[13.5px] font-medium text-gray-500 dark:text-gray-400 font-sans group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">
+              <span className=" font-medium text-secondary-foreground dark:text-gray-400 font-sans group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">
                 {item.name}
               </span>
               <div className="flex gap-[3.5px]">
