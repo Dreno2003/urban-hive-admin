@@ -1,13 +1,15 @@
 "use client"
 
 import React, { useState } from "react"
-import { Icon } from "@/shared/components/ui/icon"
+import { Icon, Icons } from "@/shared/components/ui/icon"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { useRecentPayments } from "../hooks/use-recent-payments"
 import { cn } from "@/shared/lib/utils"
 import { type PaymentStatus } from "../types"
 import { Button } from "@/shared/components/ui/button"
+import { Separator } from "@/shared/components/ui/separator"
+import { Badge } from "@/shared/components/ui/badge"
 
 export interface RecentPaymentsCardProps {
   className?: string
@@ -52,10 +54,44 @@ const COL_WIDTHS = [
   "w-[12%]", // Status
 ]
 
+
+function paymentStausBadgeVariant(status: PaymentStatus) {
+  switch (status) {
+    case "paid":
+      return "success"
+    case "pending":
+      return "warning"
+    case "failed":
+      return "destructive"
+    case "refunded":
+      return "secondary"
+    default:
+      return "default"
+  }
+
+}
+
+
+
+function paymentStausBadgeIconVariant(status: PaymentStatus): keyof typeof Icons {
+  switch (status) {
+    case "paid":
+      return "check"
+    case "pending":
+      return "loader"
+    case "failed":
+      return "x"
+    case "refunded":
+      return "x"
+    default:
+      return "x"
+  }
+
+}
 export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
   const [page, setPage] = useState(1)
   const { data, isLoading, isFetching } = useRecentPayments(page)
-
+  // data?.payments[0].status 
   const payments = data?.payments ?? []
   const totalPages = data?.totalPages ?? 1
 
@@ -78,7 +114,7 @@ export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
             size={16}
             className="text-[#808080] .5"
           />
-        </Button> 
+        </Button>
       </div>
 
       {/* ── Table ──────────────────────────────────────────────── */}
@@ -107,7 +143,7 @@ export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
         </div>
 
         {/* Rows */}
-        <div className="flex flex-col divide-y divide-gray-100 dark:divide-gray-800/40">
+        <div className="flex flex-col divide-y  dark:divide-gray-800/40">
           {isLoading ? (
             Array.from({ length: 2 }).map((_, i) => (
               <div
@@ -166,7 +202,7 @@ export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
                   >
                     <div className="inline-block border p-1 px-1.5 rounded-md">
 
-                    {payment.spaceType}
+                      {payment.spaceType}
                     </div>
                   </span>
 
@@ -192,18 +228,11 @@ export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
 
                   {/* Status badge */}
                   <div className={cn("flex justify-end", COL_WIDTHS[5])}>
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold font-sans",
-                        status.bg,
-                        status.text
-                      )}
-                    >
-                      <span
-                        className={cn("w-1.5 h-1.5 rounded-full shrink-0", status.dot)}
-                      />
+
+                    <Badge variant={paymentStausBadgeVariant(payment.status)} iconName={paymentStausBadgeIconVariant(payment.status)} className="py-2"> 
                       {status.label}
-                    </span>
+                    </Badge>
+                 
                   </div>
                 </div>
               )
@@ -211,6 +240,7 @@ export function RecentPaymentsCard({ className }: RecentPaymentsCardProps) {
           )}
         </div>
 
+        <Separator />
         {/* ── Pagination ─────────────────────────────────────── */}
         {!isLoading && totalPages > 1 && (
           <div className="px-5 pb-3">

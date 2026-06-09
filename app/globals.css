@@ -150,18 +150,18 @@
   /* ─────────────────────────────────────────
      SUPPORTING — GREEN / SUCCESS
   ───────────────────────────────────────── */
-  --color-green-50: #e8faf0;
-  --color-green-100: #c6f2d9;
-  --color-green-200: #8de5b3;
-  --color-green-300: #54d88d;
-  --color-green-400: #1bcb67;
-  --color-green-500: #00b74a;
-  --color-green-600: #00913a;
-  --color-green-700: #006b2b;
-  --color-green-800: #00461c;
-  --color-green-900: #00200d;
-
+  --color-green-50: #F0FDF4;
+  --color-green-100: #DCFCE7;
+  --color-green-200: #BBF7D0;
+  --color-green-300: #86EFAC;
+  --color-green-400: #4ADE80;
+  --color-green-500: #22C55E;
+  --color-green-600: #16A34A;
+  --color-green-700: #15803D;
+  --color-green-800: #166534;
+  --color-green-900: #14532D;
   --color-icon-default: #25292F;
+  --color-icon-success:#00C950;
   /* --color-icon-default:#25292F; */
   /* #6D7280 */
   /* ─────────────────────────────────────────
@@ -274,6 +274,7 @@
   --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-icon-default: var(--color-icon-default);
+  --color-icon-success: var(--color-icon-success);
   --color-input: var(--input);
   /* --color-border: #E5E7EB; */
   --color-border: var(--border);

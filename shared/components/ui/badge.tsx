@@ -1,43 +1,85 @@
-import { cn } from "@/shared/lib/utils";
-import { PropertyCardPillTransperentDegree } from "./property/property-card";
-import { Icon } from "./icon";
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
+import { Slot } from "radix-ui"
 
-export function Badge({
+import { cn } from "@/shared/lib/utils"
+import { Icon, Icons } from "./icon"
+
+const badgeVariants = cva(
+  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3.5",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        secondary:
+          "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
+        destructive:
+          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
+        warning:
+          "bg-[#FEF3C6] text-[#FE9A00] ",
+        success:
+          "bg-green-100  text-[#00C950]  ",
+
+        outline:
+          "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
+        ghost:
+          "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+function Badge({
+  className,
+  variant = "default",
+  asChild = false,
   iconName,
-  title,
-  onClick,
-  transperentDegree = "sm",
-  titleClassName,
-  iconClassName,
-  iconPosition = 'left',
-  mainclassName
-}: {
-  title: string;
-  onClick?: () => void
-  iconName?: any;
-  titleClassName?: string
-  transperentDegree?: PropertyCardPillTransperentDegree
-  iconClassName?: string
-  iconPosition?: 'left' | 'right'
-  mainclassName?: string
-}) {
+  ...props
+}: React.ComponentProps<"span"> &
+  VariantProps<typeof badgeVariants> & { asChild?: boolean, iconName?: keyof typeof Icons }) {
+  const Comp = asChild ? Slot.Root : "span"
+
+  function IconColor() {
+    switch (variant) {
+      case "default":
+        return "text-primary-foreground"
+      case "secondary":
+        return "text-secondary-foreground"
+      case "warning":
+        return "text-[#FE9A00]"
+      case "success":
+        return "text-[#00C950]"
+      case "outline":
+        return "text-foreground"
+      case "ghost":
+        return "text-muted-foreground"
+      case "link":
+        return "text-primary"
+    }
+  }
+
   return (
     <span
-      onClick={() => onClick?.()}
-      className={cn(
-        "bg-[#ffffff91] cursor-pointer items-center px-3.5 backdrop-blur-xl border border-white text-secondary-foreground text-xs font-medium items-center justify-center gap-2 min-w-[57px] h-[40px] inline-flex rounded-full shadow-sm whitespace-nowrap",
-        transperentDegree === "md" && "bg-[##FFFFFF80]",
-        transperentDegree === "md" && "bg-[#FFFFFFE5]",
-        transperentDegree === "xs" && "bg-gradient-to-r  from-[#e4dfdf2c]/60 to-gray-50/10 backdrop-blur-sm border-none shadow-none",
-        transperentDegree === "lg" && "bg-transparent hover:ring-[#FFFFFF66] hover:bg-secondary transition-all  duration-300 ring ring-gray-200 shadow-none",
-        transperentDegree === 'noFill' && 'px-0 bg-transparent border-none shadow-none',
-        mainclassName
-      )}
+      // data-slot="badge"
+
+      className={cn('inline-block !py-3 !w-16',badgeVariants({ variant }), className)}
+      {...props}
     >
-      {/* {property.tags?.[0] ?? "Shortlet"} */}
-      {iconPosition === 'left' && iconName && <Icon name={iconName} size={16} className={cn("text-gray-500 ", iconClassName)} />}
-      <span className={cn('mt-px inline-block', titleClassName)}>{title}</span>
-      {iconPosition === 'right' && iconName && <Icon name={iconName} size={16} className={cn("text-gray-500 ", iconClassName)} />}
+
+      {iconName &&
+        <Icon name={iconName} size={18} className={cn( IconColor())} />
+      }
+      {props.children}
+
     </span>
-  );
+
+
+
+  )
 }
+
+export { Badge, badgeVariants }

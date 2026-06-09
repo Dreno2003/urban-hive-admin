@@ -155,7 +155,7 @@ export function Pagination({
                 currentPage === page
                   ? isDefault
                     ? "bg-gray-50 text-gray-900 font-bold ring-1 ring-inset ring-gray-100"
-                    : "bg-foreground text-white font-semibold"
+                    : "bg-gray-100  font-semibold"
                   : isDefault
                     ? "text-gray-500 font-semibold hover:bg-gray-50 hover:text-gray-900"
                     : "text-gray-600 font-semibold hover:bg-gray-100",
