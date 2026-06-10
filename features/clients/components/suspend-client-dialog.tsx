@@ -4,14 +4,17 @@ import { DialogContainer } from "@/shared/components/dialogs/dialog-container"
 import { Button } from "@/shared/components/ui/button"
 import { Icon } from "@/shared/components/ui/icon"
 import { Separator } from "@/shared/components/ui/separator"
-import { Trash2 } from "lucide-react"
 
 interface SuspendClientDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   clientName: string
   onConfirm: () => void
+
 }
+
+
+//TODO: IMPLEMENT REAL SUSPEND LOGIC AND MUTATION AND MAKE THIS DIALOG TO BE SUPEND AND UNSUSPEND BUTTON ACCORDING TO CLIENT STATUS
 
 export function SuspendClientDialog({ open, onOpenChange, clientName, onConfirm }: SuspendClientDialogProps) {
   return (

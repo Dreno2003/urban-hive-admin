@@ -76,6 +76,8 @@ export function ClientDetailContent({ id }: { id: string }) {
             <div className="flex items-center gap-2">
               <Button onClick={() => setSuspendOpen(!suspendOpen)} variant="secondary-outline" className="h-[38px] px-5 rounded-full text-[13px]">
                 Suspend client
+                {/* TODO ALSO IMPLEMENT UNSUSPEND BUTTON ACCORDING TO CLIENT STATUS */}
+                {/* {client?.status === "SUSPENDED" ? "Unsuspend" : "Suspend"} */}
               </Button>
               <Button className="h-[38px] px-5 rounded-full text-[13px] bg-[#FFF0F0] text-red-500 hover:bg-red-50 border border-red-100" onClick={() => setRemoveOpen(true)}>
                 Remove client
