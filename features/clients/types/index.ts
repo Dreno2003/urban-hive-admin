@@ -32,3 +32,25 @@ export interface ClientsListResponse {
   currentPage: number
   totalCount: number
 }
+
+export type BookingHistoryPaymentStatus = "paid" | "pending" | "cancelled" | "failed"
+
+export interface ClientBookingHistory {
+  id: string
+  space: string
+  spaceType: string
+  checkIn: string
+  checkOut: string
+  amount: string
+  paymentStatus: BookingHistoryPaymentStatus
+}
+
+export interface ClientDetail extends Client {
+  phone: string
+  bookingHistory: ClientBookingHistory[]
+  bookingHistoryTotalPages: number
+}
+
+export interface ClientDetailResponse {
+  client: ClientDetail
+}

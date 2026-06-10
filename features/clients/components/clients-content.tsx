@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useRef, useState } from "react"
+import Link from "next/link"
 import { InsetCard } from "@/shared/components/ui/inset-card"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { Button } from "@/shared/components/ui/button"
@@ -183,7 +184,9 @@ export function ClientsContent() {
                     </span> */}
                   </div>
                   <span className={cn("text-[13px] text-gray-500", WIDTHS[5])}>{client.joinedDate}</span>
-                  <span className={cn("text-[13px] text-primary font-medium hover:underline cursor-pointer", WIDTHS[6])}>View profile</span>
+                  <span className={cn("text-[13px] text-primary font-medium hover:underline cursor-pointer", WIDTHS[6])}>
+                    <Link href={`/dashboard/clients/${client.id}`}>View profile</Link>
+                  </span>
                 </div>
               ))
             )}

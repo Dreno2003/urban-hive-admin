@@ -38,6 +38,7 @@ export function DashboardHeader({
       "/dashboard/communication": "Communication",
       "/dashboard/settings": "Settings",
     }
+    if (pathname.startsWith("/dashboard/clients/")) return "Clients"
     return routes[pathname] || "Dashboard"
   }
 

@@ -14,3 +14,11 @@ export function useClientsList(page = 1) {
     queryFn: () => clientsMockService.getClients(page),
   })
 }
+
+export function useClientDetail(id: string, bookingPage = 1) {
+  return useQuery({
+    queryKey: ["client-detail", id, bookingPage],
+    queryFn: () => clientsMockService.getClientById(id, bookingPage),
+    enabled: !!id,
+  })
+}

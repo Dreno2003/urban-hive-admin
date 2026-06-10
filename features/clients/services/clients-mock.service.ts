@@ -1,4 +1,4 @@
-import type { ClientsSummary, ClientsListResponse, Client } from "../types"
+import type { ClientsSummary, ClientsListResponse, Client, ClientDetail } from "../types"
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -22,6 +22,39 @@ const ALL_CLIENTS: Client[] = [
 ]
 
 const PAGE_SIZE = 5
+
+const CLIENT_PHONES: Record<string, string> = {
+  "00001": "+234 9138407481",
+  "00002": "+234 8023456789",
+  "00003": "+234 7034567890",
+  "00004": "+234 9045678901",
+  "00005": "+234 8156789012",
+  "00006": "+234 7067890123",
+}
+
+const CLIENT_EMAILS: Record<string, string> = {
+  "00001": "adaezeokonkwo@gmail.com",
+  "00002": "funmiadeyemi@gmail.com",
+  "00003": "emeka.nwosu@gmail.com",
+  "00004": "tolu.badmus@gmail.com",
+  "00005": "chidi.okafor@gmail.com",
+  "00006": "ngozi.eze@gmail.com",
+}
+
+const BOOKING_HISTORY_PAGE_SIZE = 5
+
+const CLIENT_BOOKINGS: Record<string, import("../types").ClientBookingHistory[]> = {
+  "00001": [
+    { id: "00001", space: "Conference R...", spaceType: "Office",   checkIn: "May 12, 2026", checkOut: "May 12, 2026", amount: "₦30,000",  paymentStatus: "paid" },
+    { id: "00002", space: "Private Office...", spaceType: "Shortlet", checkIn: "May 24, 2026", checkOut: "May 24, 2026", amount: "₦300,000", paymentStatus: "paid" },
+    { id: "00003", space: "Boardroom 1",      spaceType: "Office",   checkIn: "Apr 10, 2026", checkOut: "Apr 11, 2026", amount: "₦50,000",  paymentStatus: "paid" },
+    { id: "00004", space: "Open Desk 3",      spaceType: "Hot desk", checkIn: "Mar 05, 2026", checkOut: "Mar 05, 2026", amount: "₦10,000",  paymentStatus: "pending" },
+    { id: "00005", space: "Penthouse B",      spaceType: "Shortlet", checkIn: "Feb 14, 2026", checkOut: "Feb 21, 2026", amount: "₦700,000", paymentStatus: "paid" },
+    { id: "00006", space: "Conference R...",  spaceType: "Office",   checkIn: "Jan 20, 2026", checkOut: "Jan 20, 2026", amount: "₦30,000",  paymentStatus: "cancelled" },
+    { id: "00007", space: "Office Suite 2",   spaceType: "Office",   checkIn: "Jan 05, 2026", checkOut: "Jan 06, 2026", amount: "₦60,000",  paymentStatus: "paid" },
+    { id: "00008", space: "Boardroom 1",      spaceType: "Office",   checkIn: "Dec 18, 2025", checkOut: "Dec 18, 2025", amount: "₦50,000",  paymentStatus: "paid" },
+  ],
+}
 
 export const clientsMockService = {
   getSummary: async (year: number): Promise<ClientsSummary> => {
@@ -48,6 +81,21 @@ export const clientsMockService = {
       totalPages,
       currentPage: page,
       totalCount: ALL_CLIENTS.length,
+    }
+  },
+
+  getClientById: async (id: string, bookingPage = 1): Promise<ClientDetail | null> => {
+    const client = ALL_CLIENTS.find((c) => c.id === id)
+    if (!client) return null
+    const bookings = CLIENT_BOOKINGS[id] ?? []
+    const totalPages = Math.max(1, Math.ceil(bookings.length / BOOKING_HISTORY_PAGE_SIZE))
+    const start = (bookingPage - 1) * BOOKING_HISTORY_PAGE_SIZE
+    return {
+      ...client,
+      email: CLIENT_EMAILS[id] ?? client.email,
+      phone: CLIENT_PHONES[id] ?? "",
+      bookingHistory: bookings.slice(start, start + BOOKING_HISTORY_PAGE_SIZE),
+      bookingHistoryTotalPages: totalPages,
     }
   },
 }
