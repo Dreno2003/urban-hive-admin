@@ -1,8 +1,6 @@
 "use client"
 
 import React, { useState } from "react"
-import Link from "next/link"
-import { ChevronRight } from "lucide-react"
 import { useClientDetail } from "../hooks/use-clients"
 import { Button } from "@/shared/components/ui/button"
 import { Skeleton } from "@/shared/components/ui/skeleton"
@@ -92,7 +90,7 @@ export function ClientDetailContent({ id }: { id: string }) {
                 : (
 
                   <div>
-                    <Badge variant={'success'} >{client?.status}</Badge>
+                    <Badge variant={'success-outline'} iconSize={100} iconName="circle" className="size-" >{client?.status}</Badge>
                   </div>
                   // <span className="inline-flex items-center gap-1.5">
                   //   <span className={cn("size-2 rounded-full", client?.status === "active" ? "bg-green-500" : "bg-gray-400")} />

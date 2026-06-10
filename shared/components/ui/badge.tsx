@@ -27,7 +27,8 @@ const badgeVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
 
 
-        'success-outline': 'border bg-transparent rounded-md text-secondary-foreground'
+        'success-outline': '!border border-gray-200 bg-transparent rounded-md text-secondary-foreground',
+        // 'destructive-outline': ''
       },
     },
     defaultVariants: {
@@ -40,10 +41,11 @@ function Badge({
   className,
   variant = "default",
   asChild = false,
+  iconSize,
   iconName,
   ...props
 }: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean, iconName?: keyof typeof Icons }) {
+  VariantProps<typeof badgeVariants> & { asChild?: boolean, iconName?: keyof typeof Icons, iconSize?:number }) {
   const Comp = asChild ? Slot.Root : "span"
 
   function IconColor() {
@@ -60,6 +62,8 @@ function Badge({
         return "text-foreground"
       case "ghost":
         return "text-muted-foreground"
+      case "success-outline":
+        return "text-[#00C950]"
       case "link":
         return "text-primary"
     }
@@ -74,7 +78,7 @@ function Badge({
     >
 
       {iconName &&
-        <Icon name={iconName} size={18} className={cn(IconColor())} />
+        <Icon name={iconName} size={iconSize??18} className={cn(IconColor())} />
       }
       {props.children}
 

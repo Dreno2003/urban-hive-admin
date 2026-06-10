@@ -52,6 +52,11 @@ export const Icons = {
     </svg>
   ),
 
+
+
+
+
+
   exportSquareOutline: (props: React.SVGProps<SVGSVGElement> & IconProps) => (
     <svg width={props.size} height={props.size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g clip-path="url(#clip0_734_24209)">
@@ -99,6 +104,13 @@ export const Icons = {
   x2: (props: React.SVGProps<SVGSVGElement> & IconProps) => (
     <svg width={props.size} height={props.size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path fill-rule="evenodd" clip-rule="evenodd" d="M40 20C40 31.0457 31.0457 40 20 40C8.9543 40 0 31.0457 0 20C0 8.9543 8.9543 0 20 0C31.0457 0 40 8.9543 40 20ZM13.9393 13.9393C14.525 13.3535 15.4748 13.3535 16.0606 13.9393L19.9999 17.8787L23.9393 13.9393C24.525 13.3536 25.4748 13.3536 26.0606 13.9393C26.6464 14.5251 26.6464 15.4749 26.0606 16.0607L22.1213 20L26.0605 23.9393C26.6463 24.525 26.6463 25.4748 26.0605 26.0606C25.4747 26.6464 24.525 26.6464 23.9392 26.0606L19.9999 22.1213L16.0606 26.0606C15.4748 26.6464 14.5251 26.6464 13.9393 26.0606C13.3535 25.4748 13.3535 24.5251 13.9393 23.9393L17.8786 20L13.9393 16.0606C13.3535 15.4748 13.3535 14.5251 13.9393 13.9393Z" fill="currentColor" />
+    </svg>
+  ),
+
+
+  circle: (props: React.SVGProps<SVGSVGElement> & IconProps) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" width={props.width} height={props.height} aria-hidden="true" {...props}>
+      <circle cx="12" cy="12" r="12" />
     </svg>
   ),
 
