@@ -13,6 +13,7 @@ import { Separator } from "@/shared/components/ui/separator"
 import { Badge } from "@/shared/components/ui/badge"
 import type { Booking } from "@/features/bookings/types"
 import type { ClientBookingHistory } from "../types"
+import { SuspendClientDialog } from "./suspend-client-dialog"
 
 const EMPTY_FILTERS: BookingFilters = { statuses: [], spaceTypes: [], dateFrom: "", dateTo: "" }
 
@@ -40,7 +41,7 @@ export function ClientDetailContent({ id }: { id: string }) {
   const [cancelOpen, setCancelOpen] = useState(false)
   const [removeOpen, setRemoveOpen] = useState(false)
   const { data: client, isLoading } = useClientDetail(id, bookingPage, filters)
-
+  const [suspendOpen, setSuspendOpen] = useState(false)
   const handleFiltersChange = (f: BookingFilters) => { setFilters(f); setBookingPage(1) }
 
   const bookings: Booking[] = (client?.bookingHistory ?? []).map((b) =>
@@ -73,7 +74,7 @@ export function ClientDetailContent({ id }: { id: string }) {
             </div>
 
             <div className="flex items-center gap-2">
-              <Button variant="secondary-outline" className="h-[38px] px-5 rounded-full text-[13px]">
+              <Button onClick={() => setSuspendOpen(!suspendOpen)} variant="secondary-outline" className="h-[38px] px-5 rounded-full text-[13px]">
                 Suspend client
               </Button>
               <Button className="h-[38px] px-5 rounded-full text-[13px] bg-[#FFF0F0] text-red-500 hover:bg-red-50 border border-red-100" onClick={() => setRemoveOpen(true)}>
@@ -153,7 +154,15 @@ export function ClientDetailContent({ id }: { id: string }) {
         open={removeOpen}
         onOpenChange={setRemoveOpen}
         clientName={client?.name ?? ""}
-        onConfirm={() => {}}
+        onConfirm={() => { }}
+      />
+
+
+      <SuspendClientDialog
+        open={suspendOpen}
+        onOpenChange={setSuspendOpen}
+        clientName={client?.name ?? ""}
+        onConfirm={() => { }}
       />
     </div>
   )
