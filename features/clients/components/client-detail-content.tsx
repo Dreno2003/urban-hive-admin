@@ -10,6 +10,7 @@ import { Separator } from "@/shared/components/ui/separator"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { cn } from "@/shared/lib/utils"
 import type { ClientBookingHistory } from "../types"
+import { Badge } from "@/shared/components/ui/badge"
 
 const COLS    = ["ID", "Space", "Space type", "Check in", "Check out", "Amount", "Payment", "Action"]
 const WIDTHS  = ["w-[8%]", "w-[14%]", "w-[10%]", "w-[12%]", "w-[12%]", "w-[11%]", "w-[12%]", "w-[8%]"]
@@ -89,10 +90,14 @@ export function ClientDetailContent({ id }: { id: string }) {
               {isLoading
                 ? <Skeleton className="h-5 w-16 bg-gray-200" />
                 : (
-                  <span className="inline-flex items-center gap-1.5">
-                    <span className={cn("size-2 rounded-full", client?.status === "active" ? "bg-green-500" : "bg-gray-400")} />
-                    <span className="text-[14px] font-medium text-gray-900 capitalize">{client?.status}</span>
-                  </span>
+
+                  <div>
+                    <Badge variant={'success'} >{client?.status}</Badge>
+                  </div>
+                  // <span className="inline-flex items-center gap-1.5">
+                  //   <span className={cn("size-2 rounded-full", client?.status === "active" ? "bg-green-500" : "bg-gray-400")} />
+                  //   <span className="text-[14px] font-medium text-gray-900 capitalize">{client?.status}</span>
+                  // </span>
                 )
               }
             </div>
@@ -156,13 +161,17 @@ export function ClientDetailContent({ id }: { id: string }) {
                   <span className={cn("text-[13px] text-gray-600", WIDTHS[4])}>{b.checkOut}</span>
                   <span className={cn("text-[13px] font-medium text-gray-800", WIDTHS[5])}>{b.amount}</span>
                   <div className={WIDTHS[6]}>
-                    <span className={cn(
+                    <Badge variant={'success'} >
+                      
+                      {b.paymentStatus.charAt(0).toUpperCase() + b.paymentStatus.slice(1)}
+                    </Badge>
+                    {/* <span className={cn(
                       "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-medium",
                       PAYMENT_STYLES[b.paymentStatus] ?? "bg-gray-100 text-gray-500"
                     )}>
                       <span className="size-1.5 rounded-full bg-current" />
                       {b.paymentStatus.charAt(0).toUpperCase() + b.paymentStatus.slice(1)}
-                    </span>
+                    </span> */}
                   </div>
                   <span className={cn("text-[13px] text-primary font-medium hover:underline cursor-pointer", WIDTHS[7])}>View</span>
                 </div>

@@ -25,6 +25,9 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
+
+
+        'success-outline': 'border bg-transparent rounded-md text-secondary-foreground'
       },
     },
     defaultVariants: {
@@ -66,12 +69,12 @@ function Badge({
     <span
       // data-slot="badge"
 
-      className={cn('inline-block !py-3 !w-16',badgeVariants({ variant }), className)}
+      className={cn('inline-block !py-3 !w-16', badgeVariants({ variant }), className)}
       {...props}
     >
 
       {iconName &&
-        <Icon name={iconName} size={18} className={cn( IconColor())} />
+        <Icon name={iconName} size={18} className={cn(IconColor())} />
       }
       {props.children}
 
