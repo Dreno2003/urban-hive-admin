@@ -9,6 +9,7 @@ import { Separator } from "@/shared/components/ui/separator"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { BookingsBarChart } from "@/features/bookings/components/bookings-bar-chart"
 import { useClientsSummary, useClientsList } from "../hooks/use-clients"
+import { AddClientDialog } from "./add-client-dialog"
 import { ChevronDown, UserRound } from "lucide-react"
 import { cn } from "@/shared/lib/utils"
 import type { Client } from "../types"
@@ -23,6 +24,7 @@ export function ClientsContent() {
   const [page, setPage] = useState(1)
   const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR)
   const [yearDropdownOpen, setYearDropdownOpen] = useState(false)
+  const [addClientOpen, setAddClientOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const { data: summary, isLoading: summaryLoading } = useClientsSummary(selectedYear)
@@ -33,7 +35,7 @@ export function ClientsContent() {
 
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="w-full px-8 md:px-12 pt-8 pb-12 mt-[76px]">
+      <div className="w-full container-wrapper pt-8 pb-12 mt-[76px]">
 
         {/* ── Page Header ─────────────────────────────────── */}
         <div className="flex items-start justify-between mb-6">
@@ -43,15 +45,17 @@ export function ClientsContent() {
           </div>
           <div className="flex items-center gap-2">
             <Button variant="secondary-outline" className="rounded-full h-[42px] px-5 text-sm font-medium gap-2">
-              <Icon name="download" size={15} />
+              <Icon name="exportSquareOutline" size={15} />
               Export CSV
             </Button>
-            <Button className="rounded-full h-[42px] px-5 bg-primary text-white hover:bg-primary/90 text-sm font-medium gap-2">
+            <Button className="rounded-full h-[42px] px-5 bg-primary text-white hover:bg-primary/90 text-sm font-medium gap-2" onClick={() => setAddClientOpen(true)}>
               <Icon name="plus" size={15} />
               Add client
             </Button>
           </div>
         </div>
+
+        <AddClientDialog open={addClientOpen} onOpenChange={setAddClientOpen} />
 
         {/* ── Summary Cards ───────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
@@ -119,7 +123,7 @@ export function ClientsContent() {
           <div className="flex items-center justify-between px-6 py-4">
             <h4 className="text-[17px] font-bold text-gray-900 dark:text-white tracking-tight">All clients</h4>
             <Button variant="secondary-outline" size="sm" className="rounded-full h-[34px] px-4 gap-2 text-[13px]">
-              <Icon name="sliders" size={14} />
+              <Icon name="sort" size={14} />
               Filter
               <ChevronDown className="size-3.5" />
             </Button>

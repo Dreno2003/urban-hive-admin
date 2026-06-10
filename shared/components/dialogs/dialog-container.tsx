@@ -22,7 +22,7 @@ export interface DialogContainerProps {
   className?: string
   /** Hides the top-right close button when false (default: true) */
   showClose?: boolean
-  dialogTitle?:string
+  dialogTitle?:string | React.ReactNode
   children: React.ReactNode
   isShowTopSeparator?:boolean
 }
