@@ -128,7 +128,7 @@ export function ClientsContent() {
           {/* Column headers */}
           <div className="flex items-center bg-secondary px-6 py-3.5 border-y border-gray-100 dark:border-gray-800">
             {COLS.map((col, i) => (
-              <span key={col} className={cn("text-[12.5px] font-semibold text-gray-500 tracking-wide", WIDTHS[i])}>{col}</span>
+              <span key={col} className={cn("text-[12.5px] font-semibold  tracking-wide", WIDTHS[i])}>{col}</span>
             ))}
           </div>
 
@@ -157,18 +157,26 @@ export function ClientsContent() {
                     idx === clients.length - 1 && "rounded-b-[28px]"
                   )}
                 >
-                  <span className={cn("text-[13px] text-gray-500 font-mono", WIDTHS[0])}>{client.id}</span>
-                  <span className={cn("text-[14px] font-medium text-gray-900 truncate pr-3", WIDTHS[1])}>{client.name}</span>
-                  <span className={cn("text-[13px] text-gray-500 truncate pr-3", WIDTHS[2])}>{client.email}</span>
-                  <span className={cn("text-[13px] text-gray-500 truncate pr-3", WIDTHS[3])}>{client.space}</span>
+                  <span className={cn("text-[13px] text-secondary-foreground font-mono", WIDTHS[0])}>{client.id}</span>
+                  <span className={cn("text-[14px]  text-secondary-foreground truncate pr-3", WIDTHS[1])}>{client.name}</span>
+                  <span className={cn("text-[13px] text-secondary-foreground truncate pr-3", WIDTHS[2])}>{client.email}</span>
+                  <span className={cn("text-[13px] text-secondary-foreground truncate pr-3", WIDTHS[3])}>{client.space}</span>
                   <div className={cn(WIDTHS[4])}>
+
                     <span className={cn(
+                      "inline-flex items-center gap-1.5  px-2.5 py-1 text-[12px] border rounded-md font-medium",
+                      // client.status === "active" ? "bg-green-100 text-green-700"x : "bg-gray-100 text-gray-500"
+                    )}>
+                      <span className={cn("size-1.5 rounded-full shrink-0", client.status === "active" ? "bg-green-500" : "bg-gray-400")} />
+                      {client.status === "active" ? "Active" : "Inactive"}
+                    </span> 
+                    {/* <span className={cn(
                       "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-medium",
                       client.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
                     )}>
                       <span className={cn("size-1.5 rounded-full shrink-0", client.status === "active" ? "bg-green-500" : "bg-gray-400")} />
                       {client.status === "active" ? "Active" : "Inactive"}
-                    </span>
+                    </span> */}
                   </div>
                   <span className={cn("text-[13px] text-gray-500", WIDTHS[5])}>{client.joinedDate}</span>
                   <span className={cn("text-[13px] text-primary font-medium hover:underline cursor-pointer", WIDTHS[6])}>View profile</span>
