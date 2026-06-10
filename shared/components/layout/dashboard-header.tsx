@@ -1,7 +1,9 @@
 "use client"
 
 import React from "react"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { ChevronRight } from "lucide-react"
 import { Icon } from "@/shared/components/ui/icon"
 import { UserProfileDropdownMenu } from "@/shared/components/dropdowns/user-profile-dropdown-menu"
 import { cn } from "@/shared/lib/utils"
@@ -76,16 +78,25 @@ export function DashboardHeader({
               <Icon name="grid" size={20} />
             </button>
 
-            <h2
-              className={cn(
-                "text-lg font-normal tracking-tight select-none transition-colors hidden md:block",
-                isScrolled ? "text-foreground" : "text-white",
-                !isHomeDashBoard && 'text-foreground'
-                // isScrolled && !isHomeDashBoard ? "text-gray-900" : "text",
-              )}
-            >
-              {getPageTitle()}
-            </h2>
+            {pathname.startsWith("/dashboard/clients/") ? (
+              <nav className="hidden md:flex items-center gap-1.5 text-[15px] font-normal tracking-tight select-none">
+                <Link href="/dashboard/clients" className="text-gray-400 hover:text-gray-600 transition-colors">
+                  Clients
+                </Link>
+                <ChevronRight className="size-3.5 text-gray-400" />
+                <span className="text-foreground font-semibold">Client details</span>
+              </nav>
+            ) : (
+              <h2
+                className={cn(
+                  "text-lg font-normal tracking-tight select-none transition-colors hidden md:block",
+                  isScrolled ? "text-foreground" : "text-white",
+                  !isHomeDashBoard && 'text-foreground'
+                )}
+              >
+                {getPageTitle()}
+              </h2>
+            )}
           </div>
 
           {/* Right Side: Search, Notifications, Profile */}

@@ -30,20 +30,20 @@ export function ClientDetailContent({ id }: { id: string }) {
   const { data: client, isLoading } = useClientDetail(id, bookingPage)
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex-1 bg-white flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="w-full container-wrapper pt-8 pb-12 mt-[76px]">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-sm mb-6">
+        {/* <nav className="flex items-center gap-1.5 text-sm mb-6">
           <Link href="/dashboard/clients" className="text-gray-400 hover:text-gray-600 transition-colors">
             Clients
           </Link>
           <ChevronRight className="size-3.5 text-gray-400" />
           <span className="text-gray-900 font-medium">Client details</span>
-        </nav>
+        </nav> */}
 
         {/* Client profile card */}
-        <div className="bg-white border border-gray-100 rounded-[24px] px-6 py-5 mb-5">
+        <div className="bg-white border  rounded-[24px] px-6 py-5 mb-5">
           {/* Top row: avatar + name + actions */}
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-4">
@@ -114,7 +114,7 @@ export function ClientDetailContent({ id }: { id: string }) {
         </div>
 
         {/* Booking history table */}
-        <div className="bg-white border border-gray-100 rounded-[24px]">
+        <div className="bg-white border  rounded-[24px]">
           <div className="flex items-center justify-between px-6 py-4">
             <h4 className="text-[17px] font-bold text-gray-900 tracking-tight">Booking history</h4>
             <Button variant="secondary-outline" size="sm" className="rounded-full h-[34px] px-4 gap-2 text-[13px]">

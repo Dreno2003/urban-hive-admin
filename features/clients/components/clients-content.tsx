@@ -35,7 +35,7 @@ export function ClientsContent() {
   const totalPages = list?.totalPages ?? 1
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex-1 bg-white flex flex-col min-h-screen dark:bg-gray-900">
       <div className="w-full container-wrapper pt-8 pb-12 mt-[76px]">
 
         {/* ── Page Header ─────────────────────────────────── */}
