@@ -5,6 +5,7 @@ import { useClientDetail } from "../hooks/use-clients"
 import { BookingsTable } from "@/features/bookings/components/bookings-table"
 import { BookingDetailDialog } from "@/features/bookings/components/booking-detail-dialog"
 import { CancelBookingDialog } from "@/features/bookings/components/cancel-booking-dialog"
+import { RemoveClientDialog } from "./remove-client-dialog"
 import { BookingsFilterPopover, type BookingFilters } from "@/features/bookings/components/bookings-filter-popover"
 import { Button } from "@/shared/components/ui/button"
 import { Skeleton } from "@/shared/components/ui/skeleton"
@@ -37,6 +38,7 @@ export function ClientDetailContent({ id }: { id: string }) {
   const [filters, setFilters] = useState<BookingFilters>(EMPTY_FILTERS)
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [cancelOpen, setCancelOpen] = useState(false)
+  const [removeOpen, setRemoveOpen] = useState(false)
   const { data: client, isLoading } = useClientDetail(id, bookingPage, filters)
 
   const handleFiltersChange = (f: BookingFilters) => { setFilters(f); setBookingPage(1) }
@@ -74,7 +76,7 @@ export function ClientDetailContent({ id }: { id: string }) {
               <Button variant="secondary-outline" className="h-[38px] px-5 rounded-full text-[13px]">
                 Suspend client
               </Button>
-              <Button className="h-[38px] px-5 rounded-full text-[13px] bg-[#FFF0F0] text-red-500 hover:bg-red-50 border border-red-100">
+              <Button className="h-[38px] px-5 rounded-full text-[13px] bg-[#FFF0F0] text-red-500 hover:bg-red-50 border border-red-100" onClick={() => setRemoveOpen(true)}>
                 Remove client
               </Button>
             </div>
@@ -145,6 +147,13 @@ export function ClientDetailContent({ id }: { id: string }) {
         open={cancelOpen}
         onOpenChange={setCancelOpen}
         onConfirm={async () => setCancelOpen(false)}
+      />
+
+      <RemoveClientDialog
+        open={removeOpen}
+        onOpenChange={setRemoveOpen}
+        clientName={client?.name ?? ""}
+        onConfirm={() => {}}
       />
     </div>
   )
