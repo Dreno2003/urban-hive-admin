@@ -11,6 +11,7 @@ import { Pagination } from "@/shared/components/ui/pagination"
 import { BookingsBarChart } from "@/features/bookings/components/bookings-bar-chart"
 import { useClientsSummary, useClientsList } from "../hooks/use-clients"
 import { AddClientDialog } from "./add-client-dialog"
+import { ClientsFilterPopover, type ClientFilters } from "./clients-filter-popover"
 import { ChevronDown, UserRound } from "lucide-react"
 import { cn } from "@/shared/lib/utils"
 import type { Client } from "../types"
@@ -26,10 +27,11 @@ export function ClientsContent() {
   const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR)
   const [yearDropdownOpen, setYearDropdownOpen] = useState(false)
   const [addClientOpen, setAddClientOpen] = useState(false)
+  const [filters, setFilters] = useState<ClientFilters>({ statuses: [], dateFrom: "", dateTo: "" })
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const { data: summary, isLoading: summaryLoading } = useClientsSummary(selectedYear)
-  const { data: list, isLoading: listLoading } = useClientsList(page)
+  const { data: list, isLoading: listLoading } = useClientsList(page, filters)
 
   const clients = list?.clients ?? []
   const totalPages = list?.totalPages ?? 1
@@ -123,11 +125,7 @@ export function ClientsContent() {
         <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px]">
           <div className="flex items-center justify-between px-6 py-4">
             <h4 className="text-[17px] font-bold text-gray-900 dark:text-white tracking-tight">All clients</h4>
-            <Button variant="secondary-outline" size="sm" className="rounded-full h-[34px] px-4 gap-2 text-[13px]">
-              <Icon name="sort" size={14} />
-              Filter
-              <ChevronDown className="size-3.5" />
-            </Button>
+            <ClientsFilterPopover value={filters} onChange={(f) => { setFilters(f); setPage(1) }} />
           </div>
 
           {/* Column headers */}

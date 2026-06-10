@@ -1,5 +1,6 @@
 import type { ClientsSummary, ClientsListResponse, Client, ClientDetail } from "../types"
-import type { BookingFilters } from "../components/bookings-filter-popover"
+import type { ClientFilters } from "../components/clients-filter-popover"
+import type { BookingFilters } from "@/features/bookings/components/bookings-filter-popover"
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -95,14 +96,23 @@ export const clientsMockService = {
     }
   },
 
-  getClients: async (page = 1): Promise<ClientsListResponse> => {
-    const totalPages = Math.max(1, Math.ceil(ALL_CLIENTS.length / PAGE_SIZE))
+  getClients: async (page = 1, filters?: ClientFilters): Promise<ClientsListResponse> => {
+    let clients = [...ALL_CLIENTS]
+    if (filters) {
+      if (filters.statuses.length)
+        clients = clients.filter((c) => filters.statuses.includes(c.status))
+      if (filters.dateFrom)
+        clients = clients.filter((c) => new Date(c.joinedDate) >= new Date(filters.dateFrom))
+      if (filters.dateTo)
+        clients = clients.filter((c) => new Date(c.joinedDate) <= new Date(filters.dateTo))
+    }
+    const totalPages = Math.max(1, Math.ceil(clients.length / PAGE_SIZE))
     const start = (page - 1) * PAGE_SIZE
     return {
-      clients: ALL_CLIENTS.slice(start, start + PAGE_SIZE),
+      clients: clients.slice(start, start + PAGE_SIZE),
       totalPages,
       currentPage: page,
-      totalCount: ALL_CLIENTS.length,
+      totalCount: clients.length,
     }
   },
 
