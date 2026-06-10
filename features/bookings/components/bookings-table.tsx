@@ -46,6 +46,11 @@ export function BookingsTable({ bookings, isLoading, currentPage, totalPages, on
               {WIDTHS.map((w, j) => <Skeleton key={j} className={cn("h-4 bg-gray-100", w)} />)}
             </div>
           ))
+        ) : bookings.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 gap-2">
+            <p className="text-[15px] font-semibold text-gray-900">No bookings</p>
+            <p className="text-sm text-gray-400">No booking records found</p>
+          </div>
         ) : (
           bookings.map((b, idx) => {
             const { dot, text, bg, label } = PAYMENT_STYLE[b.paymentStatus]

@@ -1,4 +1,5 @@
 import type { ClientsSummary, ClientsListResponse, Client, ClientDetail } from "../types"
+import type { BookingFilters } from "../components/bookings-filter-popover"
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -54,6 +55,27 @@ const CLIENT_BOOKINGS: Record<string, import("../types").ClientBookingHistory[]>
     { id: "00007", space: "Office Suite 2",   spaceType: "Office",   checkIn: "Jan 05, 2026", checkOut: "Jan 06, 2026", amount: "₦60,000",  paymentStatus: "paid" },
     { id: "00008", space: "Boardroom 1",      spaceType: "Office",   checkIn: "Dec 18, 2025", checkOut: "Dec 18, 2025", amount: "₦50,000",  paymentStatus: "paid" },
   ],
+  "00002": [
+    { id: "00009", space: "Private Office A", spaceType: "Office",   checkIn: "May 24, 2026", checkOut: "May 30, 2026", amount: "₦180,000", paymentStatus: "paid" },
+    { id: "00010", space: "Boardroom 1",      spaceType: "Office",   checkIn: "Apr 15, 2026", checkOut: "Apr 15, 2026", amount: "₦50,000",  paymentStatus: "paid" },
+    { id: "00011", space: "Open Desk 2",      spaceType: "Hot desk", checkIn: "Mar 10, 2026", checkOut: "Mar 10, 2026", amount: "₦10,000",  paymentStatus: "pending" },
+  ],
+  "00003": [
+    { id: "00012", space: "Open Desk 3",      spaceType: "Hot desk", checkIn: "Apr 10, 2026", checkOut: "Apr 10, 2026", amount: "₦10,000",  paymentStatus: "cancelled" },
+    { id: "00013", space: "Conference R...",  spaceType: "Office",   checkIn: "Mar 20, 2026", checkOut: "Mar 20, 2026", amount: "₦30,000",  paymentStatus: "paid" },
+  ],
+  "00004": [
+    { id: "00014", space: "Penthouse B",      spaceType: "Shortlet", checkIn: "Jun 01, 2026", checkOut: "Jun 07, 2026", amount: "₦700,000", paymentStatus: "paid" },
+    { id: "00015", space: "Office Suite 2",   spaceType: "Office",   checkIn: "May 05, 2026", checkOut: "May 06, 2026", amount: "₦60,000",  paymentStatus: "paid" },
+    { id: "00016", space: "Boardroom 1",      spaceType: "Office",   checkIn: "Apr 22, 2026", checkOut: "Apr 22, 2026", amount: "₦50,000",  paymentStatus: "failed" },
+  ],
+  "00005": [
+    { id: "00017", space: "Boardroom 1",      spaceType: "Office",   checkIn: "Jun 05, 2026", checkOut: "Jun 05, 2026", amount: "₦50,000",  paymentStatus: "paid" },
+    { id: "00018", space: "Conference R...",  spaceType: "Office",   checkIn: "May 18, 2026", checkOut: "May 18, 2026", amount: "₦30,000",  paymentStatus: "pending" },
+  ],
+  "00006": [
+    { id: "00019", space: "Office Suite 2",   spaceType: "Office",   checkIn: "Mar 20, 2026", checkOut: "Mar 22, 2026", amount: "₦120,000", paymentStatus: "cancelled" },
+  ],
 }
 
 export const clientsMockService = {
@@ -84,10 +106,22 @@ export const clientsMockService = {
     }
   },
 
-  getClientById: async (id: string, bookingPage = 1): Promise<ClientDetail | null> => {
+  getClientById: async (id: string, bookingPage = 1, filters?: BookingFilters): Promise<ClientDetail | null> => {
     const client = ALL_CLIENTS.find((c) => c.id === id)
     if (!client) return null
-    const bookings = CLIENT_BOOKINGS[id] ?? []
+    let bookings = CLIENT_BOOKINGS[id] ?? []
+
+    if (filters) {
+      if (filters.statuses.length)
+        bookings = bookings.filter((b) => filters.statuses.includes(b.paymentStatus))
+      if (filters.spaceTypes.length)
+        bookings = bookings.filter((b) => filters.spaceTypes.includes(b.spaceType.toLowerCase()))
+      if (filters.dateFrom)
+        bookings = bookings.filter((b) => new Date(b.checkIn) >= new Date(filters.dateFrom))
+      if (filters.dateTo)
+        bookings = bookings.filter((b) => new Date(b.checkOut) <= new Date(filters.dateTo))
+    }
+
     const totalPages = Math.max(1, Math.ceil(bookings.length / BOOKING_HISTORY_PAGE_SIZE))
     const start = (bookingPage - 1) * BOOKING_HISTORY_PAGE_SIZE
     return {

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { clientsMockService } from "../services/clients-mock.service"
+import type { BookingFilters } from "../components/bookings-filter-popover"
 
 export function useClientsSummary(year: number) {
   return useQuery({
@@ -15,10 +16,10 @@ export function useClientsList(page = 1) {
   })
 }
 
-export function useClientDetail(id: string, bookingPage = 1) {
+export function useClientDetail(id: string, bookingPage = 1, filters?: BookingFilters) {
   return useQuery({
-    queryKey: ["client-detail", id, bookingPage],
-    queryFn: () => clientsMockService.getClientById(id, bookingPage),
+    queryKey: ["client-detail", id, bookingPage, filters],
+    queryFn: () => clientsMockService.getClientById(id, bookingPage, filters),
     enabled: !!id,
   })
 }
