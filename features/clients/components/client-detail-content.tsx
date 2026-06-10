@@ -34,11 +34,11 @@ export function ClientDetailContent({ id }: { id: string }) {
 
         {/* Breadcrumb */}
         {/* <nav className="flex items-center gap-1.5 text-sm mb-6">
-          <Link href="/dashboard/clients" className="text-gray-400 hover:text-gray-600 transition-colors">
+          <Link href="/dashboard/clients" className="text-secondary-foreground hover:text-gray-600 transition-colors">
             Clients
           </Link>
-          <ChevronRight className="size-3.5 text-gray-400" />
-          <span className="text-gray-900 font-medium">Client details</span>
+          <ChevronRight className="size-3.5 text-secondary-foreground" />
+          <span className="  font-medium">Client details</span>
         </nav> */}
 
         {/* Client profile card */}
@@ -54,10 +54,10 @@ export function ClientDetailContent({ id }: { id: string }) {
                 </div>
               )}
               <div>
-                <p className="text-[13px] text-gray-400 mb-0.5">Client name</p>
+                <p className="text-[13px] text-secondary-foreground mb-0.5">Client name</p>
                 {isLoading
                   ? <Skeleton className="h-6 w-40 bg-gray-200" />
-                  : <p className="text-[20px] font-bold text-gray-900">{client?.name}</p>
+                  : <p className="text-[20px] font-bold  ">{client?.name}</p>
                 }
               </div>
             </div>
@@ -77,40 +77,40 @@ export function ClientDetailContent({ id }: { id: string }) {
           {/* Info row */}
           <div className="grid grid-cols-4 gap-6">
             <div>
-              <p className="text-[12px] text-gray-400 mb-1">Client ID</p>
+              <p className="text-body-sm text-secondary-foreground mb-1">Client ID</p>
               {isLoading
                 ? <Skeleton className="h-5 w-16 bg-gray-200" />
-                : <p className="text-[16px] font-bold text-gray-900">{client?.id}</p>
+                : <p className="text-body-lg font-medium  ">{client?.id}</p>
               }
             </div>
             <div>
-              <p className="text-[12px] text-gray-400 mb-1">Status</p>
+              <p className="text-body-sm text-secondary-foreground mb-1">Status</p>
               {isLoading
                 ? <Skeleton className="h-5 w-16 bg-gray-200" />
                 : (
 
                   <div>
-                    <Badge variant={'success-outline'} iconSize={100} iconName="circle" className="size-" >{client?.status}</Badge>
+                    <Badge variant={'success-outline'}  iconName="circle"  iconClassName="!size-2.5" className="!py-3" >{client?.status}</Badge>
                   </div>
                   // <span className="inline-flex items-center gap-1.5">
                   //   <span className={cn("size-2 rounded-full", client?.status === "active" ? "bg-green-500" : "bg-gray-400")} />
-                  //   <span className="text-[14px] font-medium text-gray-900 capitalize">{client?.status}</span>
+                  //   <span className="text-[14px] font-medium   capitalize">{client?.status}</span>
                   // </span>
                 )
               }
             </div>
             <div>
-              <p className="text-[12px] text-gray-400 mb-1">Client phone number</p>
+              <p className="text-body-sm text-secondary-foreground mb-1">Client phone number</p>
               {isLoading
                 ? <Skeleton className="h-5 w-36 bg-gray-200" />
-                : <p className="text-[14px] font-medium text-gray-900">{client?.phone}</p>
+                : <p className="text-body-lg font-medium  ">{client?.phone}</p>
               }
             </div>
             <div>
-              <p className="text-[12px] text-gray-400 mb-1">Client email</p>
+              <p className="text-body-sm text-secondary-foreground mb-1">Client email</p>
               {isLoading
                 ? <Skeleton className="h-5 w-44 bg-gray-200" />
-                : <p className="text-[14px] font-medium text-gray-900">{client?.email}</p>
+                : <p className="text-body-lg font-medium  ">{client?.email}</p>
               }
             </div>
           </div>
@@ -119,7 +119,7 @@ export function ClientDetailContent({ id }: { id: string }) {
         {/* Booking history table */}
         <div className="bg-white border  rounded-[24px]">
           <div className="flex items-center justify-between px-6 py-4">
-            <h4 className="text-[17px] font-bold text-gray-900 tracking-tight">Booking history</h4>
+            <h4 className="text-[17px] font-bold   tracking-tight">Booking history</h4>
             <Button variant="secondary-outline" size="sm" className="rounded-full h-[34px] px-4 gap-2 text-[13px]">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
               Filter
@@ -142,7 +142,7 @@ export function ClientDetailContent({ id }: { id: string }) {
                 </div>
               ))
             ) : !client?.bookingHistory?.length ? (
-              <div className="py-16 text-center text-sm text-gray-400">No booking history</div>
+              <div className="py-16 text-center text-sm text-secondary-foreground">No booking history</div>
             ) : (
               client.bookingHistory.map((b: ClientBookingHistory, idx: number) => (
                 <div

@@ -43,9 +43,10 @@ function Badge({
   asChild = false,
   iconSize,
   iconName,
+  iconClassName,
   ...props
 }: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean, iconName?: keyof typeof Icons, iconSize?:number }) {
+  VariantProps<typeof badgeVariants> & { asChild?: boolean, iconName?: keyof typeof Icons, iconSize?:number, iconClassName?:string }) {
   const Comp = asChild ? Slot.Root : "span"
 
   function IconColor() {
@@ -78,7 +79,7 @@ function Badge({
     >
 
       {iconName &&
-        <Icon name={iconName} size={iconSize??18} className={cn(IconColor())} />
+        <Icon name={iconName} size={iconSize??18} className={cn(IconColor(), iconClassName)} />
       }
       {props.children}
 
