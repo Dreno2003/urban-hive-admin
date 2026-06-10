@@ -53,7 +53,7 @@ export function BookingsTable({ bookings, isLoading, currentPage, totalPages, on
               <div
                 key={b.id}
                 className={cn(
-                  "flex items-center px-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer",
+                  "flex items-center px-6 py-5 hover:sbg-gray-50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer",
                   idx === bookings.length - 1 && "rounded-b-[28px]"
                 )}
               >
