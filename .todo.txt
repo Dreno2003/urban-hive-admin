@@ -15,6 +15,8 @@
 
 
 
+filter implemen  prompt: now you are going to implement the filter button. just copy the same implemenation from the booking filter. i am going to paste some screen shot so that you can refactor the content and options to match the space own. do not implement it yet untill i paste the 3 screen shot. and make sure you don't change the user interface from what the booking filter has.
+
 QUESTIONS
 * research about the map and then tell sir about it.
 * What will trigger the get feadback dialog

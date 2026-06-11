@@ -9,6 +9,7 @@ import { Pagination } from "@/shared/components/ui/pagination"
 import { cn } from "@/shared/lib/utils"
 import { useSpacesSummary, useSpacesList } from "../hooks/use-spaces"
 import { AddSpaceDialog } from "./add-space-dialog"
+import { SpacesFilterPopover, type SpaceFilters } from "./spaces-filter-popover"
 import type { SpaceTypeBar } from "../types"
 import { Badge } from "@/shared/components/ui/badge"
 
@@ -43,9 +44,10 @@ function SpaceBar({ bar }: { bar: SpaceTypeBar }) {
 export function SpacesContent() {
   const [page, setPage] = useState(1)
   const [addSpaceOpen, setAddSpaceOpen] = useState(false)
+  const [filters, setFilters] = useState<SpaceFilters>({ statuses: [], spaceTypes: [], dateFrom: "", dateTo: "" })
 
   const { data: summary, isLoading: summaryLoading } = useSpacesSummary()
-  const { data: list, isLoading: listLoading } = useSpacesList(page)
+  const { data: list, isLoading: listLoading } = useSpacesList(page, filters)
 
   const spaces = list?.spaces ?? []
   const totalPages = list?.totalPages ?? 1
@@ -115,11 +117,7 @@ export function SpacesContent() {
         <div className="bg-white border rounded-[28px]">
           <div className="flex items-center justify-between px-6 py-4">
             <h4 className="text-[17px] font-bold text-gray-900 tracking-tight">All spaces</h4>
-            <Button variant="secondary-outline" className="rounded-full h-9 px-4 text-sm gap-1.5">
-              <Icon name="sort" size={14} />
-              Filter
-              <Icon name="chevronDown" size={13} />
-            </Button>
+            <SpacesFilterPopover value={filters} onChange={(f) => { setFilters(f); setPage(1) }} />
           </div>
 
           {/* Column headers */}

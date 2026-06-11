@@ -1,4 +1,5 @@
 import type { SpacesSummary, SpacesListResponse, Space, CreateSpaceInput } from "../types"
+import type { SpaceFilters } from "../components/spaces-filter-popover"
 
 const PAGE_SIZE = 10
 
@@ -36,14 +37,21 @@ export const spacesMockService = {
     }
   },
 
-  getSpaces: async (page = 1): Promise<SpacesListResponse> => {
-    const totalPages = Math.max(1, Math.ceil(ALL_SPACES.length / PAGE_SIZE))
-    const start = (page - 1) * PAGE_SIZE
-    return {
-      spaces: ALL_SPACES.slice(start, start + PAGE_SIZE),
-      totalPages,
-      currentPage: page,
+  getSpaces: async (page = 1, filters?: SpaceFilters): Promise<SpacesListResponse> => {
+    let spaces = [...ALL_SPACES]
+    if (filters) {
+      if (filters.statuses.length)
+        spaces = spaces.filter(s => filters.statuses.includes(s.availability))
+      if (filters.spaceTypes.length)
+        spaces = spaces.filter(s => filters.spaceTypes.includes(s.spaceType))
+      if (filters.dateFrom)
+        spaces = spaces.filter(s => new Date(s.availableDate) >= new Date(filters.dateFrom))
+      if (filters.dateTo)
+        spaces = spaces.filter(s => new Date(s.availableDate) <= new Date(filters.dateTo))
     }
+    const totalPages = Math.max(1, Math.ceil(spaces.length / PAGE_SIZE))
+    const start = (page - 1) * PAGE_SIZE
+    return { spaces: spaces.slice(start, start + PAGE_SIZE), totalPages, currentPage: page }
   },
 
   createSpace: async (input: CreateSpaceInput): Promise<Space> => {

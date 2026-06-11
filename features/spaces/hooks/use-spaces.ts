@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { spacesMockService } from "../services/spaces-mock.service"
 import type { CreateSpaceInput } from "../types"
+import type { SpaceFilters } from "../components/spaces-filter-popover"
 
 export function useSpacesSummary() {
   return useQuery({
@@ -9,10 +10,10 @@ export function useSpacesSummary() {
   })
 }
 
-export function useSpacesList(page = 1) {
+export function useSpacesList(page = 1, filters?: SpaceFilters) {
   return useQuery({
-    queryKey: ["spaces-list", page],
-    queryFn: () => spacesMockService.getSpaces(page),
+    queryKey: ["spaces-list", page, filters],
+    queryFn: () => spacesMockService.getSpaces(page, filters),
   })
 }
 
