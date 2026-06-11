@@ -9,6 +9,7 @@ import { Pagination } from "@/shared/components/ui/pagination"
 import { cn } from "@/shared/lib/utils"
 import { useSpacesSummary, useSpacesList } from "../hooks/use-spaces"
 import type { SpaceTypeBar } from "../types"
+import { Badge } from "@/shared/components/ui/badge"
 
 const COLS = ["ID", "Name", "Space type", "Rate", "Availability", "Available", "Action"]
 const WIDTHS = ["w-[8%]", "w-[20%]", "w-[14%]", "w-[14%]", "w-[14%]", "w-[16%]", "w-[14%]"]
@@ -140,15 +141,22 @@ export function SpacesContent() {
               </div>
             ) : (
               spaces.map((space) => (
-                <div key={space.id} className="flex items-center px-6 py-4 hover:bg-gray-50 transition-colors">
-                  <span className={cn("text-[13px] text-gray-500", WIDTHS[0])}>{space.id}</span>
-                  <span className={cn("text-[13px] font-medium text-gray-900", WIDTHS[1])}>{space.name}</span>
-                  <span className={cn("text-[13px] text-gray-600", WIDTHS[2])}>{space.spaceType}</span>
-                  <span className={cn("text-[13px] text-gray-600", WIDTHS[3])}>{space.rate}</span>
-                  <span className={cn("text-[13px]", WIDTHS[4], space.availability === "Available" ? "text-green-600" : "text-orange-500")}>
-                    {space.availability}
+                <div key={space.id} className="flex *:text-secondary-foreground items-center px-6 py-4 hover:bg-gray-50 transition-colors">
+                  <span className={cn("text-[13px] ", WIDTHS[0])}>{space.id}</span>
+                  <span className={cn("text-[13px] font-medium ", WIDTHS[1])}>{space.name}</span>
+                  <span className={cn("text-[13px] ", WIDTHS[2])}>{space.spaceType}</span>
+                  <span className={cn("text-[13px] ", WIDTHS[3])}>{space.rate}</span>
+                  <span className={cn("text-[13px]", WIDTHS[4], )}>
+                  {/* <span className={cn("text-[13px]", WIDTHS[4], space.availability === "Available" ? "text-green-600" : "text-orange-500")}> */}
+                    <Badge
+                      variant={'default-outline'}
+                      // variant={space.availability === "Available" ? "default" : "destructive"}
+                      className=""
+                    >
+                      {space.availability}
+                    </Badge>
                   </span>
-                  <span className={cn("text-[13px] text-gray-600", WIDTHS[5])}>{space.availableDate}</span>
+                  <span className={cn("text-[13px] ", WIDTHS[5])}>{space.availableDate}</span>
                   <span className={cn("text-[13px] font-medium text-primary cursor-pointer hover:underline", WIDTHS[6])}>Edit</span>
                 </div>
               ))

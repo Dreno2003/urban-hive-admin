@@ -28,6 +28,7 @@ const badgeVariants = cva(
 
 
         'success-outline': '!border border-gray-200 bg-transparent rounded-md text-secondary-foreground',
+        'default-outline': '!border border-gray-200 bg-transparent rounded-md text-secondary-foreground',
         // 'destructive-outline': ''
       },
     },
