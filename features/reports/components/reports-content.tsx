@@ -10,6 +10,7 @@ import { Pagination } from "@/shared/components/ui/pagination"
 import { cn } from "@/shared/lib/utils"
 import { Badge } from "@/shared/components/ui/badge"
 import { useReportsSummary, useReportsList } from "../hooks/use-reports"
+import { ReportDetailsDialog } from "./report-details-dialog"
 import type { Report } from "../types"
 
 const COLS = ["ID", "Client", "Space", "Category", "Date", "Status", "Action"]
@@ -29,6 +30,7 @@ const STATUS_ICON: Record<string, "check" | "loader" | "flag"> = {
 
 export function ReportsContent() {
   const [page, setPage] = useState(1)
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null)
   const { data: summary, isLoading: summaryLoading } = useReportsSummary()
   const { data: list, isLoading: listLoading } = useReportsList(page)
 
@@ -134,7 +136,7 @@ export function ReportsContent() {
                       {report.status}
                     </Badge>
                   </div>
-                  <span className={cn("text-[13px] text-primary font-medium hover:underline cursor-pointer", WIDTHS[6])}>View</span>
+                  <span className={cn("text-[13px] text-primary font-medium hover:underline cursor-pointer", WIDTHS[6])} onClick={() => setSelectedReport(report)}>View</span>
                 </div>
               ))
             )}
@@ -149,6 +151,12 @@ export function ReportsContent() {
         </div>
 
       </div>
+
+      <ReportDetailsDialog
+        report={selectedReport}
+        open={!!selectedReport}
+        onOpenChange={(open) => { if (!open) setSelectedReport(null) }}
+      />
     </div>
   )
 }

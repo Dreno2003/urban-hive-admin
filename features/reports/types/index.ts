@@ -5,6 +5,8 @@ export interface Report {
   clientName: string
   space: string
   category: string
+  title: string
+  message: string
   date: string
   status: ReportStatus
 }
