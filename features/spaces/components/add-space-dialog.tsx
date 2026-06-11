@@ -9,6 +9,7 @@ import { Input } from "@/shared/components/ui/input"
 import { cn } from "@/shared/lib/utils"
 import type { SpaceType } from "../types"
 import { Separator } from "@/shared/components/ui/separator"
+import { Icon } from "@/shared/components/ui/icon"
 
 const SPACE_TYPES: SpaceType[] = ["Office", "Shortlet", "Boardroom", "Hot desk"]
 
@@ -112,15 +113,18 @@ export function AddSpaceDialog({ open, onOpenChange }: AddSpaceDialogProps) {
       open={open}
       onOpenChange={handleClose}
       isShowTopSeparator={false}
-      contentClassName="max-h-[90vh] flex flex-col"
+
+      contentClassName="max-h-[90vh] px-0 flex flex-col w-[500px]"
       dialogTitle={
         <div>
-          <span className="text-[22px] font-bold">Add space</span>
-          <p className="text-[13px] text-gray-400 font-normal mt-0.5">{step} of 3 steps</p>
+          <span className="text-[24px] font-bold">Add space</span>
+          <p className="text-[13px] text-secondary-foreground font-normal mt-0.5">{step} of 3 steps</p>
         </div>
       }
     >
-      <form onSubmit={formik.handleSubmit} noValidate className="custom-scrollbar flex flex-col gap-4 mt-4 pb-2 overflow-y-auto max-h-[65vh] pr-1">
+
+      <Separator className="my-4"/>
+      <form onSubmit={formik.handleSubmit} noValidate className="custom-scrollbar flex flex-col gap-4  pb-2 overflow-y-auto max-h-[65vh] pr-1">
 
         {/* ── Step 1 ── */}
         {step === 1 && (
@@ -133,12 +137,12 @@ export function AddSpaceDialog({ open, onOpenChange }: AddSpaceDialogProps) {
                   type="button"
                   onClick={() => setTypeOpen(o => !o)}
                   className={cn(
-                    "w-full h-[46px] px-4 rounded-2xl bg-secondary text-left text-[13px] flex items-center justify-between",
+                    "w-full h-[44px] px-4 rounded-full bg-secondary text-left text-[13px] flex items-center justify-between",
                     formik.values.spaceType ? "text-gray-900" : "text-gray-400"
                   )}
                 >
                   {formik.values.spaceType || "Choose a space type"}
-                  <span className="text-gray-400">▾</span>
+                  <Icon name="chevronDown" className="text-secondary-foreground size-4" />
                 </button>
                 {typeOpen && (
                   <div className="absolute z-20 top-full mt-1 w-full bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden">
