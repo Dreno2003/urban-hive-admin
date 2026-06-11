@@ -1,4 +1,4 @@
-export type SpaceType = "Office" | "Shortlet" | "Boardroom" | "Hot desk"
+export type SpaceType = "Office" | "Shortlet" | "Boardroom";
 export type SpaceAvailability = "Available" | "Occupied"
 
 export type Space = {
@@ -30,4 +30,21 @@ export type SpacesListResponse = {
   spaces: Space[]
   totalPages: number
   currentPage: number
+}
+
+export type CreateSpaceInput = {
+  spaceType: SpaceType
+  name: string
+  location: string
+  description: string
+  bedrooms: number
+  bathrooms: number
+  rateType: string
+  amount: string
+  amenities: string[]
+  rules: string
+  availability: SpaceAvailability
+  availableDate: string
+  images: (File | null)[]
+  video: File | null
 }

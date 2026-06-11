@@ -1,4 +1,4 @@
-import type { SpacesSummary, SpacesListResponse, Space } from "../types"
+import type { SpacesSummary, SpacesListResponse, Space, CreateSpaceInput } from "../types"
 
 const PAGE_SIZE = 10
 
@@ -44,5 +44,19 @@ export const spacesMockService = {
       totalPages,
       currentPage: page,
     }
+  },
+
+  createSpace: async (input: CreateSpaceInput): Promise<Space> => {
+    await new Promise(r => setTimeout(r, 600))
+    const newSpace: Space = {
+      id: String(ALL_SPACES.length + 1).padStart(5, "0"),
+      name: input.name,
+      spaceType: input.spaceType,
+      rate: `${input.amount}/${input.rateType}`,
+      availability: input.availability,
+      availableDate: input.availableDate,
+    }
+    ALL_SPACES.push(newSpace)
+    return newSpace
   },
 }
