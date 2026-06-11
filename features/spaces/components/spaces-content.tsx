@@ -8,6 +8,7 @@ import { Icon } from "@/shared/components/ui/icon"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { cn } from "@/shared/lib/utils"
 import { useSpacesSummary, useSpacesList } from "../hooks/use-spaces"
+import { AddSpaceDialog } from "./add-space-dialog"
 import type { SpaceTypeBar } from "../types"
 import { Badge } from "@/shared/components/ui/badge"
 
@@ -41,6 +42,7 @@ function SpaceBar({ bar }: { bar: SpaceTypeBar }) {
 
 export function SpacesContent() {
   const [page, setPage] = useState(1)
+  const [addSpaceOpen, setAddSpaceOpen] = useState(false)
 
   const { data: summary, isLoading: summaryLoading } = useSpacesSummary()
   const { data: list, isLoading: listLoading } = useSpacesList(page)
@@ -63,12 +65,14 @@ export function SpacesContent() {
               <Icon name="exportSquareOutline" size={15} />
               Export CSV
             </Button>
-            <Button className="rounded-full h-[42px] px-5 bg-primary text-white hover:bg-primary/90 text-sm font-medium gap-2">
+            <Button className="rounded-full h-[42px] px-5 bg-primary text-white hover:bg-primary/90 text-sm font-medium gap-2" onClick={() => setAddSpaceOpen(true)}>
               <Icon name="plus" size={15} />
               Add space
             </Button>
           </div>
         </div>
+
+        <AddSpaceDialog open={addSpaceOpen} onOpenChange={setAddSpaceOpen} />
 
         {/* Summary Cards */}
         <div className="grid grid-cols-3 gap-5 mb-6">
@@ -147,7 +151,7 @@ export function SpacesContent() {
                   <span className={cn("text-[13px] ", WIDTHS[2])}>{space.spaceType}</span>
                   <span className={cn("text-[13px] ", WIDTHS[3])}>{space.rate}</span>
                   <span className={cn("text-[13px]", WIDTHS[4], )}>
-                  {/* <span className={cn("text-[13px]", WIDTHS[4], space.availability === "Available" ? "text-green-600" : "text-orange-500")}> */}
+                  {/* <span className={cn("text-[13px]", WIDTHS[4]git, space.availability === "Available" ? "text-green-600" : "text-orange-500")}> */}
                     <Badge
                       variant={'default-outline'}
                       // variant={space.availability === "Available" ? "default" : "destructive"}
@@ -157,7 +161,7 @@ export function SpacesContent() {
                     </Badge>
                   </span>
                   <span className={cn("text-[13px] ", WIDTHS[5])}>{space.availableDate}</span>
-                  <span className={cn("text-[13px] font-medium text-primary cursor-pointer hover:underline", WIDTHS[6])}>Edit</span>
+                  <span className={cn("text-[13px] font-medium !text-primary cursor-pointer hover:underline", WIDTHS[6])}>Edit</span>
                 </div>
               ))
             )}
