@@ -5,7 +5,7 @@ import { cn } from "@/shared/lib/utils"
 import type { FormikProps } from "formik"
 import type { AddSpaceFormValues } from "./add-space-dialog"
 
-const RATE_TYPES = ["day", "night", "hour", "week", "month"]
+const RATE_TYPES = ["Daily - Night", "Daily - Day", "Weekly", "Monthly"]
 
 type Props = {
   formik: FormikProps<AddSpaceFormValues>
@@ -61,16 +61,16 @@ export function AddSpaceStep2({ formik, amenities, onAmenitiesChange, rateTypeOp
                 formik.values.rateType ? "text-gray-900" : "text-gray-400"
               )}
             >
-              {formik.values.rateType ? `Per ${formik.values.rateType}` : "Select a rate type"}
+              {formik.values.rateType ? formik.values.rateType : "Select a rate type"}
               <Icon name="chevronDown" className="text-secondary-foreground size-4" />
             </button>
             {rateTypeOpen && (
               <div className="absolute z-20 top-full mt-1 w-full bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden">
                 {RATE_TYPES.map(r => (
                   <button key={r} type="button"
-                    className="w-full text-left px-4 py-2.5 text-[13px] hover:bg-secondary transition-colors capitalize"
+                    className="w-full text-left px-4 py-2.5 text-[13px] hover:bg-secondary transition-colors"
                     onClick={() => { formik.setFieldValue("rateType", r); onRateTypeOpenChange(false) }}
-                  >Per {r}</button>
+                  >{r}</button>
                 ))}
               </div>
             )}

@@ -2,7 +2,8 @@ import { useState } from "react"
 import { Icon } from "@/shared/components/ui/icon"
 import { cn } from "@/shared/lib/utils"
 
-const AMENITY_SUGGESTIONS = ["Wi-Fi", "Air conditioning", "Washing machine", "Kitchen", "24/hr"]
+const AMENITY_SUGGESTIONS = [{label:'Wi-Fi', icon:'wifi2'}, {label:'Air conditioning', icon:'ac2'}, {label:'Washing machine', icon:'washingMachine2'}, {label:'Kitchen', icon:'kitchen2'}]
+// const AMENITY_SUGGESTIONS = ["Wi-Fi", "Air conditioning", "Washing machine", "Kitchen", "24/hr"]
 
 type AmenityInputProps = {
   value: string[]
@@ -43,22 +44,25 @@ export function AmenityInput({ value, onChange }: AmenityInputProps) {
 
       <div className="flex flex-wrap gap-2">
         {AMENITY_SUGGESTIONS.map(s => {
-          const added = value.includes(s)
+          const added = value.includes(s.label)
           return (
             <button
-              key={s}
+              key={s.label}
               type="button"
               disabled={added}
-              onClick={() => add(s)}
+              onClick={() => add(s.label)}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-medium border transition-colors",
+                "flex items-center gap-2 px-3 py-1 rounded-full text-[12px] font-medium border transition-colors",
                 added
                   ? "bg-secondary border-gray-200 text-gray-300 cursor-not-allowed"
                   : "bg-white border-gray-200 text-gray-600 hover:bg-secondary"
               )}
             >
-              <span className="size-2 rounded-full bg-gray-300 inline-block" />
-              {s}
+
+
+              <Icon name={s.icon} className='size-[15px]' />
+              {/* <span className="size-2 rounded-full bg-gray-300 inline-block" /> */}
+              {s.label}
             </button>
           )
         })}

@@ -130,7 +130,7 @@ export function AddSpaceDialog({ open, onOpenChange }: AddSpaceDialogProps) {
       open={open}
       onOpenChange={handleClose}
       isShowTopSeparator={false}
-      contentClassName="max-h-[90vh] flex flex-col"
+      contentClassName="max-h-[90vh] px-0s flex flex-col"
       dialogTitle={
         <div>
           <span className="text-[24px] font-bold">Add space</span>
@@ -142,9 +142,9 @@ export function AddSpaceDialog({ open, onOpenChange }: AddSpaceDialogProps) {
       <form
         onSubmit={formik.handleSubmit}
         noValidate
-        className="custom-scrollbar flex flex-col gap-4 pb-2 overflow-y-auto max-h-[65vh] pr-1"
+        className="custom-scrollbar flex flex-col gap-4 pb-2 overflow-y-auto max-h-[65vh] px-1.5"
       >
-        {step === 1 && (
+        {/* {step === 1 && (
           <AddSpaceStep1
             formik={formik}
             images={images}
@@ -155,9 +155,9 @@ export function AddSpaceDialog({ open, onOpenChange }: AddSpaceDialogProps) {
             typeOpen={typeOpen}
             onTypeOpenChange={setTypeOpen}
           />
-        )}
+        )} */}
 
-        {step === 2 && (
+        {step === 1 && (
           <AddSpaceStep2
             formik={formik}
             amenities={amenities}
