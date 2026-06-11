@@ -515,6 +515,17 @@ export const Icons = {
   ),
 
 
+
+
+  flagFill: (props: React.SVGProps<SVGSVGElement> & IconProps) => (
+    <svg  viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M21.6667 5.83301C21.6667 4.4523 20.5474 3.33301 19.1667 3.33301C17.786 3.33301 16.6667 4.4523 16.6667 5.83301V72.4997C16.6667 73.8804 17.786 74.9997 19.1667 74.9997C20.5474 74.9997 21.6667 73.8804 21.6667 72.4997V45.333V11.9997V5.83301Z" fill="currentColor" />
+      <path d="M44.4952 12.6312L43.8165 12.3597C38.607 10.276 32.904 9.75235 27.4023 10.8527L21.6667 11.9998V45.3331L27.4023 44.186C32.904 43.0857 38.607 43.6093 43.8165 45.6931C49.4616 47.9511 55.6748 48.3728 61.5733 46.8982L62.2882 46.7194C64.3717 46.1986 65.8334 44.3265 65.8334 42.1788V17.6221C65.8334 15.0202 63.3882 13.1111 60.864 13.7421C55.4266 15.1015 49.6991 14.7128 44.4952 12.6312Z" fill="currentColor" />
+    </svg>
+  ),
+
+
+
   chair: (props: React.SVGProps<SVGSVGElement> & IconProps) => (
     <svg width={props.size} height={props.size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g clip-path="url(#clip0_1005_3350)">

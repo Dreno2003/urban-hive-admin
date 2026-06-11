@@ -1,0 +1,34 @@
+import type { ReportsSummary, ReportsListResponse, Report } from "../types"
+
+const ALL_REPORTS: Report[] = [
+  { id: "00001", clientName: "Adaeze Okonkwo", space: "Conference Room",  category: "Maintenance", date: "May 12, 2026", status: "resolved" },
+  { id: "00002", clientName: "Funmi Adeyemi",  space: "Private Office A", category: "Safety",      date: "May 24, 2026", status: "pending"  },
+  { id: "00003", clientName: "Emeka Nwosu",    space: "Open Desk 3",      category: "Maintenance", date: "Apr 10, 2026", status: "open"     },
+  { id: "00004", clientName: "Tolu Badmus",    space: "Penthouse B",      category: "Noise",       date: "Jun 01, 2026", status: "resolved" },
+  { id: "00005", clientName: "Chidi Okafor",   space: "Boardroom 1",      category: "Safety",      date: "Jun 05, 2026", status: "pending"  },
+  { id: "00006", clientName: "Ngozi Eze",      space: "Office Suite 2",   category: "Maintenance", date: "Mar 20, 2026", status: "open"     },
+]
+
+const PAGE_SIZE = 5
+
+export const reportsMockService = {
+  getSummary: async (): Promise<ReportsSummary> => ({
+    openReports: 5,
+    openReportsTrend: "1 Up from 2 last week",
+    resolvedThisMonth: 11,
+    resolvedAvgResolutionTime: "Avg resolution time: 3.2 hrs",
+    topIssuePercent: "38%",
+    topIssueLabel: "Reports flagged as maintenance",
+  }),
+
+  getReports: async (page = 1): Promise<ReportsListResponse> => {
+    const totalPages = Math.max(1, Math.ceil(ALL_REPORTS.length / PAGE_SIZE))
+    const start = (page - 1) * PAGE_SIZE
+    return {
+      reports: ALL_REPORTS.slice(start, start + PAGE_SIZE),
+      totalPages,
+      currentPage: page,
+      totalCount: ALL_REPORTS.length,
+    }
+  },
+}

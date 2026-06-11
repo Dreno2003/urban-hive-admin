@@ -63,7 +63,7 @@ const InsetCard = React.forwardRef<HTMLDivElement, InsetCardProps>(
       <div
         ref={ref}
         className={cn(
-          "bg-white dark:bg-gray-950  dark:border-gray-800 rounded-[28px] p-s5 p-1.5  transition-all duration-200",
+          "bg-white dark:bg-gray-950  dark:border-gray-800 rounded-[28px] p-s5 p-1  transition-all duration-200",
           className
         )}
         {...props}
@@ -73,7 +73,7 @@ const InsetCard = React.forwardRef<HTMLDivElement, InsetCardProps>(
 
           <div
             className={cn(
-              "flex items-center p-3.5 justify-between ",
+              "flex items-center p-2.5 justify-between ",
               headerClassName
             )}
           >
@@ -96,7 +96,8 @@ const InsetCard = React.forwardRef<HTMLDivElement, InsetCardProps>(
           {hasInset ? (
             <div
               className={cn(
-                "bg-secondary dark:bg-gray-900/60 rounded-[25px] p-6 flex flex-col justify-center min-h-[140px]",
+                "bg-secondary dark:bg-gray-900/60 rounded-[25px] p-4 flex flex-col justify-center min-h-[131px]",
+                // "bg-secondary dark:bg-gray-900/60 rounded-[25px] p-4 flex flex-col justify-center min-h-[140px]",
                 insetClassName
               )}
             >

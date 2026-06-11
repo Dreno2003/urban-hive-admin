@@ -53,7 +53,7 @@ export function DashboardHeader({
           isCollapsed ? "md:w-[calc(100%-80px)]" : "md:w-[calc(100%-260px)]",
           "w-full",
           isScrolled
-            ? "bg-white/80 backdrop-blur-md border-gray-100 shadow-sm"
+            ? "bg-white/40 backdrop-blur-md border-gray-100 shadow-sm"
             : "bg-transparent border-transparent",
           !isHomeDashBoard && "border-b !border-gray-200"
 
