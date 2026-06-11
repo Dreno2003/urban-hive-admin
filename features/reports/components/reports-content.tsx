@@ -8,17 +8,23 @@ import { Icon } from "@/shared/components/ui/icon"
 import { Separator } from "@/shared/components/ui/separator"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { cn } from "@/shared/lib/utils"
+import { Badge } from "@/shared/components/ui/badge"
 import { useReportsSummary, useReportsList } from "../hooks/use-reports"
 import type { Report } from "../types"
-import { Flag } from "lucide-react"
 
 const COLS = ["ID", "Client", "Space", "Category", "Date", "Status", "Action"]
 const WIDTHS = ["w-[8%]", "w-[18%]", "w-[16%]", "w-[14%]", "w-[14%]", "w-[14%]", "w-[10%]"]
 
-const STATUS_STYLES: Record<string, string> = {
-  resolved: "bg-green-100 text-green-700",
-  pending:  "bg-yellow-100 text-yellow-700",
-  open:     "bg-gray-100 text-gray-500",
+const STATUS_VARIANT: Record<string, "success" | "warning" | "secondary"> = {
+  resolved: "success",
+  pending:  "warning",
+  open:     "secondary",
+}
+
+const STATUS_ICON: Record<string, "check" | "loader" | "flag"> = {
+  resolved: "check",
+  pending:  "loader",
+  open:     "flag",
 }
 
 export function ReportsContent() {
@@ -77,14 +83,17 @@ export function ReportsContent() {
         <div className="bg-white border border-gray-100 rounded-[28px]">
           <div className="flex items-center justify-between px-6 py-4">
             <h4 className="text-[17px] font-bold tracking-tight">Report</h4>
-            <button
+            <Button
               type="button"
-              className="flex items-center gap-1.5 h-[36px] px-4 rounded-[32px] text-sm font-medium bg-secondary text-foreground"
+              variant={'secondary-outline'}
+              className="rounded-full px-4 h-[36px]"
+
+              // className="flex items-center gap-1.5  px-4 rounded-[32px] text-sm font-medium bg-secondary text-foreground"
             >
               <Icon name="sort" size={16} className="text-secondary-foreground shrink-0" />
               Filter
               <Icon name="chevronDown" size={16} className="text-secondary-foreground ml-0.5" />
-            </button>
+            </Button>
           </div>
 
           <div className="flex items-center bg-secondary px-6 py-3.5 border-y border-gray-100">
@@ -121,13 +130,9 @@ export function ReportsContent() {
                   <span className={cn("text-[13px] text-secondary-foreground", WIDTHS[3])}>{report.category}</span>
                   <span className={cn("text-[13px] text-secondary-foreground", WIDTHS[4])}>{report.date}</span>
                   <div className={WIDTHS[5]}>
-                    <span className={cn(
-                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-medium capitalize",
-                      STATUS_STYLES[report.status] ?? "bg-gray-100 text-gray-500"
-                    )}>
-                      <span className="size-1.5 rounded-full bg-current shrink-0" />
+                    <Badge variant={STATUS_VARIANT[report.status] ?? "secondary"} iconName={STATUS_ICON[report.status]} className="capitalize">
                       {report.status}
-                    </span>
+                    </Badge>
                   </div>
                   <span className={cn("text-[13px] text-primary font-medium hover:underline cursor-pointer", WIDTHS[6])}>View</span>
                 </div>

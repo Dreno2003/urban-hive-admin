@@ -183,7 +183,7 @@ const InsetCardMetric = ({
       {trend && (
         <div
           className={cn(
-            "text-sm font-semibold flex items-center gap-1.5",
+            "text-sm font-medium  flex items-center gap-1.5",
             trendColor,
             trendClassName
           )}

@@ -74,7 +74,7 @@ function Badge({
     <span
       // data-slot="badge"
 
-      className={cn('inline-block !py-3 !w-16', badgeVariants({ variant }), className)}
+      className={cn('inline-block !py-3 !w-auto', badgeVariants({ variant }), className)}
       {...props}
     >
 
