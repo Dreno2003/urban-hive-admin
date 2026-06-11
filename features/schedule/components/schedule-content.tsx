@@ -117,6 +117,7 @@ export function ScheduleContent() {
               selected={selectedDate}
               onSelect={handleDateSelect}
               month={calendarMonth}
+              
               onMonthChange={handleMonthChange}
               className="p-4"
             />

@@ -171,7 +171,7 @@ const InsetCardMetric = ({
   }[trendType]
 
   return (
-    <div className={cn("flex flex-col gap-2", className)} {...props}>
+    <div className={cn("flex flex-col gap-2 ", className)} {...props}>
       <div
         className={cn(
           "text-[30px] font-bold tracking-tight text-gray-900 dark:text-white leading-none",

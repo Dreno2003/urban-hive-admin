@@ -156,7 +156,7 @@ export function SlotGroup({ slots }: SlotGroupProps) {
   return (
     <>
       <div className={cn("rounded-xl relative overflow-hidden pl-3", style.bg)}>
-        <div className={cn("absolute z-10 left-3 top-0 bottom-0 w-[3px]", style.line)} />
+        <div className={cn("absolute z-10 left-3 top-0 bottom-0  my-2 w-[3px]", style.line)} />
         {slots.map((slot, i) => (
 
           <SlotRow isActive={active?.slot.id === slot.id} hoverBackgroundColor={style.line} key={slot.id} slot={slot} isFirst={i === 0} onClick={handleClick} />
