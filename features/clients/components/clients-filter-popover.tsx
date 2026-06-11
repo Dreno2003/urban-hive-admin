@@ -65,18 +65,19 @@ export function ClientsFilterPopover({ value, onChange }: ClientsFilterPopoverPr
   return (
     <Popover open={open} onOpenChange={handleOpen}>
       <PopoverTrigger asChild>
-        <button
+        <Button
+        variant={'secondary-outline'}
           type="button"
           className={cn(
-            "flex items-center justify-center gap-1.5 w-[104px] h-[36px] px-4 rounded-[32px] text-sm font-medium transition-colors whitespace-nowrap cursor-pointer",
-            appliedCount > 0 ? "bg-primary/5 text-primary" : "bg-secondary text-foreground",
+            "flex items-center justify-center gap-1.5 w-[109px] h-[36px] px-6 rounded-[32px] text-sm font-medium transition-colors whitespace-nowrap cursor-pointer",
+            // appliedCount > 0 ? "bg-primary/5 text-primary" : "bg-secondary text-foreground",
           )}
         >
           <Icon name="sort" size={16} className="text-secondary-foreground shrink-0" />
           Filter
-          {appliedCount > 0 && <span className="text-primary font-semibold">({appliedCount})</span>}
+          {appliedCount > 0 && <span className="text-prsimary font-medium">({appliedCount})</span>}
           <Icon name="chevronDown" size={16} className="text-secondary-foreground ml-0.5" />
-        </button>
+        </Button>
       </PopoverTrigger>
 
       <PopoverContent

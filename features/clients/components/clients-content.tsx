@@ -122,21 +122,21 @@ export function ClientsContent() {
         </div>
 
         {/* ── Clients Table ────────────────────────────────── */}
-        <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px]">
+        <div className="bg-white dark:bg-gray-950 border  dark:border-gray-800 rounded-[28px]">
           <div className="flex items-center justify-between px-6 py-4">
             <h4 className="text-[17px] font-bold text-gray-900 dark:text-white tracking-tight">All clients</h4>
             <ClientsFilterPopover value={filters} onChange={(f) => { setFilters(f); setPage(1) }} />
           </div>
 
           {/* Column headers */}
-          <div className="flex items-center bg-secondary px-6 py-3.5 border-y border-gray-100 dark:border-gray-800">
+          <div className="flex items-center bg-secondary px-6 py-3.5 border-y  dark:border-gray-800">
             {COLS.map((col, i) => (
               <span key={col} className={cn("text-[12.5px] font-semibold  tracking-wide", WIDTHS[i])}>{col}</span>
             ))}
           </div>
 
           {/* Rows */}
-          <div className="flex flex-col divide-y divide-gray-50 dark:divide-gray-800/40">
+          <div className="flex flex-col divide-y divide0 dark:divide-gray-800/40">
             {listLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex items-center px-6 py-5 gap-2 animate-pulse">
@@ -144,19 +144,21 @@ export function ClientsContent() {
                 </div>
               ))
             ) : clients.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 gap-3">
-                <div className="size-[72px] rounded-2xl bg-gray-100 flex items-center justify-center">
-                  <UserRound className="size-9 text-gray-400" />
+              <div className="flex flex-col items-center justify-center py-16 gap-2">
+                <div className=" flex items-center justify-center">
+                  {/* <UserRound className="size-9 text-gray-400" /> */}
+
+                  <Icon name="usersfill" className="size-[80px] text-secondary-foreground" />
                 </div>
                 <p className="text-[16px] font-semibold text-gray-900">No clients</p>
-                <p className="text-sm text-gray-400">No client has been added yet</p>
+                <p className="text-sm text-secondary-foreground">No client has been added yet</p>
               </div>
             ) : (
               clients.map((client, idx) => (
                 <div
                   key={client.id}
                   className={cn(
-                    "flex items-center px-6 py-5 hover:bg-gray-50 transition-colors cursor-pointer",
+                    "flex items-center px-6 py-5 transition-colors cursor-pointer",
                     idx === clients.length - 1 && "rounded-b-[28px]"
                   )}
                 >
@@ -172,7 +174,7 @@ export function ClientsContent() {
                     )}>
                       <span className={cn("size-1.5 rounded-full shrink-0", client.status === "active" ? "bg-green-500" : "bg-gray-400")} />
                       {client.status === "active" ? "Active" : "Inactive"}
-                    </span> 
+                    </span>
                     {/* <span className={cn(
                       "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-medium",
                       client.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
@@ -192,8 +194,10 @@ export function ClientsContent() {
 
           <Separator />
           {!listLoading && totalPages > 1 && (
-            <div className="px-6 pb-2">
-              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            <div className="bg-green-s500  px-6 pb-2">
+              <div className="">
+                <Pagination   currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+              </div>
             </div>
           )}
         </div>

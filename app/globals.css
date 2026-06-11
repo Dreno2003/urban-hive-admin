@@ -184,7 +184,8 @@
   --accent: var(--color-yellow-500);
   --accent-foreground: var(--color-base-black);
   --destructive: var(--color-red-500);
-  --border: var(--color-gray-200);
+  --border: var(--color-gray-100);
+  /* --border: var(--color-gray-200); */
   --input: var(--color-gray-200);
   --ring: var(--color-primary-500);
 

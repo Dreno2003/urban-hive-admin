@@ -88,7 +88,7 @@ export function Pagination({
     <div
       className={cn(
         "flex items-center justify-between w-full",
-        isDefault && "py-6 md:py-8 border-t border-gray-100 mt-8",
+        isDefault && "py-4 md:psy-8 borsder-t  mt-3",
         isCompact && "px-1 pt-4 mt-1",
       )}
     >
