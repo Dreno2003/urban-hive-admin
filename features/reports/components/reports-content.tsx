@@ -11,6 +11,7 @@ import { cn } from "@/shared/lib/utils"
 import { Badge } from "@/shared/components/ui/badge"
 import { useReportsSummary, useReportsList } from "../hooks/use-reports"
 import { ReportDetailsDialog } from "./report-details-dialog"
+import { RespondReportDialog } from "./respond-report-dialog"
 import type { Report } from "../types"
 
 const COLS = ["ID", "Client", "Space", "Category", "Date", "Status", "Action"]
@@ -31,6 +32,7 @@ const STATUS_ICON: Record<string, "check" | "loader" | "flag"> = {
 export function ReportsContent() {
   const [page, setPage] = useState(1)
   const [selectedReport, setSelectedReport] = useState<Report | null>(null)
+  const [respondReport, setRespondReport] = useState<Report | null>(null)
   const { data: summary, isLoading: summaryLoading } = useReportsSummary()
   const { data: list, isLoading: listLoading } = useReportsList(page)
 
@@ -156,6 +158,20 @@ export function ReportsContent() {
         report={selectedReport}
         open={!!selectedReport}
         onOpenChange={(open) => { if (!open) setSelectedReport(null) }}
+        onRespond={(report) => {
+          setSelectedReport(null)
+          setRespondReport(report)
+        }}
+      />
+
+      <RespondReportDialog
+        report={respondReport}
+        open={!!respondReport}
+        onOpenChange={(open) => { if (!open) setRespondReport(null) }}
+        onBack={() => {
+          setRespondReport(null)
+          setSelectedReport(respondReport)
+        }}
       />
     </div>
   )

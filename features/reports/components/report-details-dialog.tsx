@@ -10,6 +10,7 @@ interface ReportDetailsDialogProps {
   report: Report | null
   open: boolean
   onOpenChange: (open: boolean) => void
+  onRespond: (report: Report) => void
 }
 
 function Field({ label, value }: { label: string; value: string }) {
@@ -33,7 +34,7 @@ function FieldWithLink({ label, value }: { label: string; value: string }) {
   )
 }
 
-export function ReportDetailsDialog({ report, open, onOpenChange }: ReportDetailsDialogProps) {
+export function ReportDetailsDialog({ report, open, onOpenChange, onRespond }: ReportDetailsDialogProps) {
   if (!report) return null
 
   return (
@@ -83,7 +84,7 @@ export function ReportDetailsDialog({ report, open, onOpenChange }: ReportDetail
           >
             Close
           </Button>
-          <Button className="rounded-full ">
+          <Button className="rounded-full " onClick={() => onRespond(report)}>
             Respond
           </Button>
         </div>

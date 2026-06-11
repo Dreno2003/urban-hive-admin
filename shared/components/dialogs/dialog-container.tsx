@@ -62,7 +62,7 @@ export function DialogContainer({
         showCloseButton={false}
         className={cn(
           // Default surface — matches Urban Hive card language
-          "w-full  sm:max-w-xl rounded-3xl md:!rounded-[32px] bg-white border-0",
+          "w-full  sm:max-w-xl rounded-3xl md:!rounded-[32px] bg-white border-0 px-2",
           contentClassName
         )}
       >
@@ -76,7 +76,7 @@ export function DialogContainer({
 
 
 
-            <h2 className="text-[22px] font-bold text-gray-900 dark:text-gray-50 tracking-tight ">
+            <h2 className="text-[22px] font-bold  dark:text-gray-50 tracking-tight ">
 
 
               {/* {isEditing ? "Edit guide" : "Add guide"} */}
