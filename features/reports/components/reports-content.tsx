@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { InsetCard } from "@/shared/components/ui/inset-card"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { Button } from "@/shared/components/ui/button"
@@ -10,6 +10,7 @@ import { Pagination } from "@/shared/components/ui/pagination"
 import { cn } from "@/shared/lib/utils"
 import { Badge } from "@/shared/components/ui/badge"
 import { useReportsSummary, useReportsList } from "../hooks/use-reports"
+import { ReportsFilterPopover, type ReportFilters } from "./reports-filter-popover"
 import { ReportDetailsDialog } from "./report-details-dialog"
 import { RespondReportDialog } from "./respond-report-dialog"
 import type { Report } from "../types"
@@ -33,11 +34,24 @@ export function ReportsContent() {
   const [page, setPage] = useState(1)
   const [selectedReport, setSelectedReport] = useState<Report | null>(null)
   const [respondReport, setRespondReport] = useState<Report | null>(null)
+  const [filters, setFilters] = useState<ReportFilters>({ statuses: [], categories: [], dateFrom: "", dateTo: "" })
+
+  const handleFiltersChange = (f: ReportFilters) => {
+    setFilters(f)
+    setPage(1)
+  }
   const { data: summary, isLoading: summaryLoading } = useReportsSummary()
   const { data: list, isLoading: listLoading } = useReportsList(page)
 
   
-  const reports = list?.reports ?? []
+  const reports = useMemo(() => {
+    let r = list?.reports ?? []
+    if (filters.statuses.length)   r = r.filter(x => filters.statuses.includes(x.status))
+    if (filters.categories.length) r = r.filter(x => filters.categories.includes(x.category.toLowerCase()))
+    if (filters.dateFrom)          r = r.filter(x => new Date(x.date) >= new Date(filters.dateFrom))
+    if (filters.dateTo)            r = r.filter(x => new Date(x.date) <= new Date(filters.dateTo))
+    return r
+  }, [list?.reports, filters])
   const totalPages = list?.totalPages ?? 1
 
   return (
@@ -87,17 +101,7 @@ export function ReportsContent() {
         <div className="bg-white border border-gray-100 rounded-[28px]">
           <div className="flex items-center justify-between px-6 py-4">
             <h4 className="text-[17px] font-bold tracking-tight">Report</h4>
-            <Button
-              type="button"
-              variant={'secondary-outline'}
-              className="rounded-full px-4 h-[36px]"
-
-              // className="flex items-center gap-1.5  px-4 rounded-[32px] text-sm font-medium bg-secondary text-foreground"
-            >
-              <Icon name="sort" size={16} className="text-secondary-foreground shrink-0" />
-              Filter
-              <Icon name="chevronDown" size={16} className="text-secondary-foreground ml-0.5" />
-            </Button>
+            <ReportsFilterPopover value={filters} onChange={handleFiltersChange} />
           </div>
 
           <div className="flex items-center bg-secondary px-6 py-3.5 border-y border-gray-100">
