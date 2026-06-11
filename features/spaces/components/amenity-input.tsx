@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Icon } from "@/shared/components/ui/icon"
 import { cn } from "@/shared/lib/utils"
 
-const AMENITY_SUGGESTIONS = [{label:'Wi-Fi', icon:'wifi2'}, {label:'Air conditioning', icon:'ac2'}, {label:'Washing machine', icon:'washingMachine2'}, {label:'Kitchen', icon:'kitchen2'}]
+const AMENITY_SUGGESTIONS = [{ label: 'Wi-Fi', icon: 'wifi2' }, { label: 'Air conditioning', icon: 'ac2' }, { label: 'Washing machine', icon: 'washingMachine2' }, { label: '24/hr', icon: 'light' }, { label: 'Kitchen', icon: 'kitchen2' }]
 // const AMENITY_SUGGESTIONS = ["Wi-Fi", "Air conditioning", "Washing machine", "Kitchen", "24/hr"]
 
 type AmenityInputProps = {
@@ -59,7 +59,7 @@ export function AmenityInput({ value, onChange }: AmenityInputProps) {
               )}
             >
 
-
+              {/* @ts-ignore */}
               <Icon name={s.icon} className='size-[15px]' />
               {/* <span className="size-2 rounded-full bg-gray-300 inline-block" /> */}
               {s.label}
