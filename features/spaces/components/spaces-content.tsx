@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { InsetCard } from "@/shared/components/ui/inset-card"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { Button } from "@/shared/components/ui/button"
@@ -159,7 +160,9 @@ export function SpacesContent() {
                     </Badge>
                   </span>
                   <span className={cn("text-[13px] ", WIDTHS[5])}>{space.availableDate}</span>
-                  <span className={cn("text-[13px] font-medium !text-primary cursor-pointer hover:underline", WIDTHS[6])}>Edit</span>
+                  <span className={cn("text-[13px] font-medium !text-primary cursor-pointer hover:underline", WIDTHS[6])}>
+                    <Link href={`/dashboard/spaces/${space.id}`}>Edit</Link>
+                  </span>
                 </div>
               ))
             )}

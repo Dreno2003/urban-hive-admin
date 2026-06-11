@@ -27,3 +27,11 @@ export function useCreateSpace() {
     },
   })
 }
+
+export function useSpaceDetail(id: string) {
+  return useQuery({
+    queryKey: ["space-detail", id],
+    queryFn: () => spacesMockService.getSpaceById(id),
+    enabled: !!id,
+  })
+}

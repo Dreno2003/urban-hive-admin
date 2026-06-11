@@ -86,6 +86,14 @@ export function DashboardHeader({
                 <ChevronRight className="size-3.5 text-gray-400" />
                 <span className="text-foreground font-semibold">Client details</span>
               </nav>
+            ) : pathname.startsWith("/dashboard/spaces/") && pathname !== "/dashboard/spaces" ? (
+              <nav className="hidden md:flex items-center gap-1.5 text-[15px] font-normal tracking-tight select-none">
+                <Link href="/dashboard/spaces" className="text-gray-400 hover:text-gray-600 transition-colors">
+                  Spaces
+                </Link>
+                <ChevronRight className="size-3.5 text-gray-400" />
+                <span className="text-foreground font-semibold">Space details</span>
+              </nav>
             ) : (
               <h2
                 className={cn(

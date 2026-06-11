@@ -1,5 +1,7 @@
-export type SpaceType = "Office" | "Shortlet" | "Boardroom";
+export type SpaceType = "Office" | "Shortlet" | "Boardroom" | "Hot desk"
 export type SpaceAvailability = "Available" | "Occupied"
+export type ActivityStatus = "Complete" | "Active" | "Cancelled"
+export type ReportStatus = "Resolved" | "Pending"
 
 export type Space = {
   id: string
@@ -8,6 +10,50 @@ export type Space = {
   rate: string
   availability: SpaceAvailability
   availableDate: string
+}
+
+export type SpaceActivity = {
+  id: string
+  bookedBy: string
+  dateBooked: string
+  checkIn: string
+  checkOut: string
+  duration: string
+  status: ActivityStatus
+  feedback: string
+  report: string
+}
+
+export type SpaceFeedback = {
+  id: string
+  client: string
+  comment: string
+}
+
+export type SpaceReport = {
+  id: string
+  client: string
+  space: string
+  category: string
+  date: string
+  status: ReportStatus
+}
+
+export type SpaceDetail = Space & {
+  location: string
+  monthlyRate: string
+  amenities: string[]
+  bedrooms: number
+  bathrooms: number
+  description: string
+  images: string[]
+  video: string | null
+  activity: SpaceActivity[]
+  activityTotalPages: number
+  feedback: SpaceFeedback[]
+  feedbackTotalPages: number
+  reports: SpaceReport[]
+  reportsTotalPages: number
 }
 
 export type SpaceTypeBar = {

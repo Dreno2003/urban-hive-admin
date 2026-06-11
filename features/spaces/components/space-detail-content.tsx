@@ -1,0 +1,709 @@
+"use client"
+
+import React, { useState, useMemo } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { useSpaceDetail } from "../hooks/use-spaces"
+import { Button } from "@/shared/components/ui/button"
+import { Skeleton } from "@/shared/components/ui/skeleton"
+import { Separator } from "@/shared/components/ui/separator"
+import { Badge } from "@/shared/components/ui/badge"
+import { Icon } from "@/shared/components/ui/icon"
+import { Pagination } from "@/shared/components/ui/pagination"
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/shared/components/ui/dialog"
+import { Input } from "@/shared/components/ui/input"
+import { toast } from "sonner"
+import { cn } from "@/shared/lib/utils"
+import type { SpaceActivity } from "../types"
+
+// Client mock data specifically for the "Which client?" selector dialog
+const WHICH_CLIENTS_MOCK = [
+  { id: "10002", name: "Adaeze Okanwo" },
+  { id: "10003", name: "Adaeze Okonwo" },
+  { id: "10002", name: "Adaeze Okanwo" },
+  { id: "10002", name: "Adaeze Okanwo" },
+  { id: "10002", name: "Adaeze Okanwo" },
+  { id: "10004", name: "Funmi Adeyemi" },
+  { id: "10005", name: "James Matthew" },
+]
+
+const AMENITY_ICONS: Record<string, string> = {
+  "Wi-Fi": "wifi2",
+  "Air conditioning": "ac2",
+  "Washing machine": "washingMachine2",
+  "Kitchen": "kitchen2",
+}
+
+export function SpaceDetailContent({ id }: { id: string }) {
+  const router = useRouter()
+  const { data: space, isLoading } = useSpaceDetail(id)
+
+  // Tab State: "activity" | "feedback" | "reports"
+  const [activeTab, setActiveTab] = useState<"activity" | "feedback" | "reports">("activity")
+  const [page, setPage] = useState(1)
+
+  // Dialog States
+  const [selectedActivity, setSelectedActivity] = useState<SpaceActivity | null>(null)
+  const [bookSpaceOpen, setBookSpaceOpen] = useState(false)
+  const [clientSearch, setClientSearch] = useState("")
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null)
+
+  // Space state controls (mock toggle states)
+  const [isFrozen, setIsFrozen] = useState(false)
+  const [images, setImages] = useState([
+    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&auto=format&fit=crop&q=60",
+    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&auto=format&fit=crop&q=60",
+    "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=300&auto=format&fit=crop&q=60",
+    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300&auto=format&fit=crop&q=60",
+    "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=300&auto=format&fit=crop&q=60",
+  ])
+  const [video, setVideo] = useState<string | null>(
+    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&auto=format&fit=crop&q=60"
+  )
+
+  // Filter client mock list based on search term
+  const filteredClients = useMemo(() => {
+    return WHICH_CLIENTS_MOCK.filter(
+      (c) =>
+        c.name.toLowerCase().includes(clientSearch.toLowerCase()) ||
+        c.id.includes(clientSearch)
+    )
+  }, [clientSearch])
+
+  // Get Initials for Avatar
+  const getInitials = (name: string) => {
+    if (name === "AV housing") return "TJ"
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
+  // Handle actions
+  const handleEditSpace = () => {
+    toast.info("Edit space mode opening...")
+  }
+
+  const handleToggleFreeze = () => {
+    setIsFrozen(!isFrozen)
+    toast.success(isFrozen ? "Space has been unfrozen" : "Space has been frozen")
+  }
+
+  const handleRemoveSpace = () => {
+    toast.error("Remove space triggered. Please confirm details first.")
+  }
+
+  const handleSelectClient = (clientName: string, clientId: string) => {
+    setSelectedClientId(clientId)
+    setTimeout(() => {
+      toast.success(`Booking successfully created for ${clientName}!`)
+      setBookSpaceOpen(false)
+      setSelectedClientId(null)
+      setClientSearch("")
+    }, 600)
+  }
+
+  const handleRemoveImage = (index: number) => {
+    setImages(images.filter((_, i) => i !== index))
+    toast.info("Image removed from space listing")
+  }
+
+  const handleRemoveVideo = () => {
+    setVideo(null)
+    toast.info("Video removed from space listing")
+  }
+
+  return (
+    <div className="flex-1 flex flex-col min-h-screen bg-[#F9F9FB] dark:bg-gray-950">
+      <div className="w-full container-wrapper pt-8 pb-12 mt-[76px]">
+        {/* ── Space Profile Card ────────────────────────────── */}
+        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[28px] p-6 mb-6 shadow-sm">
+          {/* Top row: Avatar + Name + Action Buttons */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+            <div className="flex items-center gap-4">
+              {isLoading ? (
+                <Skeleton className="size-[64px] rounded-full bg-gray-200 dark:bg-gray-800" />
+              ) : (
+                <div className="size-[64px] rounded-full bg-[#5E3FFB] flex items-center justify-center shrink-0 text-white text-[22px] font-bold">
+                  {getInitials(space?.name ?? "")}
+                </div>
+              )}
+              <div>
+                <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Name</p>
+                {isLoading ? (
+                  <Skeleton className="h-6 w-32 bg-gray-200 dark:bg-gray-800" />
+                ) : (
+                  <p className="text-[20px] font-bold text-gray-900 dark:text-white leading-tight">
+                    {space?.name}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center flex-wrap gap-2">
+              <Button
+                variant="secondary-outline"
+                className="h-[38px] px-5 rounded-full text-[13px] border-gray-200 dark:border-gray-800 font-semibold text-gray-700 dark:text-gray-300"
+                onClick={handleEditSpace}
+              >
+                Edit space
+              </Button>
+              <Button
+                variant="secondary-outline"
+                className="h-[38px] px-5 rounded-full text-[13px] border-gray-200 dark:border-gray-800 font-semibold text-gray-700 dark:text-gray-300"
+                onClick={handleToggleFreeze}
+              >
+                {isFrozen ? "Unfreeze space" : "Freeze space"}
+              </Button>
+              <Button
+                className="h-[38px] px-5 rounded-full text-[13px] font-semibold bg-[#FFF0F0] text-red-500 hover:bg-red-50/80 border border-red-100 dark:bg-red-950/20 dark:border-red-900/30"
+                onClick={handleRemoveSpace}
+              >
+                Remove space
+              </Button>
+              {!isLoading && space?.spaceType === "Shortlet" && (
+                <Button
+                  className="h-[38px] px-5 rounded-full text-[13px] font-semibold bg-primary text-white hover:bg-primary/95"
+                  onClick={() => setBookSpaceOpen(true)}
+                >
+                  Book space
+                </Button>
+              )}
+            </div>
+          </div>
+
+          <Separator className="mb-5 dark:bg-gray-800" />
+
+          {/* Info grid: location, type, rates, amenities, capacity */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+            <div>
+              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Space location</p>
+              {isLoading ? (
+                <Skeleton className="h-5 w-24 bg-gray-200 dark:bg-gray-800" />
+              ) : (
+                <p className="text-[15px] font-bold text-gray-900 dark:text-white">{space?.location}</p>
+              )}
+            </div>
+            <div>
+              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Space type</p>
+              {isLoading ? (
+                <Skeleton className="h-5 w-20 bg-gray-200 dark:bg-gray-800" />
+              ) : (
+                <p className="text-[15px] font-bold text-gray-900 dark:text-white">{space?.spaceType}</p>
+              )}
+            </div>
+            <div>
+              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Space rate</p>
+              {isLoading ? (
+                <Skeleton className="h-5 w-20 bg-gray-200 dark:bg-gray-800" />
+              ) : (
+                <p className="text-[15px] font-bold text-gray-900 dark:text-white">
+                  {space?.rate?.split("/")[0]}
+                </p>
+              )}
+            </div>
+            <div>
+              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Monthly rate</p>
+              {isLoading ? (
+                <Skeleton className="h-5 w-24 bg-gray-200 dark:bg-gray-800" />
+              ) : (
+                <p className="text-[15px] font-bold text-gray-900 dark:text-white">{space?.monthlyRate}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Amenities & Capacity */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5">
+            <div>
+              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Space amenities</p>
+              {isLoading ? (
+                <div className="flex gap-2">
+                  <Skeleton className="h-7 w-20 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                  <Skeleton className="h-7 w-24 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {space?.amenities?.map((amenity) => (
+                    <span
+                      key={amenity}
+                      className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[12.5px] font-medium border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300"
+                    >
+                      {AMENITY_ICONS[amenity] && (
+                        <Icon name={AMENITY_ICONS[amenity]} className="size-3.5 text-gray-500" />
+                      )}
+                      {amenity}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Space capacity</p>
+              {isLoading ? (
+                <div className="flex gap-2">
+                  <Skeleton className="h-7 w-24 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                  <Skeleton className="h-7 w-24 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <span className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-full px-3.5 py-1.5 flex items-center gap-1.5 text-[12.5px] font-medium text-gray-600 dark:text-gray-300">
+                    <Icon name="bed2" size={14} className="text-gray-500 shrink-0" />
+                    {space?.bedrooms} bedroom{space?.bedrooms !== 1 ? "s" : ""}
+                  </span>
+                  <span className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-full px-3.5 py-1.5 flex items-center gap-1.5 text-[12.5px] font-medium text-gray-600 dark:text-gray-300">
+                    <Icon name="bath2" size={14} className="text-gray-500 shrink-0" />
+                    {space?.bathrooms} bathroom{space?.bathrooms !== 1 ? "s" : ""}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <Separator className="mb-5 dark:bg-gray-800" />
+
+          {/* Space Description */}
+          <div className="mb-6">
+            <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5">Space description</p>
+            {isLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full bg-gray-200 dark:bg-gray-800" />
+                <Skeleton className="h-4 w-5/6 bg-gray-200 dark:bg-gray-800" />
+              </div>
+            ) : (
+              <p className="text-[14px] leading-relaxed text-gray-700 dark:text-gray-300 font-medium">
+                {space?.description}
+              </p>
+            )}
+          </div>
+
+          {/* Images & Video files display */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Space images</p>
+              {isLoading ? (
+                <div className="flex gap-2">
+                  <Skeleton className="size-[60px] bg-gray-200 dark:bg-gray-800 rounded-xl" />
+                  <Skeleton className="size-[60px] bg-gray-200 dark:bg-gray-800 rounded-xl" />
+                </div>
+              ) : (
+                <div className="flex gap-3 flex-wrap">
+                  {images.map((imgUrl, i) => (
+                    <div key={i} className="relative size-[60px] shrink-0 group">
+                      <img src={imgUrl} alt="" className="w-full h-full object-cover rounded-xl border border-gray-100 dark:border-gray-800" />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(i)}
+                        className="absolute -top-1 -right-1 size-4 rounded-full bg-secondary-foreground text-white flex items-center justify-center hover:bg-gray-900 transition-colors cursor-pointer border border-white"
+                        aria-label="Remove image"
+                      >
+                        <Icon name="x2" size={8} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Space video</p>
+              {isLoading ? (
+                <Skeleton className="size-[60px] bg-gray-200 dark:bg-gray-800 rounded-xl" />
+              ) : video ? (
+                <div className="relative size-[60px] shrink-0">
+                  <div className="relative size-full rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
+                    <img src={video} alt="" className="absolute inset-0 size-full object-cover opacity-60" />
+                    {/* Play Button Overlay */}
+                    <div className="z-10 size-6 rounded-full bg-white/90 flex items-center justify-center shadow-sm">
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="size-3 text-primary translate-x-[0.5px]">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveVideo}
+                    className="absolute -top-1 -right-1 size-4 rounded-full bg-secondary-foreground text-white flex items-center justify-center hover:bg-gray-900 transition-colors cursor-pointer border border-white"
+                    aria-label="Remove video"
+                  >
+                    <Icon name="x2" size={8} />
+                  </button>
+                </div>
+              ) : (
+                <span className="text-[13px] text-gray-400 font-semibold italic">No video files added.</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ── Space Tabs & Table ────────────────────────────── */}
+        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[28px] shadow-sm">
+          {/* Tabs header bar */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+            <div className="flex items-center gap-1 bg-[#F2F2F7] dark:bg-gray-800 rounded-full p-1 w-fit">
+              <button
+                onClick={() => {
+                  setActiveTab("activity")
+                  setPage(1)
+                }}
+                className={cn(
+                  "rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer",
+                  activeTab === "activity" ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 hover:text-gray-800"
+                )}
+              >
+                Space activity
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("feedback")
+                  setPage(1)
+                }}
+                className={cn(
+                  "rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer",
+                  activeTab === "feedback" ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 hover:text-gray-800"
+                )}
+              >
+                Feedback
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("reports")
+                  setPage(1)
+                }}
+                className={cn(
+                  "rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer",
+                  activeTab === "reports" ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 hover:text-gray-800"
+                )}
+              >
+                Reports
+              </button>
+            </div>
+
+            <button
+              onClick={() => toast.info("Filter clicked")}
+              className="flex items-center justify-center gap-1.5 h-[36px] px-4 rounded-[32px] text-sm font-medium transition-colors bg-secondary dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-foreground whitespace-nowrap cursor-pointer border-none"
+            >
+              <Icon name="sort" size={16} className="text-secondary-foreground shrink-0" />
+              Filter
+              <Icon name="chevronDown" size={16} className="text-secondary-foreground ml-0.5" />
+            </button>
+          </div>
+
+          {/* Tables layout */}
+          <div className="flex flex-col">
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex items-center px-6 py-5 gap-3 border-b dark:border-gray-800 animate-pulse">
+                  <Skeleton className="h-4 bg-gray-100 dark:bg-gray-800 w-full" />
+                </div>
+              ))
+            ) : (
+              <>
+                {/* ── 1. Tab Content: Space Activity ───────────────── */}
+                {activeTab === "activity" && (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[5%]">
+                            <input type="checkbox" className="rounded border-gray-300 dark:border-gray-700 text-primary focus:ring-primary size-3.5" />
+                          </th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[22%]">Booked by</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[15%]">Date booked</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[15%]">Check in</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[15%]">Check out</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[10%]">Duration</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[10%]">Status</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[8%]">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                        {space?.activity?.map((act) => (
+                          <tr key={act.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] text-gray-700 dark:text-gray-300 font-medium">
+                            <td className="px-6 py-4.5">
+                              <input type="checkbox" className="rounded border-gray-300 dark:border-gray-700 text-primary focus:ring-primary size-3.5" />
+                            </td>
+                            <td className="px-6 py-4.5 text-gray-900 dark:text-white font-bold">{act.bookedBy}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{act.dateBooked}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{act.checkIn}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{act.checkOut}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{act.duration}</td>
+                            <td className="px-6 py-4.5">
+                              <span className={cn(
+                                "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11.5px] font-semibold border rounded-full",
+                                act.status === "Active"
+                                  ? "bg-white text-gray-800 border-gray-200"
+                                  : "bg-white text-gray-800 border-gray-200"
+                              )}>
+                                <span className={cn(
+                                  "size-1.5 rounded-full",
+                                  act.status === "Active" ? "bg-green-500" : "bg-gray-400"
+                                )} />
+                                {act.status}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4.5">
+                              <button
+                                onClick={() => setSelectedActivity(act)}
+                                className="text-primary font-bold hover:underline cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
+                              >
+                                View
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* ── 2. Tab Content: Feedback ─────────────────────── */}
+                {activeTab === "feedback" && (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[20%]">Client</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[65%]">Comment</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[15%]">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                        {space?.feedback?.map((fb) => (
+                          <tr key={fb.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] text-gray-700 dark:text-gray-300 font-medium">
+                            <td className="px-6 py-5 text-gray-900 dark:text-white font-bold">{fb.client}</td>
+                            <td className="px-6 py-5 leading-relaxed text-gray-500 dark:text-gray-400 font-semibold">{fb.comment}</td>
+                            <td className="px-6 py-5">
+                              <button
+                                onClick={() => toast.success("Review status updated!")}
+                                className="text-primary font-bold hover:underline cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
+                              >
+                                Display on space page
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* ── 3. Tab Content: Reports ──────────────────────── */}
+                {activeTab === "reports" && (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[10%]">ID</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[18%]">Client</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[18%]">Space</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[18%]">Category</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[15%]">Date</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[13%]">Status</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[8%]">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                        {space?.reports?.map((rep) => (
+                          <tr key={rep.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] text-gray-700 dark:text-gray-300 font-medium">
+                            <td className="px-6 py-4.5 font-mono text-gray-400 font-bold">{rep.id}</td>
+                            <td className="px-6 py-4.5 text-gray-900 dark:text-white font-bold">{rep.client}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{rep.space}</td>
+                            <td className="px-6 py-4.5">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 bg-[#F9F9FB] dark:bg-gray-800">
+                                {rep.category}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{rep.date}</td>
+                            <td className="px-6 py-4.5">
+                              <span className={cn(
+                                "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11.5px] font-semibold border rounded-full",
+                                rep.status === "Resolved"
+                                  ? "bg-[#E6F9EE] text-[#00A854] border-[#B3F2CE]"
+                                  : "bg-[#FFF8E6] text-[#FE9A00] border-[#FFE2B3]"
+                              )}>
+                                <span className={cn(
+                                  "size-1.5 rounded-full",
+                                  rep.status === "Resolved" ? "bg-[#00A854]" : "bg-[#FE9A00]"
+                                )} />
+                                {rep.status}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4.5">
+                              <button
+                                onClick={() => toast.info(`Viewing ticket ${rep.id} details`)}
+                                className="text-primary font-bold hover:underline cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
+                              >
+                                View
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* Pagination (customized counts to look identical to design) */}
+                <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-800">
+                  <Pagination
+                    currentPage={page}
+                    totalPages={activeTab === "activity" ? 8 : 1}
+                    onPageChange={setPage}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Space Activity Detail Modal ──────────────────── */}
+      <Dialog open={!!selectedActivity} onOpenChange={(o) => { if (!o) setSelectedActivity(null) }}>
+        <DialogContent className="max-w-[480px] p-6 rounded-[28px] border-none shadow-2xl bg-white dark:bg-gray-900 overflow-hidden">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
+            <DialogTitle className="text-[17px] font-bold text-gray-900 dark:text-white">
+              Space activity
+            </DialogTitle>
+          </div>
+
+          <div className="py-4 space-y-4 text-[13.5px]">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Booked by</span>
+                <div className="flex items-center gap-1 font-bold text-gray-900 dark:text-white">
+                  <span>{selectedActivity?.bookedBy}</span>
+                  <button onClick={() => toast.info("Opening client link")} className="text-gray-400 hover:text-gray-600 cursor-pointer p-0 bg-transparent border-none">
+                    <Icon name="exportSquareOutline" size={13} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Date booked</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{selectedActivity?.dateBooked}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Check in</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{selectedActivity?.checkIn}</span>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Check out</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{selectedActivity?.checkOut}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Duration</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{selectedActivity?.duration}</span>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Status</span>
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  {selectedActivity?.status === "Complete" ? "Completed" : selectedActivity?.status}
+                </span>
+              </div>
+            </div>
+
+            <Separator className="dark:bg-gray-800" />
+
+            <div className="flex flex-col gap-1">
+              <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Feedback</span>
+              <p className="text-gray-700 dark:text-gray-300 font-semibold leading-relaxed">
+                {selectedActivity?.feedback || "No feedback left."}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Report</span>
+              <p className="text-gray-700 dark:text-gray-300 font-semibold leading-relaxed">
+                {selectedActivity?.report || "No reports submitted."}
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <Button
+              className="w-full h-11 rounded-full bg-primary hover:bg-primary/95 text-white font-semibold text-[14px]"
+              onClick={() => setSelectedActivity(null)}
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── "Which client?" Booking Modal ────────────────── */}
+      <Dialog open={bookSpaceOpen} onOpenChange={setBookSpaceOpen}>
+        <DialogContent className="max-w-[440px] p-6 rounded-[28px] border-none shadow-2xl bg-white dark:bg-gray-900 overflow-hidden">
+          <div className="flex flex-col gap-1 pb-3 border-b border-gray-100 dark:border-gray-800">
+            <DialogTitle className="text-[17px] font-bold text-gray-900 dark:text-white">
+              Which client?
+            </DialogTitle>
+            <DialogDescription className="text-xs text-gray-400 font-medium">
+              Select the client this booking is being made for
+            </DialogDescription>
+          </div>
+
+          {/* Search bar inside dialog */}
+          <div className="py-3">
+            <Input
+              icon={<Icon name="search" size={18} className="text-gray-400" />}
+              type="text"
+              placeholder="Search client name or id"
+              value={clientSearch}
+              onChange={(e) => setClientSearch(e.target.value)}
+              className="w-full h-[40px] pl-10 rounded-full border border-gray-100 focus:ring-1 focus:ring-primary/20 bg-gray-50/50"
+            />
+          </div>
+
+          {/* List of clients */}
+          <div className="max-h-[260px] overflow-y-auto pr-1 flex flex-col divide-y divide-gray-50 dark:divide-gray-850">
+            {filteredClients.length === 0 ? (
+              <p className="text-center py-6 text-sm text-gray-400 italic">No clients found</p>
+            ) : (
+              filteredClients.map((client, i) => {
+                const isSelected = selectedClientId === client.id && i === 1 // Match the checked item on row 2 in mockup for default view
+                const actualSelected = selectedClientId === `${client.id}-${i}`
+                const isChecked = actualSelected || (selectedClientId === null && client.id === "10003")
+
+                return (
+                  <div
+                    key={`${client.id}-${i}`}
+                    onClick={() => handleSelectClient(client.name, actualSelected ? "" : `${client.id}-${i}`)}
+                    className="flex items-center justify-between py-3 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-800/30 px-2 rounded-xl transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={cn(
+                        "text-[14px] text-gray-800 dark:text-gray-200",
+                        isChecked ? "font-bold text-gray-900 dark:text-white" : "font-semibold text-gray-600"
+                      )}>
+                        {client.name}
+                      </span>
+                      <span className="bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                        ID {client.id}
+                      </span>
+                    </div>
+
+                    {isChecked && (
+                      <Icon
+                        name="check"
+                        size={18}
+                        className="text-primary shrink-0 transition-transform duration-200 scale-100"
+                      />
+                    )}
+                  </div>
+                )
+              })
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
