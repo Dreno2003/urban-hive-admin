@@ -48,15 +48,15 @@ export const spacesMockService = {
 
   createSpace: async (input: CreateSpaceInput): Promise<Space> => {
     await new Promise(r => setTimeout(r, 600))
-    const newSpace: Space = {
+    const new_space: Space = {
       id: String(ALL_SPACES.length + 1).padStart(5, "0"),
       name: input.name,
       spaceType: input.spaceType,
       rate: `${input.amount}/${input.rateType}`,
-      availability: input.availability,
-      availableDate: input.availableDate,
+      availability: "Available",
+      availableDate: "—",
     }
-    ALL_SPACES.push(newSpace)
-    return newSpace
+    ALL_SPACES.push(new_space)
+    return new_space
   },
 }

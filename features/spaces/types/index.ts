@@ -43,8 +43,6 @@ export type CreateSpaceInput = {
   amount: string
   amenities: string[]
   rules: string
-  availability: SpaceAvailability
-  availableDate: string
   images: (File | null)[]
   video: File | null
 }

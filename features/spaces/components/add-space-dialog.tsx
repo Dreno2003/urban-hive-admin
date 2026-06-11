@@ -22,8 +22,6 @@ export type AddSpaceFormValues = {
   rateType: string
   amount: string
   rules: string
-  availability: string
-  availableDate: string
 }
 
 const step1Schema = Yup.object({
@@ -38,12 +36,7 @@ const step2Schema = Yup.object({
   amount: Yup.string().required("Amount is required"),
 })
 
-const step3Schema = Yup.object({
-  availability: Yup.string().required("Availability status is required"),
-  availableDate: Yup.string().required("Available date is required"),
-})
-
-const SCHEMAS = [step1Schema, step2Schema, step3Schema]
+const SCHEMAS = [step1Schema, step2Schema, Yup.object()]
 
 const INITIAL_VALUES: AddSpaceFormValues = {
   spaceType: "",
@@ -55,8 +48,6 @@ const INITIAL_VALUES: AddSpaceFormValues = {
   rateType: "",
   amount: "",
   rules: "",
-  availability: "Available",
-  availableDate: "",
 }
 
 export type AddSpaceDialogProps = {
@@ -72,6 +63,7 @@ export function AddSpaceDialog({ open, onOpenChange }: AddSpaceDialogProps) {
   const [amenities, setAmenities] = useState<string[]>([])
   const [typeOpen, setTypeOpen] = useState(false)
   const [rateTypeOpen, setRateTypeOpen] = useState(false)
+  const [spaceId] = useState(() => String(Math.floor(Math.random() * 90000) + 10000).padStart(5, "0"))
 
   const { mutateAsync: createSpace } = useCreateSpace()
 
@@ -96,8 +88,6 @@ export function AddSpaceDialog({ open, onOpenChange }: AddSpaceDialogProps) {
           amount: values.amount,
           amenities,
           rules: values.rules,
-          availability: values.availability as "Available" | "Occupied",
-          availableDate: values.availableDate,
           images,
           video,
         })
@@ -130,7 +120,7 @@ export function AddSpaceDialog({ open, onOpenChange }: AddSpaceDialogProps) {
       open={open}
       onOpenChange={handleClose}
       isShowTopSeparator={false}
-      contentClassName="max-h-[90vh] px-0s flex flex-col"
+      contentClassName="max-h-[90vh] w-[33rem] px-0s flex flex-col"
       dialogTitle={
         <div>
           <span className="text-[24px] font-bold">Add space</span>
@@ -167,7 +157,18 @@ export function AddSpaceDialog({ open, onOpenChange }: AddSpaceDialogProps) {
           />
         )}
 
-        {step === 3 && <AddSpaceStep3 formik={formik} />}
+        {step === 3 && (
+          <AddSpaceStep3
+            values={formik.values}
+            amenities={amenities}
+            images={images}
+            imagePreviews={imagePreviews}
+            video={video}
+            spaceId={spaceId}
+            onRemoveImage={(i) => handleImageChange(i, null)}
+            onRemoveVideo={() => setVideo(null)}
+          />
+        )}
 
         <Separator />
         <div className="flex gap-3 mt-1">
@@ -178,7 +179,7 @@ export function AddSpaceDialog({ open, onOpenChange }: AddSpaceDialogProps) {
           </Button>
           <Button type="submit" loading={formik.isSubmitting}
             className="flex-1 rounded-full text-[14px] bg-primary text-white hover:bg-primary/90">
-            {step === 3 ? "Submit" : "Continue"}
+            {step === 3 ? "Add space" : "Continue"}
           </Button>
         </div>
       </form>
