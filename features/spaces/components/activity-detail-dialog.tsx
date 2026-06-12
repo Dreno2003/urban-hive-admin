@@ -31,9 +31,9 @@ export function ActivityDetailDialog({
       <div className="py-2 space-y-4 text-[13.5px]">
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Booked by</span>
+            <span className="text-[14px] text-secondary-foreground  tracking-wide">Booked by</span>
             <div className="flex items-center gap-1 font-bold text-gray-900 dark:text-white">
-              <span className="underline decoration-1 decoration-gray-400 underline-offset-3 cursor-pointer">{activity?.bookedBy}</span>
+              <span className=" underline-offset-3 cursor-pointer">{activity?.bookedBy}</span>
               <button
                 onClick={() => toast.info("Opening client link")}
                 className="text-gray-400 hover:text-gray-600 cursor-pointer p-0 bg-transparent border-none"
@@ -43,30 +43,30 @@ export function ActivityDetailDialog({
             </div>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Date booked</span>
-            <span className="font-semibold text-gray-900 dark:text-white">{activity?.dateBooked}</span>
+            <span className="text-[14px] text-secondary-foreground  tracking-wide">Date booked</span>
+            <span className="font-medium text-body-lg dark:text-white">{activity?.dateBooked}</span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Check in</span>
-            <span className="font-semibold text-gray-900 dark:text-white">{activity?.checkIn}</span>
+            <span className="text-[14px] text-secondary-foreground  tracking-wide">Check in</span>
+            <span className="font-medium text-body-lg dark:text-white">{activity?.checkIn}</span>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Check out</span>
-            <span className="font-semibold text-gray-900 dark:text-white">{activity?.checkOut}</span>
+            <span className="text-[14px] text-secondary-foreground  tracking-wide">Check out</span>
+            <span className="font-medium text-body-lg dark:text-white">{activity?.checkOut}</span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Duration</span>
-            <span className="font-semibold text-gray-900 dark:text-white">{activity?.duration}</span>
+            <span className="text-[14px] text-secondary-foreground  tracking-wide">Duration</span>
+            <span className="font-medium text-body-lg  dark:text-white">{activity?.duration}</span>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Status</span>
-            <span className="font-semibold text-gray-900 dark:text-white">
+            <span className="text-[14px] text-secondary-foreground  tracking-wide">Status</span>
+            <span className="font-medium  text-body-lg dark:text-white">
               {activity?.status === "Complete" ? "Completed" : activity?.status}
             </span>
           </div>
@@ -75,15 +75,15 @@ export function ActivityDetailDialog({
         <Separator className="dark:bg-gray-800" />
 
         <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Feedback</span>
-          <p className="text-gray-700 dark:text-gray-300 font-semibold leading-relaxed">
+          <span className="text-[14px] font- text-secondary-foreground tracking-wide">Feedback</span>
+          <p className=" dark:text-gray-300 text-body-lg font-medium leading-relaxed">
             {activity?.feedback || "No feedback left."}
           </p>
         </div>
 
         <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Report</span>
-          <p className="text-gray-700 dark:text-gray-300 font-semibold leading-relaxed">
+          <span className="text-[14px] font- text-gray-400 uppercase tracking-wide">Report</span>
+          <p className=" dark:text-gray-300 text-body-lg font-medium leading-relaxed">
             {activity?.report || "No reports submitted."}
           </p>
         </div>
