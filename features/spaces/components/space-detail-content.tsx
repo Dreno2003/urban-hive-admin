@@ -10,22 +10,13 @@ import { Separator } from "@/shared/components/ui/separator"
 import { Badge } from "@/shared/components/ui/badge"
 import { Icon } from "@/shared/components/ui/icon"
 import { Pagination } from "@/shared/components/ui/pagination"
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/shared/components/ui/dialog"
-import { Input } from "@/shared/components/ui/input"
+import { ActivityDetailDialog } from "./activity-detail-dialog"
+import { BookSpaceDialog } from "./book-space-dialog"
 import { toast } from "sonner"
 import { cn } from "@/shared/lib/utils"
 import type { SpaceActivity } from "../types"
 
-// Client mock data specifically for the "Which client?" selector dialog
-const WHICH_CLIENTS_MOCK = [
-  { id: "10002", name: "Adaeze Okanwo" },
-  { id: "10003", name: "Adaeze Okonwo" },
-  { id: "10002", name: "Adaeze Okanwo" },
-  { id: "10002", name: "Adaeze Okanwo" },
-  { id: "10002", name: "Adaeze Okanwo" },
-  { id: "10004", name: "Funmi Adeyemi" },
-  { id: "10005", name: "James Matthew" },
-]
+
 
 const AMENITY_ICONS: Record<string, string> = {
   "Wi-Fi": "wifi2",
@@ -45,8 +36,6 @@ export function SpaceDetailContent({ id }: { id: string }) {
   // Dialog States
   const [selectedActivity, setSelectedActivity] = useState<SpaceActivity | null>(null)
   const [bookSpaceOpen, setBookSpaceOpen] = useState(false)
-  const [clientSearch, setClientSearch] = useState("")
-  const [selectedClientId, setSelectedClientId] = useState<string | null>(null)
 
   // Space state controls (mock toggle states)
   const [isFrozen, setIsFrozen] = useState(false)
@@ -61,14 +50,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
     "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&auto=format&fit=crop&q=60"
   )
 
-  // Filter client mock list based on search term
-  const filteredClients = useMemo(() => {
-    return WHICH_CLIENTS_MOCK.filter(
-      (c) =>
-        c.name.toLowerCase().includes(clientSearch.toLowerCase()) ||
-        c.id.includes(clientSearch)
-    )
-  }, [clientSearch])
+
 
   // Get Initials for Avatar
   const getInitials = (name: string) => {
@@ -96,13 +78,8 @@ export function SpaceDetailContent({ id }: { id: string }) {
   }
 
   const handleSelectClient = (clientName: string, clientId: string) => {
-    setSelectedClientId(clientId)
-    setTimeout(() => {
-      toast.success(`Booking successfully created for ${clientName}!`)
-      setBookSpaceOpen(false)
-      setSelectedClientId(null)
-      setClientSearch("")
-    }, 600)
+    toast.success(`Booking successfully created for ${clientName}!`)
+    setBookSpaceOpen(false)
   }
 
   const handleRemoveImage = (index: number) => {
@@ -561,149 +538,18 @@ export function SpaceDetailContent({ id }: { id: string }) {
       </div>
 
       {/* ── Space Activity Detail Modal ──────────────────── */}
-      <Dialog open={!!selectedActivity} onOpenChange={(o) => { if (!o) setSelectedActivity(null) }}>
-        <DialogContent className="max-w-[480px] p-6 rounded-[28px] border-none shadow-2xl bg-white dark:bg-gray-900 overflow-hidden">
-          <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
-            <DialogTitle className="text-[17px] font-bold text-gray-900 dark:text-white">
-              Space activity
-            </DialogTitle>
-          </div>
-
-          <div className="py-4 space-y-4 text-[13.5px]">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Booked by</span>
-                <div className="flex items-center gap-1 font-bold text-gray-900 dark:text-white">
-                  <span>{selectedActivity?.bookedBy}</span>
-                  <button onClick={() => toast.info("Opening client link")} className="text-gray-400 hover:text-gray-600 cursor-pointer p-0 bg-transparent border-none">
-                    <Icon name="exportSquareOutline" size={13} />
-                  </button>
-                </div>
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Date booked</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{selectedActivity?.dateBooked}</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Check in</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{selectedActivity?.checkIn}</span>
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Check out</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{selectedActivity?.checkOut}</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Duration</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{selectedActivity?.duration}</span>
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Status</span>
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  {selectedActivity?.status === "Complete" ? "Completed" : selectedActivity?.status}
-                </span>
-              </div>
-            </div>
-
-            <Separator className="dark:bg-gray-800" />
-
-            <div className="flex flex-col gap-1">
-              <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Feedback</span>
-              <p className="text-gray-700 dark:text-gray-300 font-semibold leading-relaxed">
-                {selectedActivity?.feedback || "No feedback left."}
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Report</span>
-              <p className="text-gray-700 dark:text-gray-300 font-semibold leading-relaxed">
-                {selectedActivity?.report || "No reports submitted."}
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-2">
-            <Button
-              className="w-full h-11 rounded-full bg-primary hover:bg-primary/95 text-white font-semibold text-[14px]"
-              onClick={() => setSelectedActivity(null)}
-            >
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ActivityDetailDialog
+        activity={selectedActivity}
+        open={!!selectedActivity}
+        onOpenChange={(o) => { if (!o) setSelectedActivity(null) }}
+      />
 
       {/* ── "Which client?" Booking Modal ────────────────── */}
-      <Dialog open={bookSpaceOpen} onOpenChange={setBookSpaceOpen}>
-        <DialogContent className="max-w-[440px] p-6 rounded-[28px] border-none shadow-2xl bg-white dark:bg-gray-900 overflow-hidden">
-          <div className="flex flex-col gap-1 pb-3 border-b border-gray-100 dark:border-gray-800">
-            <DialogTitle className="text-[17px] font-bold text-gray-900 dark:text-white">
-              Which client?
-            </DialogTitle>
-            <DialogDescription className="text-xs text-gray-400 font-medium">
-              Select the client this booking is being made for
-            </DialogDescription>
-          </div>
-
-          {/* Search bar inside dialog */}
-          <div className="py-3">
-            <Input
-              icon={<Icon name="search" size={18} className="text-gray-400" />}
-              type="text"
-              placeholder="Search client name or id"
-              value={clientSearch}
-              onChange={(e) => setClientSearch(e.target.value)}
-              className="w-full h-[40px] pl-10 rounded-full border border-gray-100 focus:ring-1 focus:ring-primary/20 bg-gray-50/50"
-            />
-          </div>
-
-          {/* List of clients */}
-          <div className="max-h-[260px] overflow-y-auto pr-1 flex flex-col divide-y divide-gray-50 dark:divide-gray-850">
-            {filteredClients.length === 0 ? (
-              <p className="text-center py-6 text-sm text-gray-400 italic">No clients found</p>
-            ) : (
-              filteredClients.map((client, i) => {
-                const isSelected = selectedClientId === client.id && i === 1 // Match the checked item on row 2 in mockup for default view
-                const actualSelected = selectedClientId === `${client.id}-${i}`
-                const isChecked = actualSelected || (selectedClientId === null && client.id === "10003")
-
-                return (
-                  <div
-                    key={`${client.id}-${i}`}
-                    onClick={() => handleSelectClient(client.name, actualSelected ? "" : `${client.id}-${i}`)}
-                    className="flex items-center justify-between py-3 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-800/30 px-2 rounded-xl transition-all"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={cn(
-                        "text-[14px] text-gray-800 dark:text-gray-200",
-                        isChecked ? "font-bold text-gray-900 dark:text-white" : "font-semibold text-gray-600"
-                      )}>
-                        {client.name}
-                      </span>
-                      <span className="bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                        ID {client.id}
-                      </span>
-                    </div>
-
-                    {isChecked && (
-                      <Icon
-                        name="check"
-                        size={18}
-                        className="text-primary shrink-0 transition-transform duration-200 scale-100"
-                      />
-                    )}
-                  </div>
-                )
-              })
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <BookSpaceDialog
+        open={bookSpaceOpen}
+        onOpenChange={setBookSpaceOpen}
+        onSelectClient={handleSelectClient}
+      />
     </div>
   )
 }
