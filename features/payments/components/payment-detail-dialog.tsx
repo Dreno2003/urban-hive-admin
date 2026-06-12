@@ -20,7 +20,7 @@ function Field({ label, children, className }: { label: string; children: React.
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       <span className="text-[13px] text-gray-500 dark:text-gray-400 font-medium tracking-tight leading-none">{label}</span>
-      <div className="text-[16px] font-semibold text-gray-900 dark:text-gray-100 flex items-center leading-tight">
+      <div className="text-[16px] font-medium dark:text-gray-100 flex items-center leading-tight">
         {children}
       </div>
     </div>
@@ -61,13 +61,13 @@ export function PaymentDetailDialog({ payment, open, onOpenChange }: PaymentDeta
         {/* Row 2 — Client name & Space */}
         <div className="grid grid-cols-2 gap-6 py-5">
           <Field label="Client name">
-            <span className="underline decoration-1 underline-offset-4 cursor-pointer hover:text-primary transition-colors">
+            <span className="hover:underline decoration-1 underline-offset-4 cursor-pointer  transition-colors">
               {payment.clientName}
             </span>
             <Icon name="exportSquareOutline" className="size-4 text-gray-400 shrink-0 ml-1.5" />
           </Field>
           <Field label="Space">
-            <span className="underline decoration-1 underline-offset-4 cursor-pointer hover:text-primary transition-colors">
+            <span className="hover:underline decoration-1 underline-offset-4 cursor-pointer  transition-colors">
               {payment.spaceName}
             </span>
             <Icon name="exportSquareOutline" className="size-4 text-gray-400 shrink-0 ml-1.5" />
