@@ -390,7 +390,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                             <td className="px-6 py-4.5">
                               <Checkbox />
                             </td>
-                            <td className="px-6 py-4.5 text-gray-900 dark:text-white font-bold">{act.bookedBy}</td>
+                            <td className="px-6 py-4.5 text dark:text-white text-secondary-foreground ">{act.bookedBy}</td>
                             <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.dateBooked}</td>
                             <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.checkIn}</td>
                             <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.checkOut}</td>
@@ -430,20 +430,20 @@ export function SpaceDetailContent({ id }: { id: string }) {
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[20%]">Client</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[65%]">Comment</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Action</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium  w-[20%]">Client</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium  w-[65%]">Comment</th>
+                          <th className="psx-6 py-3.5 text-body-lg font-medium  w-[15%]">Action</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                         {space?.feedback?.map((fb) => (
-                          <tr key={fb.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] text-gray-700 dark:text-gray-300 font-medium">
-                            <td className="px-6 py-5 text-gray-900 dark:text-white font-bold">{fb.client}</td>
+                          <tr key={fb.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] *:text-secondary-foreground dark:text-gray-300 ">
+                            <td className="px-6 py-5 dark:text-white ">{fb.client}</td>
                             <td className="px-6 py-5 leading-relaxed text-gray-500 dark: text-secondary-foreground font-medium">{fb.comment}</td>
-                            <td className="px-6 py-5">
+                            <td className="pxs-6 py-5">
                               <button
                                 onClick={() => toast.success("Review status updated!")}
-                                className="text-primary font-bold hover:underline cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
+                                className="text-primary text-left  hover:underline cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
                               >
                                 Display on space page
                               </button>
