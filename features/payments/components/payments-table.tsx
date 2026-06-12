@@ -4,8 +4,10 @@ import React from "react"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { Separator } from "@/shared/components/ui/separator"
+import { Badge } from "@/shared/components/ui/badge"
 import { cn } from "@/shared/lib/utils"
 import type { Payment, PaymentStatus } from "../types"
+import { Icon } from "@/shared/components/ui/icon"
 
 const COLS = ["ID", "Name", "Amount", "Space", "Space type", "Date", "Payment status", "Action"]
 const WIDTHS = [
@@ -19,11 +21,11 @@ const WIDTHS = [
   "w-[8%]"
 ]
 
-const STATUS_STYLE: Record<PaymentStatus, { dot: string; text: string; bg: string; label: string }> = {
-  paid:     { dot: "bg-[#00C950]",  text: "text-[#00C950]",  bg: "bg-[#DCFCE7]",  label: "Paid" },
-  pending:  { dot: "bg-yellow-500", text: "text-yellow-700", bg: "bg-yellow-100", label: "Pending" },
-  failed:   { dot: "bg-red-500",    text: "text-red-700",    bg: "bg-red-100",    label: "Failed" },
-  refunded: { dot: "bg-gray-500",   text: "text-gray-700",   bg: "bg-gray-150",   label: "Refunded" },
+const STATUS_MAP: Record<PaymentStatus, { variant: "success" | "warning" | "destructive" | "secondary"; icon: "check" | "loader" | "x"; label: string }> = {
+  paid: { variant: "success", icon: "check", label: "Paid" },
+  pending: { variant: "warning", icon: "loader", label: "Pending" },
+  failed: { variant: "destructive", icon: "x", label: "Failed" },
+  refunded: { variant: "secondary", icon: "loader", label: "Refunded" },
 }
 
 interface PaymentsTableProps {
@@ -65,13 +67,14 @@ export function PaymentsTable({
             </div>
           ))
         ) : payments.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 gap-2">
-            <p className="text-[15px] font-semibold text-gray-900 dark:text-white">No payments</p>
-            <p className="text-sm text-gray-400 dark:text-gray-500">No payment records found</p>
+          <div className="flex flex-col items-center justify-center py-16 gap-1.5">
+            <Icon name='creditCard2' className="size-[80px] text-secondary-foreground"  />
+            <p className="text-body-base font-bold  dark:text-white">No payments</p>
+            <p className="text-sm text-secondary-foreground dark:text-gray-500">No payments has been processed yet</p>
           </div>
         ) : (
           payments.map((p, idx) => {
-            const { dot, text, bg, label } = STATUS_STYLE[p.paymentStatus]
+            const { variant, icon, label } = STATUS_MAP[p.paymentStatus]
             return (
               <div
                 key={p.id}
@@ -98,10 +101,9 @@ export function PaymentsTable({
                 </span>
                 <span className={cn("text-[13px] text-gray-500", WIDTHS[5])}>{p.billingPeriod}</span>
                 <div className={cn(WIDTHS[6])}>
-                  <span className={cn("inline-flex items-center justify-center h-[24px] px-2.5 gap-1.5 rounded-full text-xs font-semibold whitespace-nowrap min-w-[64px]", bg, text)}>
-                    <span className={cn("size-1.5 rounded-full shrink-0", dot)} />
+                  <Badge variant={variant} iconName={icon}>
                     {label}
-                  </span>
+                  </Badge>
                 </div>
                 <span
                   onClick={(e) => {

@@ -7,13 +7,14 @@ import { Button } from "@/shared/components/ui/button"
 import { Copy } from "lucide-react"
 import { Icon } from "@/shared/components/ui/icon"
 import { cn } from "@/shared/lib/utils"
+import { Badge } from "@/shared/components/ui/badge"
 import type { Payment, PaymentStatus } from "../types"
 
-const STATUS_STYLE: Record<PaymentStatus, { dot: string; text: string; bg: string; label: string }> = {
-  paid:     { dot: "bg-green-500",  text: "text-green-700",  bg: "bg-green-100",  label: "Paid" },
-  pending:  { dot: "bg-yellow-500", text: "text-yellow-700", bg: "bg-yellow-100", label: "Pending" },
-  failed:   { dot: "bg-red-500",    text: "text-red-700",    bg: "bg-red-100",    label: "Failed" },
-  refunded: { dot: "bg-gray-500",   text: "text-gray-700",   bg: "bg-gray-150",   label: "Refunded" },
+const STATUS_MAP: Record<PaymentStatus, { variant: "success" | "warning" | "destructive" | "secondary"; icon: "check" | "loader" | "x"; label: string }> = {
+  paid:     { variant: "success",     icon: "check",  label: "Paid" },
+  pending:  { variant: "warning",     icon: "loader", label: "Pending" },
+  failed:   { variant: "destructive", icon: "x",      label: "Failed" },
+  refunded: { variant: "secondary",   icon: "loader", label: "Refunded" },
 }
 
 function Field({ label, children, fullWidth }: { label: string; children: React.ReactNode; fullWidth?: boolean }) {
@@ -34,7 +35,7 @@ interface PaymentDetailDialogProps {
 export function PaymentDetailDialog({ payment, open, onOpenChange }: PaymentDetailDialogProps) {
   if (!payment) return null
 
-  const { dot, text, bg, label } = STATUS_STYLE[payment.paymentStatus]
+  const { variant, icon, label } = STATUS_MAP[payment.paymentStatus]
 
   const copyToClipboard = (txt?: string) => {
     if (txt) {
@@ -47,10 +48,9 @@ export function PaymentDetailDialog({ payment, open, onOpenChange }: PaymentDeta
       dialogTitle={
         <div className="flex items-center gap-2">
           <span className="text-[22px] font-bold text-gray-900 dark:text-gray-50 tracking-tight">Payment details</span>
-          <span className={cn("inline-flex items-center gap-1 text-[12px] font-medium rounded-full px-2.5 py-0.5", bg, text)}>
-            <span className={cn("size-1.5 rounded-full shrink-0", dot)} />
+          <Badge variant={variant} iconName={icon}>
             {label}
-          </span>
+          </Badge>
         </div>
       }
       open={open}

@@ -35,8 +35,8 @@ export function PaymentsBarChart({ data }: { data: PaymentsMonthlyData[] }) {
                 className={cn(
                   "w-full rounded-[3px] transition-colors duration-150",
                   isHovered
-                    ? "bg-[#3A4D62] dark:bg-gray-300"
-                    : "bg-[#7E8D9F]/30 dark:bg-gray-700"
+                    ? "bg-gray-800 dark:bg-gray-300"
+                    : "bg-gray-700 dark:bg-gray-600"
                 )}
                 style={{ height: `${heightPct}%` }}
               />

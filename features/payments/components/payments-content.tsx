@@ -50,7 +50,7 @@ export function PaymentsContent() {
   const totalPages = list?.totalPages ?? 1
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex-1 flex flex-col min-h-screen bg-white dark:bg-gray-900">
       <div className="w-full px-8 md:px-12 pt-8 pb-12 mt-[76px]">
         {/* ── Page Header ─────────────────────────────────── */}
         <div className="flex items-start justify-between mb-6">
@@ -168,7 +168,8 @@ export function PaymentsContent() {
             </div>
           ) : (
             <PaymentsTable
-              payments={payments}
+              payments={[]}
+              // payments={payments}
               isLoading={listLoading}
               currentPage={page}
               totalPages={totalPages}

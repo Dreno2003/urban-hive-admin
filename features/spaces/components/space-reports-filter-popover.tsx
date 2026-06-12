@@ -13,7 +13,7 @@ export interface SpaceReportFilters {
   categories: string[]
 }
 
-interface SpaceReportsFilterPopoverProps {
+interface SpaceReportsFilterPopoverProps {pay
   value: SpaceReportFilters
   onChange: (filters: SpaceReportFilters) => void
 }
