@@ -109,7 +109,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
               )}
               <div className="flex flex-wrap items-start gap-8 lg:gap-16">
                 <div>
-                  <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-0.5">Name</p>
+                  <p className="text-[12px] text-secondary-foreground  tracking-wider mb-0.5">Name</p>
                   {isLoading ? (
                     <Skeleton className="h-5 w-32 bg-gray-200 dark:bg-gray-800" />
                   ) : (
@@ -119,21 +119,21 @@ export function SpaceDetailContent({ id }: { id: string }) {
                   )}
                 </div>
                 <div>
-                  <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-0.5">Space location</p>
+                  <p className="text-body-sm text-secondary-foreground  tracking-wider mb-0.5">Space location</p>
                   {isLoading ? (
                     <Skeleton className="h-5 w-24 bg-gray-200 dark:bg-gray-800" />
                   ) : (
-                    <p className="text-[15px] font-bold leading-tight">
+                    <p className="text-body-base font-medium leading-tight">
                       {space?.location}
                     </p>
                   )}
                 </div>
                 <div>
-                  <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-0.5">Space type</p>
+                  <p className="text-body-sm text-secondary-foreground  tracking-wider mb-0.5">Space type</p>
                   {isLoading ? (
                     <Skeleton className="h-5 w-20 bg-gray-200 dark:bg-gray-800" />
                   ) : (
-                    <p className="text-[15px] font-bold leading-tight">
+                    <p className="text-body-base font-medium leading-tight">
                       {space?.spaceType}
                     </p>
                   )}
@@ -144,20 +144,21 @@ export function SpaceDetailContent({ id }: { id: string }) {
             <div className="flex items-center flex-wrap gap-2 shrink-0 self-end lg:self-center">
               <Button
                 variant="secondary-outline"
-                className="h-[38px] px-5 rounded-full text-[13px] border-gray-200 dark:border-gray-800 font-medium text-gray-700 dark:text-gray-300"
+                className="h-[36px] px-5 rounded-full text-[13px] border-gray-200 dark:border-gray-800 font-medium text-gray-700 dark:text-gray-300"
                 onClick={handleEditSpace}
               >
                 Edit space
               </Button>
               <Button
                 variant="secondary-outline"
-                className="h-[38px] px-5 rounded-full text-[13px] border-gray-200 dark:border-gray-800 font-medium text-gray-700 dark:text-gray-300"
+                className="h-[36px] px-5 rounded-full text-[13px] border-gray-200 dark:border-gray-800 font-medium text-gray-700 dark:text-gray-300"
                 onClick={handleToggleFreeze}
               >
                 {isFrozen ? "Unfreeze space" : "Freeze space"}
               </Button>
               <Button
-                className="h-[38px] px-5 rounded-full text-[13px] font-medium bg-[#FFF0F0] text-red-500 hover:bg-red-50/80 border border-red-100 dark:bg-red-950/20 dark:border-red-900/30"
+                variant="secondary-outline"
+                className="h-[36px] px-5 rounded-full text-[13px]   text-red-500 hover:bg-red-50/80 border font-bold dark:bg-red-950/20 dark:border-red-900/30"
                 onClick={handleRemoveSpace}
               >
                 Remove space
@@ -170,27 +171,27 @@ export function SpaceDetailContent({ id }: { id: string }) {
           {/* Info grid: space rate, monthly rate, amenities, capacity */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1.5fr_4fr_3fr] gap-6 mb-6">
             <div>
-              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-1">Space rate</p>
+              <p className="text-body-sm text-secondary-foreground  tracking-wider mb-1">Space rate</p>
               {isLoading ? (
                 <Skeleton className="h-5 w-20 bg-gray-200 dark:bg-gray-800" />
               ) : (
-                <p className="text-[15px] font-bold leading-tight">
+                <p className="text-base font-medium leading-tight">
                   {space?.rate?.split("/")[0]}
                 </p>
               )}
             </div>
             <div>
-              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-1">Monthly rate</p>
+              <p className="text-body-sm text-secondary-foreground  tracking-wider mb-1">Monthly rate</p>
               {isLoading ? (
                 <Skeleton className="h-5 w-24 bg-gray-200 dark:bg-gray-800" />
               ) : (
-                <p className="text-[15px] font-bold leading-tight">
+                <p className="text-base font-medium  leading-tight">
                   {space?.monthlyRate}
                 </p>
               )}
             </div>
             <div>
-              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-2">Space amenities</p>
+              <p className="text-body-sm text-secondary-foreground font tracking-wider mb-2">Space amenities</p>
               {isLoading ? (
                 <div className="flex gap-2">
                   <Skeleton className="h-8 w-20 bg-gray-200 dark:bg-gray-800 rounded-full" />
@@ -201,7 +202,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                   {space?.amenities?.map((amenity) => (
                     <span
                       key={amenity}
-                      className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[12.5px] font-medium border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300"
+                      className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[12px]  border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-secondary-foreground"
                     >
                       {AMENITY_ICONS[amenity] && (
                         <Icon name={AMENITY_ICONS[amenity]} className="size-3.5 text-gray-500" />
@@ -213,7 +214,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
               )}
             </div>
             <div>
-              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-2">Space capacity</p>
+              <p className="text-body-sm text-secondary-foreground  tracking-wider mb-2">Space capacity</p>
               {isLoading ? (
                 <div className="flex gap-2">
                   <Skeleton className="h-8 w-24 bg-gray-200 dark:bg-gray-800 rounded-full" />
@@ -221,12 +222,12 @@ export function SpaceDetailContent({ id }: { id: string }) {
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  <span className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-full px-3.5 py-1.5 flex items-center gap-1.5 text-[12.5px] font-medium text-gray-600 dark:text-gray-300">
-                    <Icon name="bed2" size={14} className="text-gray-500 shrink-0" />
+                  <span className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-full px-3.5 py-1.5 flex items-center gap-1.5 text-[12.5px] text-secondary-foreground dark:text-gray-300">
+                    <Icon name="bed2" size={14} className="text-secondary-foreground shrink-0" />
                     {space?.bedrooms} bedroom
                   </span>
-                  <span className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-full px-3.5 py-1.5 flex items-center gap-1.5 text-[12.5px] font-medium text-gray-600 dark:text-gray-300">
-                    <Icon name="bath2" size={14} className="text-gray-500 shrink-0" />
+                  <span className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-full px-3.5 py-1.5 flex items-center gap-1.5 text-[12.5px]  text-secondary-foreground dark:text-gray-300">
+                    <Icon name="bath2" size={14} className="text-secondary-foreground shrink-0" />
                     {space?.bathrooms} bathroom
                   </span>
                 </div>
@@ -238,14 +239,14 @@ export function SpaceDetailContent({ id }: { id: string }) {
 
           {/* Space Description */}
           <div className="mb-6">
-            <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-1.5">Space description</p>
+            <p className="text-body-sm text-secondary-foreground  tracking-wider mb-1.5">Space description</p>
             {isLoading ? (
               <div className="space-y-2">
                 <Skeleton className="h-4 w-full bg-gray-200 dark:bg-gray-800" />
                 <Skeleton className="h-4 w-5/6 bg-gray-200 dark:bg-gray-800" />
               </div>
             ) : (
-              <p className="text-[14px] leading-relaxed text-gray-700 dark:text-gray-300 font-medium">
+              <p className="text-body-base leading-relaxed  font-medium">
                 {space?.description}
               </p>
             )}
@@ -256,7 +257,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
           {/* Images & Video files display */}
           <div className="flex flex-col md:flex-row gap-12">
             <div className="flex-1">
-              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-2">Space images</p>
+              <p className="text-body-sm text-secondary-foreground  tracking-wider mb-2">Space images</p>
               {isLoading ? (
                 <div className="flex gap-2">
                   <Skeleton className="size-[84px] bg-gray-200 dark:bg-gray-800 rounded-[14px]" />
