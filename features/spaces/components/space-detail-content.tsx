@@ -13,6 +13,8 @@ import { Pagination } from "@/shared/components/ui/pagination"
 import { ActivityDetailDialog } from "./activity-detail-dialog"
 import { Checkbox } from "@/shared/components/ui/checkbox"
 import { BookSpaceDialog } from "./book-space-dialog"
+import { ConfirmBookingDialog } from "./confirm-booking-dialog"
+import { FinalizeBookingDialog } from "./finalize-booking-dialog"
 import { RemoveButton } from "./remove-button"
 import { toast } from "sonner"
 import { cn } from "@/shared/lib/utils"
@@ -38,6 +40,10 @@ export function SpaceDetailContent({ id }: { id: string }) {
   // Dialog States
   const [selectedActivity, setSelectedActivity] = useState<SpaceActivity | null>(null)
   const [bookSpaceOpen, setBookSpaceOpen] = useState(false)
+  const [confirmBookingOpen, setConfirmBookingOpen] = useState(false)
+  const [finalizeBookingOpen, setFinalizeBookingOpen] = useState(false)
+  const [selectedClientName, setSelectedClientName] = useState("")
+  const [selectedClientId, setSelectedClientId] = useState("00001")
 
   // Space state controls (mock toggle states)
   const [isFrozen, setIsFrozen] = useState(false)
@@ -80,8 +86,39 @@ export function SpaceDetailContent({ id }: { id: string }) {
   }
 
   const handleSelectClient = (clientName: string, clientId: string) => {
-    toast.success(`Booking successfully created for ${clientName}!`)
+    setSelectedClientName(clientName)
+    const realId = clientId.split("-")[0] || "00001"
+    setSelectedClientId(realId)
     setBookSpaceOpen(false)
+    setTimeout(() => {
+      setConfirmBookingOpen(true)
+    }, 200)
+  }
+
+  const handleConfirmBooking = () => {
+    setConfirmBookingOpen(false)
+    setTimeout(() => {
+      setFinalizeBookingOpen(true)
+    }, 200)
+  }
+
+  const handleCancelBooking = () => {
+    setConfirmBookingOpen(false)
+    setTimeout(() => {
+      setBookSpaceOpen(true)
+    }, 200)
+  }
+
+  const handleFinalizeBooking = () => {
+    toast.success(`Booking successfully created for ${selectedClientName}!`)
+    setFinalizeBookingOpen(false)
+  }
+
+  const handleCancelFinalize = () => {
+    setFinalizeBookingOpen(false)
+    setTimeout(() => {
+      setConfirmBookingOpen(true)
+    }, 200)
   }
 
   const handleRemoveImage = (index: number) => {
@@ -164,6 +201,12 @@ export function SpaceDetailContent({ id }: { id: string }) {
                 onClick={handleRemoveSpace}
               >
                 Remove space
+              </Button>
+              <Button
+                className="h-[36px] px-5 rounded-full text-[13px] bg-primary text-white hover:bg-primary/95 font-medium border-0"
+                onClick={() => setBookSpaceOpen(true)}
+              >
+                Book space
               </Button>
             </div>
           </div>
@@ -290,7 +333,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                   <div className="relative size-full rounded-[14px] overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
                     <img src={video} alt="" className="absolute inset-0 size-full object-cover opacity-60" />
                     {/* Play Button Overlay */}
-                    <img src={'/images/play-button.png'} className="size-8 relative " />
+                    <img src={'/images/play-button.png'} className="size-5.5 z-20 relative " />
                   </div>
                   <RemoveButton onClick={handleRemoveVideo} ariaLabel="Remove video" />
                 </div>
@@ -372,29 +415,29 @@ export function SpaceDetailContent({ id }: { id: string }) {
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[5%]">
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[5%]">
                             <Checkbox />
                           </th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[22%]">Booked by</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Date booked</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Check in</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Check out</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[10%]">Duration</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[10%]">Status</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[8%]">Action</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[22%]">Booked by</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[15%]">Date booked</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[15%]">Check in</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[15%]">Check out</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[10%]">Duration</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[10%]">Status</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[8%]">Action</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                         {space?.activity?.map((act) => (
-                          <tr key={act.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] text-gray-700 dark:text-gray-300 font-medium">
+                          <tr key={act.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] *:text-secondary-foreground dark:text-gray-300">
                             <td className="px-6 py-4.5">
                               <Checkbox />
                             </td>
-                            <td className="px-6 py-4.5 text dark:text-white text-secondary-foreground ">{act.bookedBy}</td>
-                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.dateBooked}</td>
-                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.checkIn}</td>
-                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.checkOut}</td>
-                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.duration}</td>
+                            <td className="px-6 py-4.5 dark:text-white">{act.bookedBy}</td>
+                            <td className="px-6 py-4.5">{act.dateBooked}</td>
+                            <td className="px-6 py-4.5">{act.checkIn}</td>
+                            <td className="px-6 py-4.5">{act.checkOut}</td>
+                            <td className="px-6 py-4.5">{act.duration}</td>
                             <td className="px-6 py-4.5">
                               <span className={cn(
                                 "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11.5px] font-medium border rounded-full",
@@ -412,7 +455,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                             <td className="px-6 py-4.5">
                               <button
                                 onClick={() => setSelectedActivity(act)}
-                                className="text-primary font-bold hover:underline cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
+                                className="text-primary text-left cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
                               >
                                 View
                               </button>
@@ -430,20 +473,20 @@ export function SpaceDetailContent({ id }: { id: string }) {
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
-                          <th className="px-6 py-3.5 text-body-lg font-medium  w-[20%]">Client</th>
-                          <th className="px-6 py-3.5 text-body-lg font-medium  w-[65%]">Comment</th>
-                          <th className="psx-6 py-3.5 text-body-lg font-medium  w-[15%]">Action</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[20%]">Client</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[65%]">Comment</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[15%]">Action</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                         {space?.feedback?.map((fb) => (
-                          <tr key={fb.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] *:text-secondary-foreground dark:text-gray-300 ">
-                            <td className="px-6 py-5 dark:text-white ">{fb.client}</td>
-                            <td className="px-6 py-5 leading-relaxed text-gray-500 dark: text-secondary-foreground font-medium">{fb.comment}</td>
-                            <td className="pxs-6 py-5">
+                          <tr key={fb.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] *:text-secondary-foreground dark:text-gray-300">
+                            <td className="px-6 py-5 dark:text-white">{fb.client}</td>
+                            <td className="px-6 py-5 leading-relaxed text-secondary-foreground dark:text-secondary-foreground font-medium">{fb.comment}</td>
+                            <td className="px-6 py-5">
                               <button
                                 onClick={() => toast.success("Review status updated!")}
-                                className="text-primary text-left  hover:underline cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
+                                className="text-primary text-left cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
                               >
                                 Display on space page
                               </button>
@@ -461,45 +504,39 @@ export function SpaceDetailContent({ id }: { id: string }) {
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[10%]">ID</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[18%]">Client</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[18%]">Space</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[18%]">Category</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Date</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[13%]">Status</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[8%]">Action</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[10%]">ID</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[18%]">Client</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[18%]">Space</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[18%]">Category</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[15%]">Date</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[13%]">Status</th>
+                          <th className="px-6 py-3.5 text-body-lg font-medium w-[8%]">Action</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                         {space?.reports?.map((rep) => (
-                          <tr key={rep.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] text-gray-700 dark:text-gray-300 font-medium">
-                            <td className="px-6 py-4.5 font-mono  text-secondary-foreground font-bold">{rep.id}</td>
-                            <td className="px-6 py-4.5 text-gray-900 dark:text-white font-bold">{rep.client}</td>
-                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{rep.space}</td>
+                          <tr key={rep.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] *:text-secondary-foreground dark:text-gray-300">
+                            <td className="px-6 py-4.5  dark:text-white">{rep.id}</td>
+                            <td className="px-6 py-4.5 dark:text-white">{rep.client}</td>
+                            <td className="px-6 py-4.5">{rep.space}</td>
                             <td className="px-6 py-4.5">
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium border border-gray-200 dark:border-gray-700 text-gray-500 dark: text-secondary-foreground bg-[#F9F9FB] dark:bg-gray-800">
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11.5px] font-medium border border-gray-200 dark:border-gray-700 text-secondary-foreground dark:text-secondary-foreground dark:bg-gray-800">
                                 {rep.category}
                               </span>
                             </td>
-                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{rep.date}</td>
+                            <td className="px-6 py-4.5">{rep.date}</td>
                             <td className="px-6 py-4.5">
-                              <span className={cn(
-                                "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11.5px] font-medium border rounded-full",
-                                rep.status === "Resolved"
-                                  ? "bg-[#E6F9EE] text-[#00A854] border-[#B3F2CE]"
-                                  : "bg-[#FFF8E6] text-[#FE9A00] border-[#FFE2B3]"
-                              )}>
-                                <span className={cn(
-                                  "size-1.5 rounded-full",
-                                  rep.status === "Resolved" ? "bg-[#00A854]" : "bg-[#FE9A00]"
-                                )} />
+                              <Badge
+                                variant={rep.status === "Resolved" ? "success" : "warning"}
+                                iconName={rep.status === "Resolved" ? "check" : "loader"}
+                              >
                                 {rep.status}
-                              </span>
+                              </Badge>
                             </td>
                             <td className="px-6 py-4.5">
                               <button
                                 onClick={() => toast.info(`Viewing ticket ${rep.id} details`)}
-                                className="text-primary font-bold hover:underline cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
+                                className="text-primary text-left cursor-pointer bg-transparent border-none p-0 text-[13.5px]"
                               >
                                 View
                               </button>
@@ -537,6 +574,29 @@ export function SpaceDetailContent({ id }: { id: string }) {
         open={bookSpaceOpen}
         onOpenChange={setBookSpaceOpen}
         onSelectClient={handleSelectClient}
+      />
+
+      {/* ── "Book space" Details Modal ───────────────────── */}
+      <ConfirmBookingDialog
+        open={confirmBookingOpen}
+        onOpenChange={setConfirmBookingOpen}
+        clientName={selectedClientName}
+        onConfirm={handleConfirmBooking}
+        onCancel={handleCancelBooking}
+      />
+
+      {/* ── "Confirm booking" Final Modal ────────────────── */}
+      <FinalizeBookingDialog
+        open={finalizeBookingOpen}
+        onOpenChange={setFinalizeBookingOpen}
+        clientName={selectedClientName}
+        clientId={selectedClientId}
+        spaceName={`${space?.name || "Executive Studio"} — ${space?.location?.split(" ")[0] || "Wuse 2"}`}
+        spaceRate={space?.rate?.split("/")[0] || "₦35,000"}
+        spaceLocation={space?.location || "Wuse 2 Abuja"}
+        spaceImage={images[0]}
+        onConfirm={handleFinalizeBooking}
+        onCancel={handleCancelFinalize}
       />
     </div>
   )
