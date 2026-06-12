@@ -42,6 +42,60 @@ function SpaceBar({ bar }: { bar: SpaceTypeBar }) {
   )
 }
 
+function HoverCalendar() {
+  const row1 = [1, 2, 3, 4, 5, 6, 7]
+  const row2 = [8, 9, 10, 11, 12, 13, 14]
+  const row3 = [15, 16, 17, 18, 19, 20, 21]
+  const row4 = [22, 23, 24, 25, 26, 27, 28]
+
+  const shaded = [1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14]
+
+  return (
+    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden group-hover:block w-[280px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[28px] p-5 shadow-2xl z-50">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <button type="button" className="size-8 rounded-full bg-[#F2F2F7] dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border-none cursor-pointer">
+          <Icon name="chevronLeft" size={14} />
+        </button>
+        <span className="text-body-base font-bold text-[#1C1C1E] dark:text-white">May 2026</span>
+        <button type="button" className="size-8 rounded-full bg-[#F2F2F7] dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border-none cursor-pointer">
+          <Icon name="chevronLeft" size={14} className="rotate-180" />
+        </button>
+      </div>
+
+      {/* Weekdays */}
+      <div className="grid grid-cols-7 text-center mb-2">
+        {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
+          <span key={i} className="text-[12px] font-bold text-[#1C1C1E] dark:text-gray-400">
+            {day}
+          </span>
+        ))}
+      </div>
+
+      {/* Dates Grid */}
+      <div className="grid grid-cols-7 gap-y-2 text-center text-sm font-medium">
+        {[...row1, ...row2, ...row3, ...row4].map((date) => {
+          const isShaded = shaded.includes(date)
+          return (
+            <div key={date} className="flex items-center justify-center">
+              <span
+                className={cn(
+                  "flex items-center justify-center size-8 rounded-full text-[13px] font-medium transition-colors",
+                  isShaded
+                    ? "bg-[#F2F2F7] dark:bg-gray-800 text-gray-400"
+                    : "text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
+                )}
+              >
+                {date}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export function SpacesContent() {
   const [page, setPage] = useState(1)
   const [addSpaceOpen, setAddSpaceOpen] = useState(false)
@@ -159,7 +213,10 @@ export function SpacesContent() {
                       {space.availability}
                     </Badge>
                   </span>
-                  <span className={cn("text-[13px] ", WIDTHS[5])}>{space.availableDate}</span>
+                  <span className={cn("text-[13px] relative group cursor-pointer py-1", WIDTHS[5])}>
+                    {space.availableDate}
+                    <HoverCalendar />
+                  </span>
                   <span className={cn("text-[13px] font-medium !text-primary cursor-pointer hover:underline", WIDTHS[6])}>
                     <Link href={`/dashboard/spaces/${space.id}`}>Edit</Link>
                   </span>
