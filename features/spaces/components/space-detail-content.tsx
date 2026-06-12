@@ -15,6 +15,8 @@ import { Checkbox } from "@/shared/components/ui/checkbox"
 import { BookSpaceDialog } from "./book-space-dialog"
 import { ConfirmBookingDialog } from "./confirm-booking-dialog"
 import { FinalizeBookingDialog } from "./finalize-booking-dialog"
+import { SpaceActivityFilterPopover, type SpaceActivityFilters } from "./space-activity-filter-popover"
+import { SpaceReportsFilterPopover, type SpaceReportFilters } from "./space-reports-filter-popover"
 import { RemoveButton } from "./remove-button"
 import { toast } from "sonner"
 import { cn } from "@/shared/lib/utils"
@@ -44,6 +46,51 @@ export function SpaceDetailContent({ id }: { id: string }) {
   const [finalizeBookingOpen, setFinalizeBookingOpen] = useState(false)
   const [selectedClientName, setSelectedClientName] = useState("")
   const [selectedClientId, setSelectedClientId] = useState("00001")
+
+  // Filter States
+  const [activityFilters, setActivityFilters] = useState<SpaceActivityFilters>({
+    statuses: [],
+    spaceTypes: [],
+    dateFrom: "",
+    dateTo: "",
+  })
+  const [reportsFilters, setReportsFilters] = useState<SpaceReportFilters>({
+    statuses: [],
+    categories: [],
+  })
+
+  const filteredActivity = useMemo(() => {
+    let list = space?.activity ?? []
+    if (activityFilters.statuses.length) {
+      list = list.filter((act) => activityFilters.statuses.includes(act.status))
+    }
+    if (activityFilters.spaceTypes.length && space?.spaceType) {
+      const match = activityFilters.spaceTypes.some(
+        (t) => t.toLowerCase() === space.spaceType.toLowerCase()
+      )
+      if (!match) {
+        list = []
+      }
+    }
+    if (activityFilters.dateFrom) {
+      list = list.filter((act) => new Date(act.checkIn) >= new Date(activityFilters.dateFrom))
+    }
+    if (activityFilters.dateTo) {
+      list = list.filter((act) => new Date(act.checkOut) <= new Date(activityFilters.dateTo))
+    }
+    return list
+  }, [space?.activity, space?.spaceType, activityFilters])
+
+  const filteredReports = useMemo(() => {
+    let list = space?.reports ?? []
+    if (reportsFilters.statuses.length) {
+      list = list.filter((rep) => reportsFilters.statuses.includes(rep.status))
+    }
+    if (reportsFilters.categories.length) {
+      list = list.filter((rep) => reportsFilters.categories.includes(rep.category.toLowerCase()))
+    }
+    return list
+  }, [space?.reports, reportsFilters])
 
   // Space state controls (mock toggle states)
   const [isFrozen, setIsFrozen] = useState(false)
@@ -389,14 +436,24 @@ export function SpaceDetailContent({ id }: { id: string }) {
               </button>
             </div>
 
-            <button
-              onClick={() => toast.info("Filter clicked")}
-              className="flex items-center justify-center gap-1.5 h-[36px] px-4 rounded-[32px] text-sm font-medium transition-colors bg-secondary dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-foreground whitespace-nowrap cursor-pointer border-none"
-            >
-              <Icon name="sort" size={16} className="text-secondary-foreground shrink-0" />
-              Filter
-              <Icon name="chevronDown" size={16} className="text-secondary-foreground ml-0.5" />
-            </button>
+            {activeTab === "activity" && (
+              <SpaceActivityFilterPopover
+                value={activityFilters}
+                onChange={(f) => {
+                  setActivityFilters(f)
+                  setPage(1)
+                }}
+              />
+            )}
+            {activeTab === "reports" && (
+              <SpaceReportsFilterPopover
+                value={reportsFilters}
+                onChange={(f) => {
+                  setReportsFilters(f)
+                  setPage(1)
+                }}
+              />
+            )}
           </div>
 
           {/* Tables layout */}
@@ -428,7 +485,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                        {space?.activity?.map((act) => (
+                        {filteredActivity.map((act) => (
                           <tr key={act.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] *:text-secondary-foreground dark:text-gray-300">
                             <td className="px-6 py-4.5">
                               <Checkbox />
@@ -514,7 +571,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                        {space?.reports?.map((rep) => (
+                        {filteredReports.map((rep) => (
                           <tr key={rep.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] *:text-secondary-foreground dark:text-gray-300">
                             <td className="px-6 py-4.5  dark:text-white">{rep.id}</td>
                             <td className="px-6 py-4.5 dark:text-white">{rep.client}</td>
