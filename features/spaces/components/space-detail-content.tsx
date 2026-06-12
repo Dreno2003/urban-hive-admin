@@ -93,112 +93,108 @@ export function SpaceDetailContent({ id }: { id: string }) {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-[#F9F9FB] dark:bg-gray-950">
+    <div className="flex-1 flex flex-col min-h-screen bg-white dark:bg-gray-950">
       <div className="w-full container-wrapper pt-8 pb-12 mt-[76px]">
         {/* ── Space Profile Card ────────────────────────────── */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[28px] p-6 mb-6 shadow-sm">
-          {/* Top row: Avatar + Name + Action Buttons */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
-            <div className="flex items-center gap-4">
+        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[28px] p-6 mb-6">
+          {/* Top row: Avatar + Name, Location, Space Type + Action Buttons */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-6">
+            <div className="flex items-center gap-6">
               {isLoading ? (
-                <Skeleton className="size-[64px] rounded-full bg-gray-200 dark:bg-gray-800" />
+                <Skeleton className="size-[72px] rounded-full bg-gray-200 dark:bg-gray-800" />
               ) : (
-                <div className="size-[64px] rounded-full bg-[#5E3FFB] flex items-center justify-center shrink-0 text-white text-[22px] font-bold">
+                <div className="size-[72px] rounded-full bg-blue-500 border-2 border-blue-400 flex items-center justify-center shrink-0 text-white text-[24px] font-bold">
                   {getInitials(space?.name ?? "")}
                 </div>
               )}
-              <div>
-                <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Name</p>
-                {isLoading ? (
-                  <Skeleton className="h-6 w-32 bg-gray-200 dark:bg-gray-800" />
-                ) : (
-                  <p className="text-[20px] font-bold text-gray-900 dark:text-white leading-tight">
-                    {space?.name}
-                  </p>
-                )}
+              <div className="flex flex-wrap items-start gap-8 lg:gap-16">
+                <div>
+                  <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-0.5">Name</p>
+                  {isLoading ? (
+                    <Skeleton className="h-5 w-32 bg-gray-200 dark:bg-gray-800" />
+                  ) : (
+                    <p className="text-body-base font-medium dark:text-white leading-tight">
+                      {space?.name}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-0.5">Space location</p>
+                  {isLoading ? (
+                    <Skeleton className="h-5 w-24 bg-gray-200 dark:bg-gray-800" />
+                  ) : (
+                    <p className="text-[15px] font-bold leading-tight">
+                      {space?.location}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-0.5">Space type</p>
+                  {isLoading ? (
+                    <Skeleton className="h-5 w-20 bg-gray-200 dark:bg-gray-800" />
+                  ) : (
+                    <p className="text-[15px] font-bold leading-tight">
+                      {space?.spaceType}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center flex-wrap gap-2">
+            <div className="flex items-center flex-wrap gap-2 shrink-0 self-end lg:self-center">
               <Button
                 variant="secondary-outline"
-                className="h-[38px] px-5 rounded-full text-[13px] border-gray-200 dark:border-gray-800 font-semibold text-gray-700 dark:text-gray-300"
+                className="h-[38px] px-5 rounded-full text-[13px] border-gray-200 dark:border-gray-800 font-medium text-gray-700 dark:text-gray-300"
                 onClick={handleEditSpace}
               >
                 Edit space
               </Button>
               <Button
                 variant="secondary-outline"
-                className="h-[38px] px-5 rounded-full text-[13px] border-gray-200 dark:border-gray-800 font-semibold text-gray-700 dark:text-gray-300"
+                className="h-[38px] px-5 rounded-full text-[13px] border-gray-200 dark:border-gray-800 font-medium text-gray-700 dark:text-gray-300"
                 onClick={handleToggleFreeze}
               >
                 {isFrozen ? "Unfreeze space" : "Freeze space"}
               </Button>
               <Button
-                className="h-[38px] px-5 rounded-full text-[13px] font-semibold bg-[#FFF0F0] text-red-500 hover:bg-red-50/80 border border-red-100 dark:bg-red-950/20 dark:border-red-900/30"
+                className="h-[38px] px-5 rounded-full text-[13px] font-medium bg-[#FFF0F0] text-red-500 hover:bg-red-50/80 border border-red-100 dark:bg-red-950/20 dark:border-red-900/30"
                 onClick={handleRemoveSpace}
               >
                 Remove space
               </Button>
-              {!isLoading && space?.spaceType === "Shortlet" && (
-                <Button
-                  className="h-[38px] px-5 rounded-full text-[13px] font-semibold bg-primary text-white hover:bg-primary/95"
-                  onClick={() => setBookSpaceOpen(true)}
-                >
-                  Book space
-                </Button>
-              )}
             </div>
           </div>
 
-          <Separator className="mb-5 dark:bg-gray-800" />
+          <Separator className="my-6 bg-gray-100 dark:bg-gray-800" />
 
-          {/* Info grid: location, type, rates, amenities, capacity */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+          {/* Info grid: space rate, monthly rate, amenities, capacity */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1.5fr_4fr_3fr] gap-6 mb-6">
             <div>
-              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Space location</p>
-              {isLoading ? (
-                <Skeleton className="h-5 w-24 bg-gray-200 dark:bg-gray-800" />
-              ) : (
-                <p className="text-[15px] font-bold text-gray-900 dark:text-white">{space?.location}</p>
-              )}
-            </div>
-            <div>
-              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Space type</p>
+              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-1">Space rate</p>
               {isLoading ? (
                 <Skeleton className="h-5 w-20 bg-gray-200 dark:bg-gray-800" />
               ) : (
-                <p className="text-[15px] font-bold text-gray-900 dark:text-white">{space?.spaceType}</p>
-              )}
-            </div>
-            <div>
-              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Space rate</p>
-              {isLoading ? (
-                <Skeleton className="h-5 w-20 bg-gray-200 dark:bg-gray-800" />
-              ) : (
-                <p className="text-[15px] font-bold text-gray-900 dark:text-white">
+                <p className="text-[15px] font-bold leading-tight">
                   {space?.rate?.split("/")[0]}
                 </p>
               )}
             </div>
             <div>
-              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Monthly rate</p>
+              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-1">Monthly rate</p>
               {isLoading ? (
                 <Skeleton className="h-5 w-24 bg-gray-200 dark:bg-gray-800" />
               ) : (
-                <p className="text-[15px] font-bold text-gray-900 dark:text-white">{space?.monthlyRate}</p>
+                <p className="text-[15px] font-bold leading-tight">
+                  {space?.monthlyRate}
+                </p>
               )}
             </div>
-          </div>
-
-          {/* Amenities & Capacity */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5">
             <div>
-              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Space amenities</p>
+              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-2">Space amenities</p>
               {isLoading ? (
                 <div className="flex gap-2">
-                  <Skeleton className="h-7 w-20 bg-gray-200 dark:bg-gray-800 rounded-full" />
-                  <Skeleton className="h-7 w-24 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                  <Skeleton className="h-8 w-20 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                  <Skeleton className="h-8 w-24 bg-gray-200 dark:bg-gray-800 rounded-full" />
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
@@ -216,34 +212,33 @@ export function SpaceDetailContent({ id }: { id: string }) {
                 </div>
               )}
             </div>
-
             <div>
-              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Space capacity</p>
+              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-2">Space capacity</p>
               {isLoading ? (
                 <div className="flex gap-2">
-                  <Skeleton className="h-7 w-24 bg-gray-200 dark:bg-gray-800 rounded-full" />
-                  <Skeleton className="h-7 w-24 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                  <Skeleton className="h-8 w-24 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                  <Skeleton className="h-8 w-24 bg-gray-200 dark:bg-gray-800 rounded-full" />
                 </div>
               ) : (
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap gap-2">
                   <span className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-full px-3.5 py-1.5 flex items-center gap-1.5 text-[12.5px] font-medium text-gray-600 dark:text-gray-300">
                     <Icon name="bed2" size={14} className="text-gray-500 shrink-0" />
-                    {space?.bedrooms} bedroom{space?.bedrooms !== 1 ? "s" : ""}
+                    {space?.bedrooms} bedroom
                   </span>
                   <span className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-full px-3.5 py-1.5 flex items-center gap-1.5 text-[12.5px] font-medium text-gray-600 dark:text-gray-300">
                     <Icon name="bath2" size={14} className="text-gray-500 shrink-0" />
-                    {space?.bathrooms} bathroom{space?.bathrooms !== 1 ? "s" : ""}
+                    {space?.bathrooms} bathroom
                   </span>
                 </div>
               )}
             </div>
           </div>
 
-          <Separator className="mb-5 dark:bg-gray-800" />
+          <Separator className="my-6 bg-gray-100 dark:bg-gray-800" />
 
           {/* Space Description */}
           <div className="mb-6">
-            <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5">Space description</p>
+            <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-1.5">Space description</p>
             {isLoading ? (
               <div className="space-y-2">
                 <Skeleton className="h-4 w-full bg-gray-200 dark:bg-gray-800" />
@@ -256,20 +251,26 @@ export function SpaceDetailContent({ id }: { id: string }) {
             )}
           </div>
 
+          <Separator className="my-6 bg-gray-100 dark:bg-gray-800" />
+
           {/* Images & Video files display */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Space images</p>
+          <div className="flex flex-col md:flex-row gap-12">
+            <div className="flex-1">
+              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-2">Space images</p>
               {isLoading ? (
                 <div className="flex gap-2">
-                  <Skeleton className="size-[60px] bg-gray-200 dark:bg-gray-800 rounded-xl" />
-                  <Skeleton className="size-[60px] bg-gray-200 dark:bg-gray-800 rounded-xl" />
+                  <Skeleton className="size-[84px] bg-gray-200 dark:bg-gray-800 rounded-[14px]" />
+                  <Skeleton className="size-[84px] bg-gray-200 dark:bg-gray-800 rounded-[14px]" />
                 </div>
               ) : (
                 <div className="flex gap-3 flex-wrap">
                   {images.map((imgUrl, i) => (
-                    <div key={i} className="relative size-[60px] shrink-0 group">
-                      <img src={imgUrl} alt="" className="w-full h-full object-cover rounded-xl border border-gray-100 dark:border-gray-800" />
+                    <div key={i} className="relative size-[84px] shrink-0 group">
+                      <img
+                        src={imgUrl}
+                        alt=""
+                        className="w-full h-full object-cover rounded-[14px] border border-gray-100 dark:border-gray-800"
+                      />
                       <button
                         type="button"
                         onClick={() => handleRemoveImage(i)}
@@ -284,13 +285,13 @@ export function SpaceDetailContent({ id }: { id: string }) {
               )}
             </div>
 
-            <div>
-              <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Space video</p>
+            <div className="shrink-0 md:w-[200px]">
+              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-2">Space video</p>
               {isLoading ? (
-                <Skeleton className="size-[60px] bg-gray-200 dark:bg-gray-800 rounded-xl" />
+                <Skeleton className="size-[84px] bg-gray-200 dark:bg-gray-800 rounded-[14px]" />
               ) : video ? (
-                <div className="relative size-[60px] shrink-0">
-                  <div className="relative size-full rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
+                <div className="relative size-[84px] shrink-0">
+                  <div className="relative size-full rounded-[14px] overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
                     <img src={video} alt="" className="absolute inset-0 size-full object-cover opacity-60" />
                     {/* Play Button Overlay */}
                     <div className="z-10 size-6 rounded-full bg-white/90 flex items-center justify-center shadow-sm">
@@ -309,7 +310,9 @@ export function SpaceDetailContent({ id }: { id: string }) {
                   </button>
                 </div>
               ) : (
-                <span className="text-[13px] text-gray-400 font-semibold italic">No video files added.</span>
+                <span className="text-[13px] text-secondary-foreground font-medium italic">
+                  No video files added.
+                </span>
               )}
             </div>
           </div>
@@ -326,7 +329,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                   setPage(1)
                 }}
                 className={cn(
-                  "rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer",
+                  "rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 cursor-pointer",
                   activeTab === "activity" ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 hover:text-gray-800"
                 )}
               >
@@ -338,7 +341,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                   setPage(1)
                 }}
                 className={cn(
-                  "rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer",
+                  "rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 cursor-pointer",
                   activeTab === "feedback" ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 hover:text-gray-800"
                 )}
               >
@@ -350,7 +353,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                   setPage(1)
                 }}
                 className={cn(
-                  "rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer",
+                  "rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 cursor-pointer",
                   activeTab === "reports" ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 hover:text-gray-800"
                 )}
               >
@@ -384,16 +387,16 @@ export function SpaceDetailContent({ id }: { id: string }) {
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[5%]">
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[5%]">
                             <input type="checkbox" className="rounded border-gray-300 dark:border-gray-700 text-primary focus:ring-primary size-3.5" />
                           </th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[22%]">Booked by</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[15%]">Date booked</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[15%]">Check in</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[15%]">Check out</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[10%]">Duration</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[10%]">Status</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[8%]">Action</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[22%]">Booked by</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Date booked</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Check in</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Check out</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[10%]">Duration</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[10%]">Status</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[8%]">Action</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -403,13 +406,13 @@ export function SpaceDetailContent({ id }: { id: string }) {
                               <input type="checkbox" className="rounded border-gray-300 dark:border-gray-700 text-primary focus:ring-primary size-3.5" />
                             </td>
                             <td className="px-6 py-4.5 text-gray-900 dark:text-white font-bold">{act.bookedBy}</td>
-                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{act.dateBooked}</td>
-                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{act.checkIn}</td>
-                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{act.checkOut}</td>
-                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{act.duration}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.dateBooked}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.checkIn}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.checkOut}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.duration}</td>
                             <td className="px-6 py-4.5">
                               <span className={cn(
-                                "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11.5px] font-semibold border rounded-full",
+                                "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11.5px] font-medium border rounded-full",
                                 act.status === "Active"
                                   ? "bg-white text-gray-800 border-gray-200"
                                   : "bg-white text-gray-800 border-gray-200"
@@ -442,16 +445,16 @@ export function SpaceDetailContent({ id }: { id: string }) {
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[20%]">Client</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[65%]">Comment</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[15%]">Action</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[20%]">Client</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[65%]">Comment</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Action</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                         {space?.feedback?.map((fb) => (
                           <tr key={fb.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] text-gray-700 dark:text-gray-300 font-medium">
                             <td className="px-6 py-5 text-gray-900 dark:text-white font-bold">{fb.client}</td>
-                            <td className="px-6 py-5 leading-relaxed text-gray-500 dark:text-gray-400 font-semibold">{fb.comment}</td>
+                            <td className="px-6 py-5 leading-relaxed text-gray-500 dark: text-secondary-foreground font-medium">{fb.comment}</td>
                             <td className="px-6 py-5">
                               <button
                                 onClick={() => toast.success("Review status updated!")}
@@ -473,30 +476,30 @@ export function SpaceDetailContent({ id }: { id: string }) {
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[10%]">ID</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[18%]">Client</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[18%]">Space</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[18%]">Category</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[15%]">Date</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[13%]">Status</th>
-                          <th className="px-6 py-3.5 text-[12.5px] font-semibold text-secondary-foreground w-[8%]">Action</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[10%]">ID</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[18%]">Client</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[18%]">Space</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[18%]">Category</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Date</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[13%]">Status</th>
+                          <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[8%]">Action</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                         {space?.reports?.map((rep) => (
                           <tr key={rep.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] text-gray-700 dark:text-gray-300 font-medium">
-                            <td className="px-6 py-4.5 font-mono text-gray-400 font-bold">{rep.id}</td>
+                            <td className="px-6 py-4.5 font-mono  text-secondary-foreground font-bold">{rep.id}</td>
                             <td className="px-6 py-4.5 text-gray-900 dark:text-white font-bold">{rep.client}</td>
-                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{rep.space}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{rep.space}</td>
                             <td className="px-6 py-4.5">
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 bg-[#F9F9FB] dark:bg-gray-800">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium border border-gray-200 dark:border-gray-700 text-gray-500 dark: text-secondary-foreground bg-[#F9F9FB] dark:bg-gray-800">
                                 {rep.category}
                               </span>
                             </td>
-                            <td className="px-6 py-4.5 text-gray-500 dark:text-gray-400">{rep.date}</td>
+                            <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{rep.date}</td>
                             <td className="px-6 py-4.5">
                               <span className={cn(
-                                "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11.5px] font-semibold border rounded-full",
+                                "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11.5px] font-medium border rounded-full",
                                 rep.status === "Resolved"
                                   ? "bg-[#E6F9EE] text-[#00A854] border-[#B3F2CE]"
                                   : "bg-[#FFF8E6] text-[#FE9A00] border-[#FFE2B3]"
