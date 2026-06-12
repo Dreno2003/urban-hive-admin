@@ -96,7 +96,7 @@ export function DialogContainer({
 
           </div>
           {
-            isShowTopSeparator &&  <Separator className="my-3 !bg-[#D2Ds5DA]" />
+            isShowTopSeparator &&  <Separator className="my-3 !bg-gray-300 dark:bg-gray-800" />
           }
           
           {children}</div>

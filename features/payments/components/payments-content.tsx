@@ -168,8 +168,8 @@ export function PaymentsContent() {
             </div>
           ) : (
             <PaymentsTable
-              payments={[]}
-              // payments={payments}
+
+              payments={payments}
               isLoading={listLoading}
               currentPage={page}
               totalPages={totalPages}

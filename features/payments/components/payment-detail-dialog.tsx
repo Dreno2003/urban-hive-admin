@@ -4,24 +4,25 @@ import React from "react"
 import { DialogContainer } from "@/shared/components/dialogs/dialog-container"
 import { Separator } from "@/shared/components/ui/separator"
 import { Button } from "@/shared/components/ui/button"
-import { Copy } from "lucide-react"
 import { Icon } from "@/shared/components/ui/icon"
 import { cn } from "@/shared/lib/utils"
 import { Badge } from "@/shared/components/ui/badge"
 import type { Payment, PaymentStatus } from "../types"
 
-const STATUS_MAP: Record<PaymentStatus, { variant: "success" | "warning" | "destructive" | "secondary"; icon: "check" | "loader" | "x"; label: string }> = {
+const STATUS_MAP: Record<PaymentStatus, { variant: "success" | "warning" | "destructive" | "secondary"; icon: "check" | "loader" | "x" | "circle"; label: string }> = {
   paid:     { variant: "success",     icon: "check",  label: "Paid" },
   pending:  { variant: "warning",     icon: "loader", label: "Pending" },
   failed:   { variant: "destructive", icon: "x",      label: "Failed" },
   refunded: { variant: "secondary",   icon: "loader", label: "Refunded" },
 }
 
-function Field({ label, children, fullWidth }: { label: string; children: React.ReactNode; fullWidth?: boolean }) {
+function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("flex flex-col gap-1", fullWidth && "col-span-2")}>
-      <span className="text-[11px] text-gray-400 font-medium">{label}</span>
-      <div className="text-[14px] font-medium text-gray-900 dark:text-gray-100">{children}</div>
+    <div className={cn("flex flex-col gap-1.5", className)}>
+      <span className="text-[13px] text-gray-500 dark:text-gray-400 font-medium tracking-tight leading-none">{label}</span>
+      <div className="text-[16px] font-semibold text-gray-900 dark:text-gray-100 flex items-center leading-tight">
+        {children}
+      </div>
     </div>
   )
 }
@@ -37,124 +38,102 @@ export function PaymentDetailDialog({ payment, open, onOpenChange }: PaymentDeta
 
   const { variant, icon, label } = STATUS_MAP[payment.paymentStatus]
 
-  const copyToClipboard = (txt?: string) => {
-    if (txt) {
-      navigator.clipboard.writeText(txt)
-    }
-  }
-
   return (
     <DialogContainer
-      dialogTitle={
-        <div className="flex items-center gap-2">
-          <span className="text-[22px] font-bold text-gray-900 dark:text-gray-50 tracking-tight">Payment details</span>
-          <Badge variant={variant} iconName={icon}>
-            {label}
-          </Badge>
-        </div>
-      }
+      dialogTitle="Payment details"
       open={open}
       onOpenChange={onOpenChange}
-      className="!px-2 pb-2"
+      className="pb-4"
     >
       <div className="flex flex-col gap-0 mt-2">
-        {/* Row 1 — Transaction ID + Reference */}
-        <div className="grid grid-cols-2 gap-4 py-4">
+        {/* Row 1 — Payment ID & Payment Date */}
+        <div className="grid grid-cols-2 gap-6 py-5">
           <Field label="Payment ID">
-            <span className="font-mono text-gray-500">{payment.id}</span>
+            {payment.id}
           </Field>
-          <Field label="Transaction Reference">
-            <span className="flex items-center gap-1.5 font-mono text-[13px]">
-              {payment.transactionRef ?? "—"}
-              {payment.transactionRef && (
-                <button
-                  onClick={() => copyToClipboard(payment.transactionRef)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <Copy className="size-3.5" />
-                </button>
-              )}
-            </span>
+          <Field label="Payment Date">
+            {payment.datePaid ?? "—"}
           </Field>
         </div>
 
-        <Separator className="bg-gray-100" />
+        <Separator className="bg-gray-100 dark:bg-gray-800" />
 
-        {/* Row 2 — Client details */}
-        <div className="grid grid-cols-2 gap-4 py-4">
+        {/* Row 2 — Client name & Space */}
+        <div className="grid grid-cols-2 gap-6 py-5">
           <Field label="Client name">
-            <span className="flex items-center gap-1.5">
+            <span className="underline decoration-1 underline-offset-4 cursor-pointer hover:text-primary transition-colors">
               {payment.clientName}
-              <Icon name="exportSquareOutline" className="size-3.5 text-secondary-foreground shrink-0" />
             </span>
+            <Icon name="exportSquareOutline" className="size-4 text-gray-400 shrink-0 ml-1.5" />
           </Field>
-          <Field label="Client email">
-            <span className="flex items-center gap-1.5 break-all">
-              {payment.clientEmail ?? "—"}
-              {payment.clientEmail && (
-                <button
-                  onClick={() => copyToClipboard(payment.clientEmail)}
-                  className="text-gray-400 hover:text-gray-600 shrink-0 transition-colors"
-                >
-                  <Copy className="size-3.5" />
-                </button>
-              )}
-            </span>
-          </Field>
-        </div>
-
-        <Separator className="bg-gray-100" />
-
-        {/* Row 3 — Space + Space Type */}
-        <div className="grid grid-cols-2 gap-4 py-4">
-          <Field label="Space name">
-            <span className="flex items-center gap-1.5">
+          <Field label="Space">
+            <span className="underline decoration-1 underline-offset-4 cursor-pointer hover:text-primary transition-colors">
               {payment.spaceName}
-              <Icon name="exportSquareOutline" className="size-3.5 text-secondary-foreground shrink-0" />
             </span>
-          </Field>
-          <Field label="Space type">
-            <span className="inline-block border border-gray-200 rounded-md px-1.5 py-0.5 text-[12px] w-fit">
-              {payment.spaceType}
-            </span>
+            <Icon name="exportSquareOutline" className="size-4 text-gray-400 shrink-0 ml-1.5" />
           </Field>
         </div>
 
-        <Separator className="bg-gray-100" />
+        <Separator className="bg-gray-100 dark:bg-gray-800" />
 
-        {/* Row 4 — Billing Period & Method */}
-        <div className="grid grid-cols-2 gap-4 py-4">
-          <Field label="Billing interval / Period">{payment.billingPeriod}</Field>
-          <Field label="Payment method">{payment.paymentMethod ?? "—"}</Field>
+        {/* Row 3 — Duration & Amount paid */}
+        <div className="grid grid-cols-2 gap-6 py-5">
+          <Field label="Duration">
+            {payment.duration ?? "—"}
+          </Field>
+          <Field label="Amount paid">
+            <span>{payment.amount}</span>
+            <Badge
+              variant={variant}
+              iconName={icon}
+              iconSize={12}
+              className="ml-2 !py-0 h-[24px] flex items-center justify-center px-2.5 rounded-full border-0 text-xs font-semibold"
+            >
+              {label}
+            </Badge>
+          </Field>
         </div>
 
-        <Separator className="bg-gray-100" />
+        <Separator className="bg-gray-100 dark:bg-gray-800" />
 
-        {/* Row 5 — Amount & Date Paid */}
-        <div className="grid grid-cols-2 gap-4 py-4">
-          <Field label="Amount Paid">
-            <span className="text-[16px] font-bold text-gray-900 dark:text-white">{payment.amount}</span>
+        {/* Row 4 — Payment method & Cancellation period */}
+        <div className="grid grid-cols-2 gap-6 py-5">
+          <Field label="Payment method">
+            {payment.paymentMethod ?? "—"}
           </Field>
-          <Field label="Date Paid">{payment.datePaid ?? "—"}</Field>
+          <Field label="Cancellation period">
+            <span>{payment.cancellationPeriod ?? "—"}</span>
+            {payment.cancellationTimeLeft && payment.cancellationTimeLeft !== "—" && (
+              <Badge
+                variant="warning"
+                iconName="clock"
+                iconSize={12}
+                className="ml-2 !py-0 h-[24px] flex items-center justify-center px-2.5 rounded-full border-0 text-xs font-semibold"
+              >
+                {payment.cancellationTimeLeft}
+              </Badge>
+            )}
+          </Field>
         </div>
       </div>
 
       {/* Actions */}
-      <div className="grid grid-cols-2 gap-3 mt-4">
+      <div className="grid grid-cols-2 gap-4 mt-6">
         <Button
-          variant="secondary-outline"
-          className="h-11 rounded-full text-[14px]"
-          onClick={() => alert("Downloading receipt...")}
-        >
-          Download receipt
-        </Button>
-        <Button
+          variant="secondary"
+          className="h-[48px] rounded-full text-base font-semibold"
           onClick={() => onOpenChange(false)}
-          className="h-11 rounded-full text-[14px] bg-primary text-white hover:bg-primary/90"
         >
           Close
+        </Button>
+        <Button
+          className="h-[48px] rounded-full text-base font-semibold bg-primary text-white hover:bg-primary/90"
+          onClick={() => alert("Downloading invoice...")}
+        >
+          Download invoice
         </Button>
       </div>
     </DialogContainer>
   )
 }
+

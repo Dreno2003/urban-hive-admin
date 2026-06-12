@@ -13,6 +13,9 @@ export interface Payment {
   paymentMethod?: string
   transactionRef?: string
   datePaid?: string
+  duration?: string
+  cancellationPeriod?: string
+  cancellationTimeLeft?: string
 }
 
 export interface PaymentsMonthlyData {
