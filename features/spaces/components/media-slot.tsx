@@ -1,4 +1,4 @@
-import { Icon } from "@/shared/components/ui/icon"
+import { RemoveButton } from "./remove-button"
 
 type MediaSlotProps = {
   file: File | null
@@ -24,14 +24,7 @@ export function MediaSlot({ file, preview, onAdd, onRemove }: MediaSlotProps) {
         )}
       </button>
       {file && (
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onRemove() }}
-          className="absolute border -top-1 -right-1 size-4 rounded-full bg-secondary-foreground text-white flex items-center justify-center hover:bg-gray-900 transition-colors"
-          aria-label="Remove"
-        >
-          <Icon name="x" size={9} />
-        </button>
+        <RemoveButton onClick={onRemove} />
       )}
     </div>
   )

@@ -11,7 +11,9 @@ import { Badge } from "@/shared/components/ui/badge"
 import { Icon } from "@/shared/components/ui/icon"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { ActivityDetailDialog } from "./activity-detail-dialog"
+import { Checkbox } from "@/shared/components/ui/checkbox"
 import { BookSpaceDialog } from "./book-space-dialog"
+import { RemoveButton } from "./remove-button"
 import { toast } from "sonner"
 import { cn } from "@/shared/lib/utils"
 import type { SpaceActivity } from "../types"
@@ -272,14 +274,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                         alt=""
                         className="w-full h-full object-cover rounded-[14px] border border-gray-100 dark:border-gray-800"
                       />
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveImage(i)}
-                        className="absolute -top-1 -right-1 size-4 rounded-full bg-secondary-foreground text-white flex items-center justify-center hover:bg-gray-900 transition-colors cursor-pointer border border-white"
-                        aria-label="Remove image"
-                      >
-                        <Icon name="x2" size={8} />
-                      </button>
+                      <RemoveButton onClick={() => handleRemoveImage(i)} ariaLabel="Remove image" />
                     </div>
                   ))}
                 </div>
@@ -287,7 +282,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
             </div>
 
             <div className="shrink-0 md:w-[200px]">
-              <p className="text-[12px] text-secondary-foreground font-medium tracking-wider mb-2">Space video</p>
+              <p className="text-body-sm text-secondary-foreground font-medium tracking-wider mb-2">Space video</p>
               {isLoading ? (
                 <Skeleton className="size-[84px] bg-gray-200 dark:bg-gray-800 rounded-[14px]" />
               ) : video ? (
@@ -301,14 +296,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                       </svg>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={handleRemoveVideo}
-                    className="absolute -top-1 -right-1 size-4 rounded-full bg-secondary-foreground text-white flex items-center justify-center hover:bg-gray-900 transition-colors cursor-pointer border border-white"
-                    aria-label="Remove video"
-                  >
-                    <Icon name="x2" size={8} />
-                  </button>
+                  <RemoveButton onClick={handleRemoveVideo} ariaLabel="Remove video" />
                 </div>
               ) : (
                 <span className="text-[13px] text-secondary-foreground font-medium italic">
@@ -320,7 +308,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
         </div>
 
         {/* ── Space Tabs & Table ────────────────────────────── */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[28px] shadow-sm">
+        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[28px] ">
           {/* Tabs header bar */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
             <div className="flex items-center gap-1 bg-[#F2F2F7] dark:bg-gray-800 rounded-full p-1 w-fit">
@@ -389,7 +377,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                       <thead>
                         <tr className="bg-secondary dark:bg-gray-800/40 border-b dark:border-gray-800">
                           <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[5%]">
-                            <input type="checkbox" className="rounded border-gray-300 dark:border-gray-700 text-primary focus:ring-primary size-3.5" />
+                            <Checkbox />
                           </th>
                           <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[22%]">Booked by</th>
                           <th className="px-6 py-3.5 text-[12.5px] font-medium text-secondary-foreground w-[15%]">Date booked</th>
@@ -404,7 +392,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                         {space?.activity?.map((act) => (
                           <tr key={act.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors text-[13.5px] text-gray-700 dark:text-gray-300 font-medium">
                             <td className="px-6 py-4.5">
-                              <input type="checkbox" className="rounded border-gray-300 dark:border-gray-700 text-primary focus:ring-primary size-3.5" />
+                              <Checkbox />
                             </td>
                             <td className="px-6 py-4.5 text-gray-900 dark:text-white font-bold">{act.bookedBy}</td>
                             <td className="px-6 py-4.5 text-gray-500 dark: text-secondary-foreground">{act.dateBooked}</td>

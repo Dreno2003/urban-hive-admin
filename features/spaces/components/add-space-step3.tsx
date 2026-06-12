@@ -1,4 +1,5 @@
 import { Icon } from "@/shared/components/ui/icon"
+import { RemoveButton } from "./remove-button"
 import type { AddSpaceFormValues } from "./add-space-dialog"
 
 const AMENITY_ICONS: Record<string, string> = {
@@ -8,8 +9,6 @@ const AMENITY_ICONS: Record<string, string> = {
   "24/hr": "light",
   "Kitchen": "kitchen2",
 }
-
-const REMOVE_BTN = "absolute border -top-1 -right-1 size-4 rounded-full bg-secondary-foreground text-white flex items-center justify-center hover:bg-gray-900 transition-colors"
 
 type Props = {
   values: AddSpaceFormValues
@@ -103,14 +102,7 @@ export function AddSpaceStep3({
               return (
                 <div key={i} className="relative size-[60px] shrink-0">
                   <img src={imagePreviews[i]!} alt="" className="w-full h-full object-cover rounded-xl" />
-                  <button
-                    type="button"
-                    onClick={() => onRemoveImage(i)}
-                    className={REMOVE_BTN}
-                    aria-label="Remove image"
-                  >
-                    <Icon name="x" size={9} />
-                  </button>
+                  <RemoveButton onClick={() => onRemoveImage(i)} ariaLabel="Remove image" />
                 </div>
               )
             })}
@@ -126,14 +118,7 @@ export function AddSpaceStep3({
             <div className="size-full rounded-xl bg-secondary flex items-center justify-center overflow-hidden">
               <span className="text-[10px] text-gray-500 font-medium text-center px-1 leading-tight">{video.name}</span>
             </div>
-            <button
-              type="button"
-              onClick={onRemoveVideo}
-              className={REMOVE_BTN}
-              aria-label="Remove video"
-            >
-              <Icon name="x" size={9} />
-            </button>
+            <RemoveButton onClick={onRemoveVideo} ariaLabel="Remove video" />
           </div>
         </div>
       )}
