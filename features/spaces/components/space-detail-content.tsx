@@ -290,11 +290,7 @@ export function SpaceDetailContent({ id }: { id: string }) {
                   <div className="relative size-full rounded-[14px] overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
                     <img src={video} alt="" className="absolute inset-0 size-full object-cover opacity-60" />
                     {/* Play Button Overlay */}
-                    <div className="z-10 size-6 rounded-full bg-white/90 flex items-center justify-center shadow-sm">
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="size-3 text-primary translate-x-[0.5px]">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
+                    <img src={'/images/play-button.png'} className="size-8 relative " />
                   </div>
                   <RemoveButton onClick={handleRemoveVideo} ariaLabel="Remove video" />
                 </div>
