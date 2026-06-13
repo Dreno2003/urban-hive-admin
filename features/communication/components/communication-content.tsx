@@ -64,6 +64,8 @@ export function CommunicationContent() {
       })
   }, [campaigns, viewMode, filters])
 
+
+
   // Paginated campaigns
   const displayedCampaigns = React.useMemo(() => {
     const startIndex = (page - 1) * ITEMS_PER_PAGE
@@ -90,8 +92,8 @@ export function CommunicationContent() {
         isEditing
           ? `Campaign "${values.title}" updated successfully.`
           : values.status === "live"
-          ? `Campaign "${values.title}" published successfully.`
-          : `Campaign "${values.title}" saved to drafts.`
+            ? `Campaign "${values.title}" published successfully.`
+            : `Campaign "${values.title}" saved to drafts.`
       )
       setIsDialogOpen(false)
     } catch {
@@ -164,13 +166,11 @@ export function CommunicationContent() {
               </div>
             ) : filteredCampaigns.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center py-16 gap-3">
-                <div className="size-[72px] rounded-2xl bg-[#F2F2F7] dark:bg-gray-800 flex items-center justify-center">
-                  <Icon name="flag" size={36} className="text-gray-400 dark:text-gray-500" />
-                </div>
-                <p className="text-[16px] font-semibold text-gray-900 dark:text-white">
+                <Icon name="flagFill" size={80} className="text-gray-400  dark:text-gray-500" />
+                <p className="text-[18px] font-semibold text-gray-900 dark:text-white">
                   {viewMode === "live" ? "No live campaigns" : "No draft campaigns"}
                 </p>
-                <p className="text-sm text-gray-400 dark:text-gray-500">
+                <p className="text-sm text-secondary-foreground dark:text-gray-500">
                   {viewMode === "live" ? "Campaigns you create will appear here" : "Saved drafts will appear here"}
                 </p>
                 <Button

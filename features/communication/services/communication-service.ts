@@ -8,7 +8,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "What's buzzing at UrbanHive Hub — May 2026",
     category: "Newsletter",
     description: "Community highlights, member spotlight, upcoming events and a special renewal offer...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-05-10T10:00:00Z",
   },
@@ -17,7 +17,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "What's buzzing at UrbanHive Hub — May 2026",
     category: "Newsletter",
     description: "Community highlights, member spotlight, upcoming events and a special renewal offer...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-05-09T09:30:00Z",
   },
@@ -26,7 +26,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Urban Hive Coworking Space Re-opening Announcement",
     category: "Announcement",
     description: "We are excited to reopen our main wing with upgraded high-speed fiber internet and new standing desks...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-05-08T08:15:00Z",
   },
@@ -35,7 +35,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Exclusive Summer Promo: Get 20% off all meeting rooms",
     category: "Promo",
     description: "Book any meeting room during the summer months and enjoy an instant 20% discount on checkout...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-05-07T14:20:00Z",
   },
@@ -44,7 +44,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Urgent Maintenance Notice: Elevator Upgrades",
     category: "Alert",
     description: "Please be informed that elevators in Wing A will be undergoing routine maintenance on Saturday...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-05-06T11:00:00Z",
   },
@@ -53,7 +53,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Introducing Our New Café Partner: Bean & Brew",
     category: "Newsletter",
     description: "Starting this Monday, check out Bean & Brew at the lobby for special artisan coffee and member discounts...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-05-05T09:00:00Z",
   },
@@ -62,7 +62,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Refer a friend, get free desk space for a week!",
     category: "Promo",
     description: "Spread the word about Urban Hive! For every colleague who signs up for a month, you get a week free...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-05-04T16:00:00Z",
   },
@@ -71,7 +71,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Welcome to our new onboarding portal",
     category: "Announcement",
     description: "We have launched a brand new guide to help new members navigate workspace rules and get started...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-05-03T10:30:00Z",
   },
@@ -80,7 +80,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Weekly Community Roundup - June 2026",
     category: "Newsletter",
     description: "Catch up on what happened this week at the main hub, including the Friday happy hour summary...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-05-02T17:00:00Z",
   },
@@ -89,7 +89,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Upcoming Fire Drill Notice - Wing B",
     category: "Alert",
     description: "A routine fire drill is scheduled for Wednesday at 10:00 AM. Please follow floor warden instructions...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-05-01T08:00:00Z",
   },
@@ -98,7 +98,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Discount on Dedicated Desks for Teams of 5+",
     category: "Promo",
     description: "Get a custom group discount when onboarding your team to our dedicated desk plans. Contact support today...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-04-30T11:45:00Z",
   },
@@ -107,7 +107,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Urban Hive App v2.4 Launch & Features",
     category: "Announcement",
     description: "Download the latest version of the app to access contactless entry keys and instant meeting room bookings...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-04-29T12:00:00Z",
   },
@@ -116,7 +116,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Community Yoga Session: Monday Morning",
     category: "Newsletter",
     description: "Join us in the rooftop garden at 7:30 AM for a guided yoga session. Free smoothies for all attendees...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-04-28T07:15:00Z",
   },
@@ -125,7 +125,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Eco-Friendly Initiative: Rooftop Gardening",
     category: "Announcement",
     description: "We are starting a voluntary community rooftop garden. Help plant herbs, vegetables, and flowers...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-04-27T14:00:00Z",
   },
@@ -134,7 +134,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Tech Talk Tuesday: Modern Frontend Development",
     category: "Newsletter",
     description: "Join us in the lounge as we review the future of Next.js, React 19, and TailwindCSS v4 with local experts...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "live",
     createdAt: "2026-04-26T15:30:00Z",
   },
@@ -144,7 +144,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Draft: Welcome newsletter for new corporate clients",
     category: "Newsletter",
     description: "Welcome to Urban Hive! This guide will run through how you can configure seat allocations...",
-    audience: "Workspace operators",
+    sendVia: "SMS only",
     status: "draft",
     createdAt: "2026-06-12T10:00:00Z",
   },
@@ -153,7 +153,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Draft: Scheduled maintenance for parking lot resurfacing",
     category: "Alert",
     description: "The main parking area will be resurfaced this coming weekend. Please park in the auxiliary lot...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "draft",
     createdAt: "2026-06-11T16:00:00Z",
   },
@@ -162,7 +162,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Draft: Referral Program Update 2026",
     category: "Promo",
     description: "Earn rewards by referring companies to our private offices and dedicated desks...",
-    audience: "All members",
+    sendVia: "Email only",
     status: "draft",
     createdAt: "2026-06-10T12:00:00Z",
   },
@@ -173,23 +173,24 @@ const LOCAL_STORAGE_KEY = "urban_hive_campaigns"
 export const communicationService = {
   getCampaigns: async (): Promise<Campaign[]> => {
     // Simulating API network latency
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    return []
+    // await new Promise((resolve) => setTimeout(resolve, 500))
 
-    if (typeof window === "undefined") {
-      return DEFAULT_CAMPAIGNS
-    }
+    // if (typeof window === "undefined") {
+    //   return DEFAULT_CAMPAIGNS
+    // }
 
-    const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
-    if (!stored) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(DEFAULT_CAMPAIGNS))
-      return DEFAULT_CAMPAIGNS
-    }
+    // const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
+    // if (!stored) {
+    //   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(DEFAULT_CAMPAIGNS))
+    //   return DEFAULT_CAMPAIGNS
+    // }
 
-    try {
-      return JSON.parse(stored) as Campaign[]
-    } catch {
-      return DEFAULT_CAMPAIGNS
-    }
+    // try {
+    //   return JSON.parse(stored) as Campaign[]
+    // } catch {
+    //   return DEFAULT_CAMPAIGNS
+    // }
   },
 
   saveCampaign: async (campaign: Omit<Campaign, "id" | "createdAt"> & { id?: string }): Promise<Campaign> => {

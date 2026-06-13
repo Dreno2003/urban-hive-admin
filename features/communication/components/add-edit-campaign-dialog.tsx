@@ -18,7 +18,7 @@ import { Separator } from "@/shared/components/ui/separator"
 import { Trash } from "lucide-react"
 import { DeleteConfirmDialog } from "@/shared/components/dialogs/delete-confirm-dialog"
 import { sonnerCard } from "@/shared/components/ui/sonner-card"
-import type { Campaign, CampaignCategory } from "../types"
+import type { Campaign, CampaignCategory, SendViaChannel } from "../types"
 import { cn } from "@/shared/lib/utils"
 
 export interface AddEditCampaignDialogProps {
@@ -31,8 +31,8 @@ export interface AddEditCampaignDialogProps {
 
 const campaignSchema = Yup.object().shape({
   title: Yup.string().min(3, "Title must be at least 3 characters").max(120).required("Title is required"),
-  category: Yup.string().required("Category is required"),
-  audience: Yup.string().required("Audience is required"),
+  category: Yup.string().required("Campaign type is required"),
+  sendVia: Yup.string().required("Send channel is required"),
   description: Yup.string().min(10, "Content must be at least 10 characters").required("Content is required"),
   status: Yup.string().oneOf(["live", "draft"]).required(),
 })
@@ -45,7 +45,7 @@ export function AddEditCampaignDialog({ open, onOpenChange, campaign, onSubmit, 
     initialValues: {
       title: "",
       category: "" as CampaignCategory | "",
-      audience: "",
+      sendVia: "Email only" as SendViaChannel,
       description: "",
       status: "draft" as "live" | "draft",
     },
@@ -56,7 +56,7 @@ export function AddEditCampaignDialog({ open, onOpenChange, campaign, onSubmit, 
           id: campaign?.id,
           title: values.title,
           category: values.category as CampaignCategory,
-          audience: values.audience,
+          sendVia: values.sendVia as SendViaChannel,
           description: values.description,
           status: values.status,
         })
@@ -75,7 +75,7 @@ export function AddEditCampaignDialog({ open, onOpenChange, campaign, onSubmit, 
       formik.setValues({
         title: campaign.title,
         category: campaign.category,
-        audience: campaign.audience,
+        sendVia: campaign.sendVia || "Email only",
         description: campaign.description,
         status: campaign.status,
       })
@@ -87,7 +87,6 @@ export function AddEditCampaignDialog({ open, onOpenChange, campaign, onSubmit, 
   // Helpers to submit with specific status
   const handleSaveDraft = () => {
     formik.setFieldValue("status", "draft")
-    // Wait for state update before submitting
     setTimeout(() => {
       formik.handleSubmit()
     }, 0)
@@ -108,59 +107,35 @@ export function AddEditCampaignDialog({ open, onOpenChange, campaign, onSubmit, 
         open={open}
         onOpenChange={onOpenChange}
       >
-        <form onSubmit={(e) => e.preventDefault()} className="space-y-4 pt-1">
-          {/* Category & Audience Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Category */}
-            <div className="space-y-1.5">
-              <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">Category</label>
-              <Select
-                value={formik.values.category}
-                onValueChange={(val) => formik.setFieldValue("category", val)}
-              >
-                <SelectTrigger className="w-full !h-[44px] rounded-full bg-gray-100 dark:bg-gray-800 border-0 px-5 text-[14px]">
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Newsletter">Newsletter</SelectItem>
-                  <SelectItem value="Announcement">Announcement</SelectItem>
-                  <SelectItem value="Promo">Promo</SelectItem>
-                  <SelectItem value="Alert">Alert</SelectItem>
-                </SelectContent>
-              </Select>
-              {formik.touched.category && formik.errors.category && (
-                <p className="text-xs text-destructive ml-3">{formik.errors.category}</p>
-              )}
-            </div>
-
-            {/* Audience */}
-            <div className="space-y-1.5">
-              <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">Target Audience</label>
-              <Select
-                value={formik.values.audience}
-                onValueChange={(val) => formik.setFieldValue("audience", val)}
-              >
-                <SelectTrigger className="w-full !h-[44px] rounded-full bg-gray-100 dark:bg-gray-800 border-0 px-5 text-[14px]">
-                  <SelectValue placeholder="Select audience" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="All members">All members</SelectItem>
-                  <SelectItem value="Workspace operators">Workspace operators</SelectItem>
-                  <SelectItem value="Super-users">Super-users</SelectItem>
-                </SelectContent>
-              </Select>
-              {formik.touched.audience && formik.errors.audience && (
-                <p className="text-xs text-destructive ml-3">{formik.errors.audience}</p>
-              )}
-            </div>
+        <form onSubmit={(e) => e.preventDefault()} className="space-y-5 pt-2">
+          {/* Campaign type */}
+          <div className="space-y-1.5">
+            <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">Campaign type</label>
+            <Select
+              value={formik.values.category}
+              onValueChange={(val) => formik.setFieldValue("category", val)}
+            >
+              <SelectTrigger className="w-full !h-[44px] rounded-full bg-gray-100 dark:bg-gray-800 border-0 px-5 text-[14px]">
+                <SelectValue placeholder="Choose a campaign type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Newsletter">Newsletter</SelectItem>
+                <SelectItem value="Announcement">Announcement</SelectItem>
+                <SelectItem value="Promo">Promo</SelectItem>
+                <SelectItem value="Alert">Alert</SelectItem>
+              </SelectContent>
+            </Select>
+            {formik.touched.category && formik.errors.category && (
+              <p className="text-xs text-destructive ml-3">{formik.errors.category}</p>
+            )}
           </div>
 
-          {/* Title */}
+          {/* Campaign title */}
           <div className="space-y-1.5">
-            <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">Title</label>
+            <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">Campaign title</label>
             <Input
               name="title"
-              placeholder="Enter a title for the campaign"
+              placeholder="Enter a campaign title"
               value={formik.values.title}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -169,12 +144,12 @@ export function AddEditCampaignDialog({ open, onOpenChange, campaign, onSubmit, 
             />
           </div>
 
-          {/* Description/Content */}
+          {/* Campaign content */}
           <div className="space-y-1.5">
-            <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">Content</label>
+            <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">Campaign content</label>
             <Textarea
               name="description"
-              placeholder="Enter the campaign content/description"
+              placeholder="Enter space description"
               value={formik.values.description}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -190,41 +165,40 @@ export function AddEditCampaignDialog({ open, onOpenChange, campaign, onSubmit, 
             )}
           </div>
 
+          {/* Send via */}
+          <div className="space-y-1.5">
+            <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">Send via</label>
+            <Select
+              value={formik.values.sendVia}
+              onValueChange={(val) => formik.setFieldValue("sendVia", val)}
+            >
+              <SelectTrigger className="w-full !h-[44px] rounded-full bg-gray-100 dark:bg-gray-800 border-0 px-5 text-[14px]">
+                <SelectValue placeholder="Email only" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Email only">Email only</SelectItem>
+                <SelectItem value="SMS only">SMS only</SelectItem>
+                <SelectItem value="Push notification">Push notification</SelectItem>
+                <SelectItem value="All channels">All channels</SelectItem>
+              </SelectContent>
+            </Select>
+            {formik.touched.sendVia && formik.errors.sendVia && (
+              <p className="text-xs text-destructive ml-3">{formik.errors.sendVia}</p>
+            )}
+          </div>
+
           <Separator className="bg-gray-100 dark:bg-gray-800" />
 
           {/* Actions */}
           <div className="flex justify-center flex-col gap-3 pt-2">
-            {isEditing && onDelete && (
-              <Button
-                type="button"
-                variant="link"
-                onClick={() => {
-                  onOpenChange(false)
-                  setDeleteDialogOpen(true)
-                }}
-                className="h-12 flex-1 hover:no-underline rounded-full text-[14px] text-destructive hover:text-destructive/90"
-              >
-                <Trash className="size-4 mr-1.5" />
-                Delete campaign
-              </Button>
-            )}
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button
-                type="button"
-                variant="secondary-outline"
-                onClick={() => onOpenChange(false)}
-                className="h-12 flex-1 rounded-full text-[14px] dark:bg-gray-800 dark:border-gray-700"
-              >
-                Cancel
-              </Button>
+            <div className="flex gap-3">
               <Button
                 type="button"
                 variant="secondary"
                 onClick={handleSaveDraft}
                 loading={formik.isSubmitting && formik.values.status === "draft"}
                 disabled={formik.isSubmitting}
-                className="h-12 flex-1 rounded-full text-[14px] border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750"
+                className="h-12 flex-1 rounded-full text-[14px] border-0 text-gray-700 dark:text-gray-300 bg-[#F2F2F7] dark:bg-gray-800 hover:bg-gray-150 dark:hover:bg-gray-750 font-medium transition-colors"
               >
                 Save as draft
               </Button>
@@ -233,11 +207,26 @@ export function AddEditCampaignDialog({ open, onOpenChange, campaign, onSubmit, 
                 onClick={handlePublish}
                 loading={formik.isSubmitting && formik.values.status === "live"}
                 disabled={formik.isSubmitting}
-                className="h-12 flex-1 rounded-full text-[14px] text-white bg-primary hover:bg-primary/90"
+                className="h-12 flex-1 rounded-full text-[14px] text-white bg-primary hover:bg-primary/90 font-semibold transition-colors"
               >
-                Publish campaign
+                Send campaign
               </Button>
             </div>
+
+            {isEditing && onDelete && (
+              <Button
+                type="button"
+                variant="link"
+                onClick={() => {
+                  onOpenChange(false)
+                  setDeleteDialogOpen(true)
+                }}
+                className="h-10 hover:no-underline rounded-full text-[13px] text-destructive hover:text-destructive/90 mt-1"
+              >
+                <Trash className="size-3.5 mr-1.5" />
+                Delete campaign
+              </Button>
+            )}
           </div>
         </form>
       </DialogContainer>
