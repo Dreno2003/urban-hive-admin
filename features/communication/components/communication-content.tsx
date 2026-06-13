@@ -123,7 +123,7 @@ export function CommunicationContent() {
             <Button
               onClick={() => setViewMode(viewMode === "live" ? "draft" : "live")}
               variant="secondary-outline"
-              className="rounded-full h-[42px] px-5 text-gray-700 dark:text-gray-300 dark:border-gray-800 text-sm font-semibold cursor-pointer transition-colors bg-[#F2F2F7] hover:bg-gray-150 dark:bg-gray-800 dark:hover:bg-gray-750"
+              className="rounded-full h-[42px] px-5 text-gray-700 dark:text-gray-300 dark:border-gray-800 text-sm  cursor-pointer transition-colors bg-[#F2F2F7] hover:bg-gray-150 dark:bg-gray-800 dark:hover:bg-gray-750"
             >
               {viewMode === "live" ? "View drafts" : "View live"}
             </Button>
@@ -138,19 +138,19 @@ export function CommunicationContent() {
         </div>
 
         {/* ── Main List Container ────────────────────────── */}
-        <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px] p-6 sm:p-8 flex flex-col min-h-[400px]">
+        <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px]  flex flex-col min-h-[400px]">
           {/* List Header */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex p-6  items-center justify-between ">
             <h4 className="text-[17px] font-bold text-gray-900 dark:text-white tracking-tight">
               {viewMode === "live" ? "Live campaigns" : "Draft campaigns"}
             </h4>
             <CampaignFilterPopover value={filters} onChange={setFilters} />
           </div>
-
+          <Separator />
           {/* List Content */}
-          <div className="flex-1 flex flex-col justify-between">
+          <div className="flex-1 flex flex-col justify-between p-6s">
             {isLoading ? (
-              <div className="space-y-6">
+              <div className="p-6 space-y-6">
                 {[1, 2].map((i) => (
                   <div key={i} className="flex justify-between items-center py-4 border-b border-gray-50 dark:border-gray-900">
                     <div className="space-y-2 flex-1 pr-6">
@@ -165,7 +165,7 @@ export function CommunicationContent() {
                 ))}
               </div>
             ) : filteredCampaigns.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center py-16 gap-3">
+              <div className="flex-1 flex p-6 flex-col items-center justify-center py-16 gap-3">
                 <Icon name="flagFill" size={80} className="text-gray-400  dark:text-gray-500" />
                 <p className="text-[18px] font-semibold text-gray-900 dark:text-white">
                   {viewMode === "live" ? "No live campaigns" : "No draft campaigns"}
@@ -183,15 +183,15 @@ export function CommunicationContent() {
               </div>
             ) : (
               <div>
-                <div className="divide-y divide-gray-100 dark:divide-gray-800">
+                <div className="divide-ys p-6  divide-gray-100 dark:divide-gray-800">
                   {displayedCampaigns.map((camp) => (
-                    <div key={camp.id} className="flex justify-between items-center py-5 gap-6">
+                    <div key={camp.id} className="border-b last:border-b-0 flex justify-between items-center py-5 gap-6">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center flex-wrap gap-2.5">
-                          <h5 className="text-[15px] font-bold text-gray-900 dark:text-white truncate">
+                          <h5 className="text-body-base font-medium text-gray-900 dark:text-white truncate">
                             {camp.title}
                           </h5>
-                          <span className="px-2.5 py-0.5 rounded-[6px] border border-gray-200/60 dark:border-gray-800 bg-[#F2F2F7]/85 dark:bg-gray-900 text-gray-500 dark:text-gray-400 text-[11px] font-semibold tracking-wide">
+                          <span className="px-2.5 py-1 rounded-md border border-gray-200/60 dark:border-gray-800  dark:bg-gray-900 text-[#6D7280] dark:text-gray-400 text-body-sm font-medium tracking-wide">
                             {camp.category}
                           </span>
                         </div>
@@ -215,13 +215,17 @@ export function CommunicationContent() {
 
             {/* Pagination footer */}
             {filteredCampaigns.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-900 pt-4 mt-6">
-                <Pagination
-                  currentPage={page}
-                  totalPages={totalPages}
-                  onPageChange={setPage}
-                  variant="default"
-                />
+              <div className="border-t border-gray-100 dark:border-gray-900 mt">
+                <div className="px-6">
+
+
+                  <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={setPage}
+                    variant="default"
+                  />
+                </div>
               </div>
             )}
           </div>

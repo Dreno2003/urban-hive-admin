@@ -173,24 +173,24 @@ const LOCAL_STORAGE_KEY = "urban_hive_campaigns"
 export const communicationService = {
   getCampaigns: async (): Promise<Campaign[]> => {
     // Simulating API network latency
-    return []
-    // await new Promise((resolve) => setTimeout(resolve, 500))
+    // return []
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
-    // if (typeof window === "undefined") {
-    //   return DEFAULT_CAMPAIGNS
-    // }
+    if (typeof window === "undefined") {
+      return DEFAULT_CAMPAIGNS
+    }
 
-    // const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
-    // if (!stored) {
-    //   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(DEFAULT_CAMPAIGNS))
-    //   return DEFAULT_CAMPAIGNS
-    // }
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (!stored) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(DEFAULT_CAMPAIGNS))
+      return DEFAULT_CAMPAIGNS
+    }
 
-    // try {
-    //   return JSON.parse(stored) as Campaign[]
-    // } catch {
-    //   return DEFAULT_CAMPAIGNS
-    // }
+    try {
+      return JSON.parse(stored) as Campaign[]
+    } catch {
+      return DEFAULT_CAMPAIGNS
+    }
   },
 
   saveCampaign: async (campaign: Omit<Campaign, "id" | "createdAt"> & { id?: string }): Promise<Campaign> => {
