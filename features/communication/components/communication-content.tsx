@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react"
 import { useCampaigns, useSaveCampaign, useDeleteCampaign } from "../hooks/use-campaigns"
 import { CampaignFilterPopover } from "./campaign-filter-popover"
 import { AddEditCampaignDialog } from "./add-edit-campaign-dialog"
+import { DraftsListDialog } from "./drafts-list-dialog"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { Button } from "@/shared/components/ui/button"
 import { Icon } from "@/shared/components/ui/icon"
@@ -21,25 +22,34 @@ const EMPTY_FILTERS: CampaignFilters = {
 const ITEMS_PER_PAGE = 2
 
 export function CommunicationContent() {
-  const [viewMode, setViewMode] = useState<"live" | "draft">("live")
   const [page, setPage] = useState(1)
   const [filters, setFilters] = useState<CampaignFilters>(EMPTY_FILTERS)
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isDraftsDialogOpen, setIsDraftsDialogOpen] = useState(false)
 
   const { data: campaigns = [], isLoading } = useCampaigns()
   const { mutateAsync: saveCampaign } = useSaveCampaign()
   const { mutateAsync: deleteCampaign } = useDeleteCampaign()
 
-  // Reset page when switching views or filters
+  // Reset page when switching filters
   useEffect(() => {
     setPage(1)
-  }, [viewMode, filters])
+  }, [filters])
 
-  // Filter campaigns
-  const filteredCampaigns = React.useMemo(() => {
-    return campaigns
-      .filter((camp) => camp.status === viewMode)
+  // Filter live campaigns for main view
+  const liveCampaigns = React.useMemo(() => {
+    return campaigns.filter((camp) => camp.status === "live")
+  }, [campaigns])
+
+  // Filter draft campaigns for drafts dialog view
+  const draftCampaigns = React.useMemo(() => {
+    return campaigns.filter((camp) => camp.status === "draft")
+  }, [campaigns])
+
+  // Filter live campaigns by filter selections
+  const filteredLiveCampaigns = React.useMemo(() => {
+    return liveCampaigns
       .filter((camp) => {
         // Filter by category
         if (filters.categories.length > 0) {
@@ -62,17 +72,15 @@ export function CommunicationContent() {
         }
         return true
       })
-  }, [campaigns, viewMode, filters])
+  }, [liveCampaigns, filters])
 
-
-
-  // Paginated campaigns
-  const displayedCampaigns = React.useMemo(() => {
+  // Paginated live campaigns
+  const displayedLiveCampaigns = React.useMemo(() => {
     const startIndex = (page - 1) * ITEMS_PER_PAGE
-    return filteredCampaigns.slice(startIndex, startIndex + ITEMS_PER_PAGE)
-  }, [filteredCampaigns, page])
+    return filteredLiveCampaigns.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  }, [filteredLiveCampaigns, page])
 
-  const totalPages = Math.max(1, Math.ceil(filteredCampaigns.length / ITEMS_PER_PAGE))
+  const totalPages = Math.max(1, Math.ceil(filteredLiveCampaigns.length / ITEMS_PER_PAGE))
 
   const handleCreateNew = () => {
     setSelectedCampaign(null)
@@ -84,6 +92,12 @@ export function CommunicationContent() {
     setIsDialogOpen(true)
   }
 
+  const handleEditDraft = (draft: Campaign) => {
+    setSelectedCampaign(draft)
+    setIsDraftsDialogOpen(false)
+    setIsDialogOpen(true)
+  }
+
   const handleFormSubmit = async (values: Omit<Campaign, "id" | "createdAt"> & { id?: string }) => {
     try {
       const isEditing = !!values.id
@@ -92,8 +106,8 @@ export function CommunicationContent() {
         isEditing
           ? `Campaign "${values.title}" updated successfully.`
           : values.status === "live"
-            ? `Campaign "${values.title}" published successfully.`
-            : `Campaign "${values.title}" saved to drafts.`
+          ? `Campaign "${values.title}" published successfully.`
+          : `Campaign "${values.title}" saved to drafts.`
       )
       setIsDialogOpen(false)
     } catch {
@@ -121,11 +135,11 @@ export function CommunicationContent() {
           </div>
           <div className="flex items-center gap-3">
             <Button
-              onClick={() => setViewMode(viewMode === "live" ? "draft" : "live")}
+              onClick={() => setIsDraftsDialogOpen(true)}
               variant="secondary-outline"
-              className="rounded-full h-[42px] px-5 text-gray-700 dark:text-gray-300 dark:border-gray-800 text-sm  cursor-pointer transition-colors bg-[#F2F2F7] hover:bg-gray-150 dark:bg-gray-800 dark:hover:bg-gray-750"
+              className="rounded-full h-[42px] px-5 text-gray-700 dark:text-gray-300 dark:border-gray-800 text-sm cursor-pointer transition-colors bg-[#F2F2F7] hover:bg-gray-150 dark:bg-gray-800 dark:hover:bg-gray-750"
             >
-              {viewMode === "live" ? "View drafts" : "View live"}
+              View drafts
             </Button>
             <Button
               onClick={handleCreateNew}
@@ -138,17 +152,18 @@ export function CommunicationContent() {
         </div>
 
         {/* ── Main List Container ────────────────────────── */}
-        <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px]  flex flex-col min-h-[400px]">
+        <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px] flex flex-col min-h-[400px]">
           {/* List Header */}
-          <div className="flex p-6  items-center justify-between ">
+          <div className="flex p-6 items-center justify-between">
             <h4 className="text-[17px] font-bold text-gray-900 dark:text-white tracking-tight">
-              {viewMode === "live" ? "Live campaigns" : "Draft campaigns"}
+              Live campaigns
             </h4>
             <CampaignFilterPopover value={filters} onChange={setFilters} />
           </div>
           <Separator />
+
           {/* List Content */}
-          <div className="flex-1 flex flex-col justify-between p-6s">
+          <div className="flex-1 flex flex-col justify-between">
             {isLoading ? (
               <div className="p-6 space-y-6">
                 {[1, 2].map((i) => (
@@ -164,14 +179,14 @@ export function CommunicationContent() {
                   </div>
                 ))}
               </div>
-            ) : filteredCampaigns.length === 0 ? (
+            ) : filteredLiveCampaigns.length === 0 ? (
               <div className="flex-1 flex p-6 flex-col items-center justify-center py-16 gap-3">
-                <Icon name="flagFill" size={80} className="text-gray-400  dark:text-gray-500" />
+                <Icon name="flagFill" size={80} className="text-gray-400 dark:text-gray-500" />
                 <p className="text-[18px] font-semibold text-gray-900 dark:text-white">
-                  {viewMode === "live" ? "No live campaigns" : "No draft campaigns"}
+                  No live campaigns
                 </p>
                 <p className="text-sm text-secondary-foreground dark:text-gray-500">
-                  {viewMode === "live" ? "Campaigns you create will appear here" : "Saved drafts will appear here"}
+                  Campaigns you create will appear here
                 </p>
                 <Button
                   onClick={handleCreateNew}
@@ -183,15 +198,15 @@ export function CommunicationContent() {
               </div>
             ) : (
               <div>
-                <div className="divide-ys p-6  divide-gray-100 dark:divide-gray-800">
-                  {displayedCampaigns.map((camp) => (
+                <div className="p-6 divide-y divide-gray-100 dark:divide-gray-800">
+                  {displayedLiveCampaigns.map((camp) => (
                     <div key={camp.id} className="border-b last:border-b-0 flex justify-between items-center py-5 gap-6">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center flex-wrap gap-2.5">
                           <h5 className="text-body-base font-medium text-gray-900 dark:text-white truncate">
                             {camp.title}
                           </h5>
-                          <span className="px-2.5 py-1 rounded-md border border-gray-200/60 dark:border-gray-800  dark:bg-gray-900 text-[#6D7280] dark:text-gray-400 text-body-sm font-medium tracking-wide">
+                          <span className="px-2.5 py-1.5 rounded-md border border-gray-200 dark:border-gray-800 bg-transparent text-[#6D7280] dark:text-gray-400 text-body-sm font-medium tracking-wide">
                             {camp.category}
                           </span>
                         </div>
@@ -214,11 +229,9 @@ export function CommunicationContent() {
             )}
 
             {/* Pagination footer */}
-            {filteredCampaigns.length > 0 && (
+            {filteredLiveCampaigns.length > 0 && (
               <div className="border-t border-gray-100 dark:border-gray-900 mt">
                 <div className="px-6">
-
-
                   <Pagination
                     currentPage={page}
                     totalPages={totalPages}
@@ -238,6 +251,13 @@ export function CommunicationContent() {
         campaign={selectedCampaign}
         onSubmit={handleFormSubmit}
         onDelete={handleCampaignDelete}
+      />
+
+      <DraftsListDialog
+        open={isDraftsDialogOpen}
+        onOpenChange={setIsDraftsDialogOpen}
+        drafts={draftCampaigns}
+        onEditDraft={handleEditDraft}
       />
     </div>
   )

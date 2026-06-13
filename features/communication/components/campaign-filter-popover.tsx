@@ -41,9 +41,9 @@ export function CampaignFilterPopover({ value, onChange }: CampaignFilterPopover
   const CATEGORY_OPTIONS = useMemo<{ value: CampaignCategory; label: string }[]>(
     () => [
       { value: "Newsletter", label: "Newsletter" },
-      { value: "Announcement", label: "Announcement" },
-      { value: "Promo", label: "Promo" },
-      { value: "Alert", label: "Alert" },
+      { value: "Promotional offer", label: "Promotional offer" },
+      { value: "Holiday message", label: "Holiday message" },
+      { value: "Satisfaction survey", label: "Satisfaction survey" },
     ],
     []
   )

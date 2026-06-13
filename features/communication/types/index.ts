@@ -1,5 +1,5 @@
-export type CampaignCategory = "Newsletter" | "Announcement" | "Promo" | "Alert"
-export type SendViaChannel = "Email only" | "SMS only" | "Push notification" | "All channels"
+export type CampaignCategory = "Newsletter" | "Promotional offer" | "Holiday message" | "Satisfaction survey"
+export type SendViaChannel = "Email only" | "Whatsapp only" | "Email and whatsapp"
 
 export interface Campaign {
   id: string

@@ -24,7 +24,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "camp_3",
     title: "Urban Hive Coworking Space Re-opening Announcement",
-    category: "Announcement",
+    category: "Holiday message",
     description: "We are excited to reopen our main wing with upgraded high-speed fiber internet and new standing desks...",
     sendVia: "Email only",
     status: "live",
@@ -33,7 +33,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "camp_4",
     title: "Exclusive Summer Promo: Get 20% off all meeting rooms",
-    category: "Promo",
+    category: "Promotional offer",
     description: "Book any meeting room during the summer months and enjoy an instant 20% discount on checkout...",
     sendVia: "Email only",
     status: "live",
@@ -42,7 +42,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "camp_5",
     title: "Urgent Maintenance Notice: Elevator Upgrades",
-    category: "Alert",
+    category: "Satisfaction survey",
     description: "Please be informed that elevators in Wing A will be undergoing routine maintenance on Saturday...",
     sendVia: "Email only",
     status: "live",
@@ -60,7 +60,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "camp_7",
     title: "Refer a friend, get free desk space for a week!",
-    category: "Promo",
+    category: "Promotional offer",
     description: "Spread the word about Urban Hive! For every colleague who signs up for a month, you get a week free...",
     sendVia: "Email only",
     status: "live",
@@ -69,7 +69,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "camp_8",
     title: "Welcome to our new onboarding portal",
-    category: "Announcement",
+    category: "Holiday message",
     description: "We have launched a brand new guide to help new members navigate workspace rules and get started...",
     sendVia: "Email only",
     status: "live",
@@ -87,7 +87,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "camp_10",
     title: "Upcoming Fire Drill Notice - Wing B",
-    category: "Alert",
+    category: "Satisfaction survey",
     description: "A routine fire drill is scheduled for Wednesday at 10:00 AM. Please follow floor warden instructions...",
     sendVia: "Email only",
     status: "live",
@@ -96,7 +96,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "camp_11",
     title: "Discount on Dedicated Desks for Teams of 5+",
-    category: "Promo",
+    category: "Promotional offer",
     description: "Get a custom group discount when onboarding your team to our dedicated desk plans. Contact support today...",
     sendVia: "Email only",
     status: "live",
@@ -105,7 +105,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "camp_12",
     title: "Urban Hive App v2.4 Launch & Features",
-    category: "Announcement",
+    category: "Holiday message",
     description: "Download the latest version of the app to access contactless entry keys and instant meeting room bookings...",
     sendVia: "Email only",
     status: "live",
@@ -123,7 +123,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "camp_14",
     title: "Eco-Friendly Initiative: Rooftop Gardening",
-    category: "Announcement",
+    category: "Holiday message",
     description: "We are starting a voluntary community rooftop garden. Help plant herbs, vegetables, and flowers...",
     sendVia: "Email only",
     status: "live",
@@ -144,14 +144,14 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
     title: "Draft: Welcome newsletter for new corporate clients",
     category: "Newsletter",
     description: "Welcome to Urban Hive! This guide will run through how you can configure seat allocations...",
-    sendVia: "SMS only",
+    sendVia: "Whatsapp only",
     status: "draft",
     createdAt: "2026-06-12T10:00:00Z",
   },
   {
     id: "camp_draft_2",
     title: "Draft: Scheduled maintenance for parking lot resurfacing",
-    category: "Alert",
+    category: "Satisfaction survey",
     description: "The main parking area will be resurfaced this coming weekend. Please park in the auxiliary lot...",
     sendVia: "Email only",
     status: "draft",
@@ -160,7 +160,7 @@ const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "camp_draft_3",
     title: "Draft: Referral Program Update 2026",
-    category: "Promo",
+    category: "Promotional offer",
     description: "Earn rewards by referring companies to our private offices and dedicated desks...",
     sendVia: "Email only",
     status: "draft",

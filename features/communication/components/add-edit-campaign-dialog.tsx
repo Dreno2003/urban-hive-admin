@@ -120,9 +120,9 @@ export function AddEditCampaignDialog({ open, onOpenChange, campaign, onSubmit, 
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Newsletter">Newsletter</SelectItem>
-                <SelectItem value="Announcement">Announcement</SelectItem>
-                <SelectItem value="Promo">Promo</SelectItem>
-                <SelectItem value="Alert">Alert</SelectItem>
+                <SelectItem value="Promotional offer">Promotional offer</SelectItem>
+                <SelectItem value="Holiday message">Holiday message</SelectItem>
+                <SelectItem value="Satisfaction survey">Satisfaction survey</SelectItem>
               </SelectContent>
             </Select>
             {formik.touched.category && formik.errors.category && (
@@ -177,9 +177,8 @@ export function AddEditCampaignDialog({ open, onOpenChange, campaign, onSubmit, 
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Email only">Email only</SelectItem>
-                <SelectItem value="SMS only">SMS only</SelectItem>
-                <SelectItem value="Push notification">Push notification</SelectItem>
-                <SelectItem value="All channels">All channels</SelectItem>
+                <SelectItem value="Whatsapp only">Whatsapp only</SelectItem>
+                <SelectItem value="Email and whatsapp">Email and whatsapp</SelectItem>
               </SelectContent>
             </Select>
             {formik.touched.sendVia && formik.errors.sendVia && (
