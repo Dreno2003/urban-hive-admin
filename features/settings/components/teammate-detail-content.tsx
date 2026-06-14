@@ -15,8 +15,10 @@ import {
   useSuspendTeammate,
   useRemoveTeammate,
 } from "../hooks/use-settings"
-import type { TeammateActivityType } from "../types"
+import type { TeammateActivity, TeammateActivityType } from "../types"
 import { Button } from "@/shared/components/ui/button"
+import { ActivityDetailDialog } from "./activity-detail-dialog"
+import { RemoveTeammateDialog } from "./remove-teammate-dialog"
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -61,7 +63,9 @@ export function TeammateDetailContent({ id }: { id: string }) {
   const [activityPage, setActivityPage] = useState(1)
   const [typeFilter, setTypeFilter] = useState<string>("All")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const [isConfirmRemove, setIsConfirmRemove] = useState(false)
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false)
+  const [selectedActivity, setSelectedActivity] = useState<TeammateActivity | null>(null)
+  const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false)
   const filterRef = useRef<HTMLDivElement>(null)
 
   const { data: teammate, isLoading } = useTeammateDetail(id)
@@ -79,7 +83,9 @@ export function TeammateDetailContent({ id }: { id: string }) {
     setActivityPage(1)
     setTypeFilter("All")
     setIsFilterOpen(false)
-    setIsConfirmRemove(false)
+    setIsRemoveDialogOpen(false)
+    setSelectedActivity(null)
+    setIsActivityDialogOpen(false)
   }, [id])
 
   // Close filter dropdown on outside click
@@ -114,10 +120,6 @@ export function TeammateDetailContent({ id }: { id: string }) {
 
   const handleRemove = async () => {
     if (!teammate) return
-    if (!isConfirmRemove) {
-      setIsConfirmRemove(true)
-      return
-    }
     try {
       await removeTeammate(teammate.id)
       toast.success(`${teammate.firstName} ${teammate.lastName} has been removed`)
@@ -207,17 +209,11 @@ export function TeammateDetailContent({ id }: { id: string }) {
 
               <Button
                 type="button"
-                onClick={handleRemove}
-                disabled={isRemoving || isLoading}
-                className={cn(
-                  "rounded-full border  transition-colors cursor-pointer select-none whitespace-nowrap",
-                  isConfirmRemove
-                    ? "border-red-500 bg-red-500 text-white hover:bg-red-600"
-                    : "bg-[#FFF0F0] text-red-500 hover:bg-red-50 border border-red-100",
-                  (isRemoving || isLoading) && "opacity-60 cursor-not-allowed"
-                )}
+                onClick={() => setIsRemoveDialogOpen(true)}
+                disabled={isLoading}
+                className="rounded-full bg-[#FFF0F0] text-red-500 hover:bg-red-50 border border-red-100 transition-colors cursor-pointer select-none whitespace-nowrap"
               >
-                {isRemoving ? "Removing..." : isConfirmRemove ? "Confirm remove?" : "Remove team member"}
+                Remove team member
               </Button>
             </div>
           </div>
@@ -398,6 +394,10 @@ export function TeammateDetailContent({ id }: { id: string }) {
                   {/* View */}
                   <button
                     type="button"
+                    onClick={() => {
+                      setSelectedActivity(activity)
+                      setIsActivityDialogOpen(true)
+                    }}
                     className={cn(
                       "text-[13px] text-primary-300 font-semibold cursor-pointer hover:underline text-left",
                       ACTIVITY_WIDTHS[4]
@@ -422,6 +422,20 @@ export function TeammateDetailContent({ id }: { id: string }) {
           </div>
         </div>
       </div>
+
+      <ActivityDetailDialog
+        activity={selectedActivity}
+        open={isActivityDialogOpen}
+        onOpenChange={setIsActivityDialogOpen}
+      />
+
+      <RemoveTeammateDialog
+        teammate={teammate ?? null}
+        open={isRemoveDialogOpen}
+        onOpenChange={setIsRemoveDialogOpen}
+        onConfirmRemove={handleRemove}
+        isRemoving={isRemoving}
+      />
     </div>
   )
 }
