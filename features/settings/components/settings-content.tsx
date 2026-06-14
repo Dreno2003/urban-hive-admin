@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useRef, useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { Input } from "@/shared/components/ui/input"
@@ -15,7 +16,6 @@ import { useProfile, useUpdateProfile, useTeammatesList } from "../hooks/use-set
 import { ChangePasswordDialog } from "./change-password-dialog"
 import { InviteTeammateDialog } from "./invite-dialog"
 import { ViewPermissionsDialog, ViewRolesDialog } from "./permissions-roles-dialogs"
-import { TeammateDetailDialog } from "./teammate-detail-dialog"
 import { toast } from "sonner"
 import { cn } from "@/shared/lib/utils"
 import type { Teammate } from "../types"
@@ -32,6 +32,9 @@ const TABLE_COLS = ["ID", "Name", "Role", "Status", "Date joined", "Action"]
 const TABLE_WIDTHS = ["w-[10%]", "w-[30%]", "w-[18%]", "w-[15%]", "w-[17%]", "w-[10%]"]
 
 export function SettingsContent() {
+  // Navigation
+  const router = useRouter()
+
   // Navigation & Tab State
   const [activeTab, setActiveTab] = useState<"profile" | "team">("profile")
 
@@ -48,8 +51,6 @@ export function SettingsContent() {
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
   const [isPermissionsDialogOpen, setIsPermissionsDialogOpen] = useState(false)
   const [isRolesDialogOpen, setIsRolesDialogOpen] = useState(false)
-  const [selectedTeammate, setSelectedTeammate] = useState<Teammate | null>(null)
-  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false)
 
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -117,8 +118,7 @@ export function SettingsContent() {
   }
 
   const handleViewTeammate = (teammate: Teammate) => {
-    setSelectedTeammate(teammate)
-    setIsDetailDialogOpen(true)
+    router.push(`/dashboard/settings/team/${teammate.id}`)
   }
 
   const handleRoleFilterSelect = (role: string) => {
@@ -568,13 +568,6 @@ export function SettingsContent() {
 
       {/* Team: View Roles Dialog */}
       <ViewRolesDialog open={isRolesDialogOpen} onOpenChange={setIsRolesDialogOpen} />
-
-      {/* Team: Teammate profile detail dialog */}
-      <TeammateDetailDialog
-        teammate={selectedTeammate}
-        open={isDetailDialogOpen}
-        onOpenChange={setIsDetailDialogOpen}
-      />
     </div>
   )
 }

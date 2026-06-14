@@ -1,23 +1,20 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from "react"
-import { Dialog, DialogContent } from "@/shared/components/ui/dialog"
+import { useRouter } from "next/navigation"
 import { Icon } from "@/shared/components/ui/icon"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { Separator } from "@/shared/components/ui/separator"
 import { cn } from "@/shared/lib/utils"
 import { toast } from "sonner"
-import { useTeammateActivity, useSuspendTeammate, useRemoveTeammate } from "../hooks/use-settings"
-import type { Teammate, TeammateActivityType } from "../types"
-
-// ─── Types ───────────────────────────────────────────────────────────────────
-
-interface TeammateDetailDialogProps {
-  teammate: Teammate | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}
+import {
+  useTeammateDetail,
+  useTeammateActivity,
+  useSuspendTeammate,
+  useRemoveTeammate,
+} from "../hooks/use-settings"
+import type { TeammateActivityType } from "../types"
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -43,7 +40,7 @@ const AVATAR_COLORS = [
   "bg-[#2E7D32]",
 ]
 
-// ─── Helper ───────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getInitials(firstName = "", lastName = "") {
   return ((firstName.charAt(0) || "") + (lastName.charAt(0) || "")).toUpperCase()
@@ -56,15 +53,18 @@ function getAvatarColor(id: string) {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateDetailDialogProps) {
+export function TeammateDetailContent({ id }: { id: string }) {
+  const router = useRouter()
+
   const [activityPage, setActivityPage] = useState(1)
   const [typeFilter, setTypeFilter] = useState<string>("All")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isConfirmRemove, setIsConfirmRemove] = useState(false)
   const filterRef = useRef<HTMLDivElement>(null)
 
+  const { data: teammate, isLoading } = useTeammateDetail(id)
   const { data: activityData, isLoading: isActivityLoading } = useTeammateActivity(
-    teammate?.id ?? null,
+    id,
     activityPage,
     typeFilter
   )
@@ -72,15 +72,13 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
   const { mutateAsync: suspendTeammate, isPending: isSuspending } = useSuspendTeammate()
   const { mutateAsync: removeTeammate, isPending: isRemoving } = useRemoveTeammate()
 
-  // Reset state when dialog opens with a new teammate
+  // Reset filter state when id changes
   useEffect(() => {
-    if (open) {
-      setActivityPage(1)
-      setTypeFilter("All")
-      setIsFilterOpen(false)
-      setIsConfirmRemove(false)
-    }
-  }, [open, teammate?.id])
+    setActivityPage(1)
+    setTypeFilter("All")
+    setIsFilterOpen(false)
+    setIsConfirmRemove(false)
+  }, [id])
 
   // Close filter dropdown on outside click
   useEffect(() => {
@@ -105,7 +103,7 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
       const updated = await suspendTeammate(teammate.id)
       const action = updated.status === "Active" ? "reactivated" : "suspended"
       toast.success(`${teammate.firstName} ${teammate.lastName} has been ${action}`)
-      onOpenChange(false)
+      router.push("/dashboard/settings?tab=team")
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to update teammate status"
       toast.error(message)
@@ -121,7 +119,7 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
     try {
       await removeTeammate(teammate.id)
       toast.success(`${teammate.firstName} ${teammate.lastName} has been removed`)
-      onOpenChange(false)
+      router.push("/dashboard/settings?tab=team")
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to remove teammate"
       toast.error(message)
@@ -132,57 +130,51 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
   const totalActivityPages = activityData?.totalPages ?? 1
   const isActive = teammate?.status === "Active"
 
-  if (!teammate) return null
-
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        showCloseButton={false}
-        className="w-full sm:max-w-[860px] md:!rounded-[28px] bg-white border-0 p-0 overflow-hidden"
-      >
-        {/* ── Close Button ──────────────────────────────────────────── */}
-        <button
-          type="button"
-          onClick={() => onOpenChange(false)}
-          aria-label="Close dialog"
-          className="absolute top-4 right-4 z-10 inline-flex size-9 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
-        >
-          <Icon name="x" size={15} />
-        </button>
+    <div className="flex-1 flex bg-white flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="w-full container-wrapper pt-8 pb-12 mt-[76px]">
 
-        {/* ── Header Section ──────────────────────────────────────────── */}
-        <div className="px-7 pt-7 pb-6">
-          <div className="flex flex-col sm:flex-row sm:items-start gap-5 sm:gap-0 justify-between">
+        {/* ── Profile Card ─────────────────────────────────── */}
+        <div className="bg-white border border-gray-100 rounded-[24px] px-6 py-6 mb-5">
 
-            {/* Left: Avatar + Name */}
+          {/* Top row: avatar + name + action buttons */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-6">
             <div className="flex items-center gap-4">
-              <div
-                className={cn(
-                  "size-[60px] shrink-0 rounded-full flex items-center justify-center text-white text-xl font-bold overflow-hidden shadow-inner select-none",
-                  getAvatarColor(teammate.id)
-                )}
-              >
-                {teammate.avatar ? (
-                  <img
-                    src={teammate.avatar}
-                    alt={`${teammate.firstName} ${teammate.lastName}`}
-                    className="w-full h-full object-cover rounded-full"
-                  />
+              {isLoading ? (
+                <Skeleton className="size-[64px] rounded-full bg-gray-200" />
+              ) : (
+                <div
+                  className={cn(
+                    "size-[64px] shrink-0 rounded-full flex items-center justify-center text-white text-[22px] font-bold overflow-hidden select-none",
+                    getAvatarColor(teammate?.id ?? "")
+                  )}
+                >
+                  {teammate?.avatar ? (
+                    <img
+                      src={teammate.avatar}
+                      alt={`${teammate.firstName} ${teammate.lastName}`}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    getInitials(teammate?.firstName, teammate?.lastName)
+                  )}
+                </div>
+              )}
+
+              <div>
+                <p className="text-[12px] text-gray-400 font-medium mb-0.5">Name</p>
+                {isLoading ? (
+                  <Skeleton className="h-6 w-40 bg-gray-200" />
                 ) : (
-                  getInitials(teammate.firstName, teammate.lastName)
+                  <h1 className="text-[20px] font-bold text-gray-900 tracking-tight">
+                    {teammate?.firstName} {teammate?.lastName}
+                  </h1>
                 )}
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[11.5px] text-gray-400 font-medium leading-none mb-1">Name</span>
-                <h2 className="text-[20px] font-bold text-gray-900 tracking-tight leading-tight">
-                  {teammate.firstName} {teammate.lastName}
-                </h2>
               </div>
             </div>
 
-            {/* Right: Action Buttons */}
-            <div className="flex flex-wrap items-center gap-2 sm:mt-1">
-              {/* Permissions */}
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 className="rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-[12.5px] font-semibold px-4 py-2 transition-colors cursor-pointer select-none whitespace-nowrap"
@@ -190,38 +182,35 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
                 Permissions
               </button>
 
-              {/* Suspend / Reactivate */}
               <button
                 type="button"
                 onClick={handleSuspend}
-                disabled={isSuspending}
+                disabled={isSuspending || isLoading}
                 className={cn(
                   "rounded-full border text-[12.5px] font-semibold px-4 py-2 transition-colors cursor-pointer select-none whitespace-nowrap",
                   isActive
                     ? "border-gray-200 bg-white hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 text-gray-700"
                     : "border-green-200 bg-green-50 hover:bg-green-100 text-green-700",
-                  isSuspending && "opacity-60 cursor-not-allowed"
+                  (isSuspending || isLoading) && "opacity-60 cursor-not-allowed"
                 )}
               >
                 {isSuspending
                   ? "Updating..."
                   : isActive
                     ? "Suspend team member"
-                    : "Reactivate team member"
-                }
+                    : "Reactivate team member"}
               </button>
 
-              {/* Remove */}
               <button
                 type="button"
                 onClick={handleRemove}
-                disabled={isRemoving}
+                disabled={isRemoving || isLoading}
                 className={cn(
                   "rounded-full border text-[12.5px] font-semibold px-4 py-2 transition-colors cursor-pointer select-none whitespace-nowrap",
                   isConfirmRemove
                     ? "border-red-500 bg-red-500 text-white hover:bg-red-600"
                     : "border-red-200 bg-transparent hover:bg-red-50 text-red-500",
-                  isRemoving && "opacity-60 cursor-not-allowed"
+                  (isRemoving || isLoading) && "opacity-60 cursor-not-allowed"
                 )}
               >
                 {isRemoving ? "Removing..." : isConfirmRemove ? "Confirm remove?" : "Remove team member"}
@@ -229,54 +218,73 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
             </div>
           </div>
 
-          {/* ── Info Grid ──────────────────────────────────────────────── */}
-          <div className="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-y-5 gap-x-6 border-t border-gray-100 pt-6">
+          <Separator className="mb-6" />
+
+          {/* Info Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-5 gap-x-6">
             {/* Status */}
             <div className="flex flex-col gap-1.5">
               <span className="text-[11.5px] text-gray-400 font-medium">Status</span>
-              <div className="flex items-center gap-1.5">
-                <span
-                  className={cn(
-                    "size-[7px] rounded-full shrink-0",
-                    isActive ? "bg-green-500" : "bg-gray-400"
-                  )}
-                />
-                <span className="text-[13.5px] font-semibold text-gray-900">
-                  {teammate.status}
-                </span>
-              </div>
+              {isLoading ? (
+                <Skeleton className="h-5 w-16 bg-gray-200" />
+              ) : (
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={cn(
+                      "size-[7px] rounded-full shrink-0",
+                      isActive ? "bg-green-500" : "bg-gray-400"
+                    )}
+                  />
+                  <span className="text-[14px] font-semibold text-gray-900">
+                    {teammate?.status}
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Role */}
             <div className="flex flex-col gap-1.5">
               <span className="text-[11.5px] text-gray-400 font-medium">Role</span>
-              <span className="text-[13.5px] font-semibold text-gray-900">
-                {teammate.role}
-              </span>
+              {isLoading ? (
+                <Skeleton className="h-5 w-20 bg-gray-200" />
+              ) : (
+                <span className="text-[14px] font-semibold text-gray-900">
+                  {teammate?.role}
+                </span>
+              )}
             </div>
 
             {/* Client Email */}
             <div className="flex flex-col gap-1.5">
               <span className="text-[11.5px] text-gray-400 font-medium">Client email</span>
-              <span className="text-[13.5px] font-semibold text-gray-900 break-all">
-                {teammate.email}
-              </span>
+              {isLoading ? (
+                <Skeleton className="h-5 w-44 bg-gray-200" />
+              ) : (
+                <span className="text-[14px] font-semibold text-gray-900 break-all">
+                  {teammate?.email}
+                </span>
+              )}
             </div>
 
             {/* Client Phone */}
             <div className="flex flex-col gap-1.5">
               <span className="text-[11.5px] text-gray-400 font-medium">Client phone number</span>
-              <span className="text-[13.5px] font-semibold text-gray-900">
-                {teammate.phone ?? "—"}
-              </span>
+              {isLoading ? (
+                <Skeleton className="h-5 w-32 bg-gray-200" />
+              ) : (
+                <span className="text-[14px] font-semibold text-gray-900">
+                  {teammate?.phone ?? "—"}
+                </span>
+              )}
             </div>
           </div>
         </div>
 
-        {/* ── Activity Log Section ─────────────────────────────────────── */}
-        <div className="border-t border-gray-100">
+        {/* ── Activity Log Card ─────────────────────────────── */}
+        <div className="bg-white border border-gray-100 rounded-[24px]">
+
           {/* Activity Log Header */}
-          <div className="flex items-center justify-between px-7 pt-5 pb-4">
+          <div className="flex items-center justify-between px-6 pt-5 pb-4">
             <h3 className="text-[16px] font-bold text-gray-900 tracking-tight">
               Activity log
             </h3>
@@ -323,7 +331,7 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
           </div>
 
           {/* Table Header */}
-          <div className="flex items-center bg-[#F7F7F8] px-7 py-3.5 border-y border-gray-100">
+          <div className="flex items-center bg-[#F7F7F8] px-6 py-3.5 border-y border-gray-100">
             {/* Checkbox placeholder col */}
             <div className="w-8 shrink-0">
               <div className="size-4 rounded border border-gray-200 bg-white" />
@@ -345,15 +353,15 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
           <div className="flex flex-col divide-y divide-gray-50 min-h-[116px]">
             {isActivityLoading ? (
               Array.from({ length: 2 }).map((_, i) => (
-                <div key={i} className="flex items-center px-7 py-5 gap-4 animate-pulse">
-                  <Skeleton className="w-4 h-4 rounded bg-gray-100" />
+                <div key={i} className="flex items-center px-6 py-5 gap-4 animate-pulse">
+                  <Skeleton className="w-4 h-4 rounded bg-gray-100 shrink-0" />
                   {ACTIVITY_WIDTHS.map((w, j) => (
                     <Skeleton key={j} className={cn("h-4 bg-gray-100", w)} />
                   ))}
                 </div>
               ))
             ) : activities.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-10 gap-1.5">
+              <div className="flex flex-col items-center justify-center py-12 gap-1.5">
                 <p className="text-[14px] font-semibold text-gray-900">No activity found</p>
                 <p className="text-xs text-gray-400">No records match the selected filter</p>
               </div>
@@ -361,11 +369,11 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
               activities.map((activity) => (
                 <div
                   key={activity.id}
-                  className="flex items-center px-7 py-4.5 hover:bg-gray-50/40 transition-colors"
+                  className="flex items-center px-6 py-4 hover:bg-gray-50/40 transition-colors"
                 >
                   {/* Checkbox */}
                   <div className="w-8 shrink-0">
-                    <div className="size-4 rounded border border-gray-200 bg-white cursor-pointer" />
+                    <div className="size-4 rounded border border-gray-200 bg-white cursor-pointer hover:border-gray-400 transition-colors" />
                   </div>
 
                   {/* Activity */}
@@ -388,7 +396,7 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
                     {activity.time}
                   </span>
 
-                  {/* View Action */}
+                  {/* View */}
                   <button
                     type="button"
                     className={cn(
@@ -404,17 +412,17 @@ export function TeammateDetailDialog({ teammate, open, onOpenChange }: TeammateD
           </div>
 
           {/* Pagination */}
-          <Separator className="mt-1" />
-          <div className="px-7 pb-5 pt-1">
+          <Separator />
+          <div className="px-6 pb-5 pt-1">
             <Pagination
               currentPage={activityPage}
               totalPages={totalActivityPages}
               onPageChange={setActivityPage}
-              variant="compact"
+              variant="default"
             />
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   )
 }

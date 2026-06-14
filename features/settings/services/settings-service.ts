@@ -1,4 +1,4 @@
-import type { UserProfile, Teammate, TeammateFilters } from "../types"
+import type { UserProfile, Teammate, TeammateFilters, TeammateActivity, TeammateActivityType } from "../types"
 
 const PROFILE_STORAGE_KEY = "urban_hive_profile"
 const PASSWORD_STORAGE_KEY = "urban_hive_password"
@@ -29,6 +29,7 @@ const DEFAULT_TEAMMATES: Teammate[] = [
     firstName: "Taiwo",
     lastName: "James",
     email: "taiwo@urbanhivehub.com",
+    phone: "+234 9138407481",
     avatar: "",
     role: "Manager",
     status: "Active",
@@ -166,6 +167,69 @@ const DEFAULT_TEAMMATES: Teammate[] = [
   },
 ]
 
+const ACTIVITY_LOG_PER_PAGE = 2
+
+const MOCK_ACTIVITIES: Record<string, TeammateActivity[]> = {
+  default: [
+    {
+      id: "act-001",
+      activity: "Cancelled booking #10002",
+      activityType: "Cancellation",
+      date: "May 12, 2026",
+      time: "1:00 PM",
+    },
+    {
+      id: "act-002",
+      activity: "Cancelled booking #10002",
+      activityType: "Cancellation",
+      date: "May 24, 2026",
+      time: "1:02 PM",
+    },
+    {
+      id: "act-003",
+      activity: "Created booking #10035",
+      activityType: "Booking",
+      date: "Apr 30, 2026",
+      time: "10:15 AM",
+    },
+    {
+      id: "act-004",
+      activity: "Checked in guest #G5012",
+      activityType: "Check-in",
+      date: "Apr 28, 2026",
+      time: "9:00 AM",
+    },
+    {
+      id: "act-005",
+      activity: "Processed payment #P3020",
+      activityType: "Payment",
+      date: "Apr 25, 2026",
+      time: "3:45 PM",
+    },
+    {
+      id: "act-006",
+      activity: "Modified booking #10018",
+      activityType: "Modification",
+      date: "Apr 22, 2026",
+      time: "11:30 AM",
+    },
+    {
+      id: "act-007",
+      activity: "Checked out guest #G4901",
+      activityType: "Check-out",
+      date: "Apr 20, 2026",
+      time: "12:00 PM",
+    },
+    {
+      id: "act-008",
+      activity: "Created booking #10041",
+      activityType: "Booking",
+      date: "Apr 18, 2026",
+      time: "2:10 PM",
+    },
+  ],
+}
+
 const PAGE_SIZE = 2
 
 const formatDate = (date: Date) => {
@@ -281,6 +345,28 @@ export const settingsService = {
     }
   },
 
+  getTeammateById: async (id: string): Promise<Teammate | null> => {
+    await new Promise((resolve) => setTimeout(resolve, 400))
+
+    if (typeof window === "undefined") {
+      return DEFAULT_TEAMMATES.find((t) => t.id === id) ?? null
+    }
+
+    let teammates: Teammate[] = []
+    const stored = localStorage.getItem(TEAMMATES_STORAGE_KEY)
+    if (stored) {
+      try {
+        teammates = JSON.parse(stored) as Teammate[]
+      } catch {
+        teammates = DEFAULT_TEAMMATES
+      }
+    } else {
+      teammates = DEFAULT_TEAMMATES
+    }
+
+    return teammates.find((t) => t.id === id) ?? null
+  },
+
   inviteTeammate: async (teammate: Omit<Teammate, "id" | "avatar" | "status" | "dateJoined">): Promise<Teammate> => {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -324,5 +410,79 @@ export const settingsService = {
     teammates.unshift(newTeammate)
     localStorage.setItem(TEAMMATES_STORAGE_KEY, JSON.stringify(teammates))
     return newTeammate
+  },
+
+  getTeammateActivity: async (
+    teammateId: string,
+    page = 1,
+    typeFilter?: string
+  ): Promise<{ activities: TeammateActivity[]; totalPages: number; totalCount: number }> => {
+    await new Promise((resolve) => setTimeout(resolve, 400))
+
+    const all = MOCK_ACTIVITIES.default ?? []
+
+    let filtered = [...all]
+    if (typeFilter && typeFilter !== "All") {
+      filtered = filtered.filter((a) => a.activityType === typeFilter)
+    }
+
+    const totalCount = filtered.length
+    const totalPages = Math.max(1, Math.ceil(totalCount / ACTIVITY_LOG_PER_PAGE))
+    const start = (page - 1) * ACTIVITY_LOG_PER_PAGE
+    const paginated = filtered.slice(start, start + ACTIVITY_LOG_PER_PAGE)
+
+    return { activities: paginated, totalPages, totalCount }
+  },
+
+  suspendTeammate: async (teammateId: string): Promise<Teammate> => {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    if (typeof window === "undefined") {
+      throw new Error("Cannot suspend teammate on server")
+    }
+
+    let teammates: Teammate[] = []
+    const stored = localStorage.getItem(TEAMMATES_STORAGE_KEY)
+    if (stored) {
+      try {
+        teammates = JSON.parse(stored) as Teammate[]
+      } catch {
+        teammates = [...DEFAULT_TEAMMATES]
+      }
+    } else {
+      teammates = [...DEFAULT_TEAMMATES]
+    }
+
+    const idx = teammates.findIndex((t) => t.id === teammateId)
+    if (idx === -1) throw new Error("Teammate not found")
+
+    teammates[idx] = {
+      ...teammates[idx],
+      status: teammates[idx].status === "Active" ? "Inactive" : "Active",
+    }
+
+    localStorage.setItem(TEAMMATES_STORAGE_KEY, JSON.stringify(teammates))
+    return teammates[idx]
+  },
+
+  removeTeammate: async (teammateId: string): Promise<void> => {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    if (typeof window === "undefined") return
+
+    let teammates: Teammate[] = []
+    const stored = localStorage.getItem(TEAMMATES_STORAGE_KEY)
+    if (stored) {
+      try {
+        teammates = JSON.parse(stored) as Teammate[]
+      } catch {
+        teammates = [...DEFAULT_TEAMMATES]
+      }
+    } else {
+      teammates = [...DEFAULT_TEAMMATES]
+    }
+
+    teammates = teammates.filter((t) => t.id !== teammateId)
+    localStorage.setItem(TEAMMATES_STORAGE_KEY, JSON.stringify(teammates))
   },
 }

@@ -41,6 +41,7 @@ export function DashboardHeader({
       "/dashboard/settings": "Settings",
     }
     if (pathname.startsWith("/dashboard/clients/")) return "Clients"
+    if (pathname.startsWith("/dashboard/settings/team/")) return "Settings"
     return routes[pathname] || "Dashboard"
   }
 
@@ -93,6 +94,14 @@ export function DashboardHeader({
                 </Link>
                 <ChevronRight className="size-3.5 text-gray-400" />
                 <span className="text-foreground font-semibold">Space details</span>
+              </nav>
+            ) : pathname.startsWith("/dashboard/settings/team/") ? (
+              <nav className="hidden md:flex items-center gap-1.5 text-[15px] font-normal tracking-tight select-none">
+                <Link href="/dashboard/settings" className="text-gray-400 hover:text-gray-600 transition-colors">
+                  Settings
+                </Link>
+                <ChevronRight className="size-3.5 text-gray-400" />
+                <span className="text-foreground font-semibold">Team member</span>
               </nav>
             ) : (
               <h2
