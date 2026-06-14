@@ -15,6 +15,13 @@ import { Badge } from "@/shared/components/ui/badge"
 import { useProfile, useUpdateProfile, useTeammatesList } from "../hooks/use-settings"
 import { ChangePasswordDialog } from "./change-password-dialog"
 import { Switch } from "@/shared/components/ui/switch"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select"
 import { PaymentPolicyDialog } from "./payment-policy-dialog"
 import { InviteTeammateDialog } from "./invite-dialog"
 import { ViewPermissionsDialog, ViewRolesDialog } from "./permissions-roles-dialogs"
@@ -38,7 +45,7 @@ export function SettingsContent() {
   const router = useRouter()
 
   // Navigation & Tab State
-  const [activeTab, setActiveTab] = useState<"profile" | "team" | "policy">("profile")
+  const [activeTab, setActiveTab] = useState<"profile" | "team" | "policy" | "space">("profile")
 
   // Policies State
   const [policies, setPolicies] = useState({
@@ -47,6 +54,14 @@ export function SettingsContent() {
     thursdayReminders: true,
     lockOverdueSpaces: true,
   })
+
+  // Space settings state
+  const [spaceSettings, setSpaceSettings] = useState({
+    liveAvailability: true,
+    sameDayBookings: true,
+    showPricing: true,
+  })
+  const [bookingNotice, setBookingNotice] = useState<string>("no-minimum")
 
   // Payment policy dialog state
   const [isAddPolicyOpen, setIsAddPolicyOpen] = useState(false)
@@ -219,13 +234,18 @@ export function SettingsContent() {
             Payment policy
           </button>
 
-          {/* Space settings - Disabled Tab */}
+          {/* Space settings Tab button */}
           <button
             type="button"
-            disabled
-            className="rounded-full px-4 py-2 text-sm font-semibold flex items-center gap-2 text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-60 whitespace-nowrap"
+            onClick={() => setActiveTab("space")}
+            className={cn(
+              "rounded-full px-4 py-2 text-sm font-semibold flex items-center gap-2 cursor-pointer transition-all whitespace-nowrap",
+              activeTab === "space"
+                ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+            )}
           >
-            <Icon name="settings" size={16} />
+            <Icon name="settings" size={16} className={cn(activeTab === "space" ? "text-primary-300" : "text-gray-400")} />
             Space settings
           </button>
 
@@ -694,6 +714,110 @@ export function SettingsContent() {
                     }
                   />
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* SPACE SETTINGS VIEW */}
+          {activeTab === "space" && (
+            <div className="max-w-[720px] space-y-6">
+              {/* Header */}
+              <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[24px] p-5 flex items-center justify-between">
+                <span className="text-[18px] font-bold text-gray-900 dark:text-white tracking-tight">
+                  Space settings
+                </span>
+              </div>
+
+              {/* Toggles + notice card */}
+              <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px] p-6 sm:p-8 space-y-6">
+
+                {/* Row 1 — Show live availability */}
+                <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-gray-800">
+                  <div className="flex flex-col gap-1 pr-4">
+                    <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">
+                      Show live availability to users
+                    </span>
+                    <span className="text-[13px] text-gray-500 dark:text-gray-400">
+                      Users can see which spaces are available in real time on the listing page
+                    </span>
+                  </div>
+                  <Switch
+                    checked={spaceSettings.liveAvailability}
+                    onCheckedChange={(checked) =>
+                      setSpaceSettings((prev) => ({ ...prev, liveAvailability: checked }))
+                    }
+                  />
+                </div>
+
+                {/* Row 2 — Allow same-day bookings */}
+                <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-gray-800">
+                  <div className="flex flex-col gap-1 pr-4">
+                    <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">
+                      Allow same-day bookings
+                    </span>
+                    <span className="text-[13px] text-gray-500 dark:text-gray-400">
+                      Users can book a space for the same day it&apos;s available
+                    </span>
+                  </div>
+                  <Switch
+                    checked={spaceSettings.sameDayBookings}
+                    onCheckedChange={(checked) =>
+                      setSpaceSettings((prev) => ({ ...prev, sameDayBookings: checked }))
+                    }
+                  />
+                </div>
+
+                {/* Row 3 — Show pricing on listing cards */}
+                <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-gray-800">
+                  <div className="flex flex-col gap-1 pr-4">
+                    <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">
+                      Show pricing on listing cards
+                    </span>
+                    <span className="text-[13px] text-gray-500 dark:text-gray-400">
+                      Display &ldquo;from ₦X&rdquo; on search results — turn off to require inquiry first
+                    </span>
+                  </div>
+                  <Switch
+                    checked={spaceSettings.showPricing}
+                    onCheckedChange={(checked) =>
+                      setSpaceSettings((prev) => ({ ...prev, showPricing: checked }))
+                    }
+                  />
+                </div>
+
+                {/* Row 4 — Minimum booking notice */}
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1 pr-4">
+                    <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">
+                      Minimum booking notice
+                    </span>
+                    <span className="text-[13px] text-gray-500 dark:text-gray-400">
+                      Require users to book at least this far in advance
+                    </span>
+                  </div>
+                  <Select value={bookingNotice} onValueChange={setBookingNotice}>
+                    <SelectTrigger
+                      className="rounded-full border border-gray-200 dark:border-gray-700 bg-[#F2F2F7] dark:bg-gray-800 h-10 px-4 text-sm font-semibold text-gray-800 dark:text-gray-200 min-w-[140px] gap-2 focus-visible:ring-ring"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-[18px] shadow-lg border border-gray-100 dark:border-gray-800 py-2 min-w-[200px]">
+                      <SelectItem value="no-minimum" className="text-sm font-medium py-3 px-4 rounded-xl">
+                        No minimum
+                      </SelectItem>
+                      <SelectItem value="24-hours" className="text-sm font-medium py-3 px-4 rounded-xl">
+                        24 hours
+                      </SelectItem>
+                      <SelectItem value="48-hours" className="text-sm font-medium py-3 px-4 rounded-xl">
+                        48 hours
+                      </SelectItem>
+                      <SelectItem value="1-week" className="text-sm font-medium py-3 px-4 rounded-xl">
+                        1 week
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
               </div>
             </div>
           )}
