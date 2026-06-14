@@ -14,6 +14,7 @@ import { Skeleton } from "@/shared/components/ui/skeleton"
 import { Badge } from "@/shared/components/ui/badge"
 import { useProfile, useUpdateProfile, useTeammatesList } from "../hooks/use-settings"
 import { ChangePasswordDialog } from "./change-password-dialog"
+import { Switch } from "@/shared/components/ui/switch"
 import { InviteTeammateDialog } from "./invite-dialog"
 import { ViewPermissionsDialog, ViewRolesDialog } from "./permissions-roles-dialogs"
 import { toast } from "sonner"
@@ -36,7 +37,15 @@ export function SettingsContent() {
   const router = useRouter()
 
   // Navigation & Tab State
-  const [activeTab, setActiveTab] = useState<"profile" | "team">("profile")
+  const [activeTab, setActiveTab] = useState<"profile" | "team" | "policy">("profile")
+
+  // Policies State
+  const [policies, setPolicies] = useState({
+    earlyCancellation: true,
+    lateCancellation: true,
+    thursdayReminders: true,
+    lockOverdueSpaces: true,
+  })
 
   // Profile Form States
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -68,6 +77,21 @@ export function SettingsContent() {
     }
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  // Sync tab from URL query params
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      const tab = params.get("tab")
+      if (tab === "team") {
+        setActiveTab("team")
+      } else if (tab === "policy") {
+        setActiveTab("policy")
+      } else if (tab === "profile") {
+        setActiveTab("profile")
+      }
+    }
   }, [])
 
   // Profile Formik
@@ -175,13 +199,18 @@ export function SettingsContent() {
             Team management
           </button>
 
-          {/* Payment policy - Disabled Tab */}
+          {/* Payment policy Tab button */}
           <button
             type="button"
-            disabled
-            className="rounded-full px-4 py-2 text-sm font-semibold flex items-center gap-2 text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-60 whitespace-nowrap"
+            onClick={() => setActiveTab("policy")}
+            className={cn(
+              "rounded-full px-4 py-2 text-sm font-semibold flex items-center gap-2 cursor-pointer transition-all whitespace-nowrap",
+              activeTab === "policy"
+                ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+            )}
           >
-            <Icon name="creditCard" size={16} />
+            <Icon name="creditCard" size={16} className={cn(activeTab === "policy" ? "text-primary-300" : "text-gray-400")} />
             Payment policy
           </button>
 
@@ -551,6 +580,113 @@ export function SettingsContent() {
                     />
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* PAYMENT POLICY VIEW */}
+          {activeTab === "policy" && (
+            <div className="space-y-6">
+              {/* ── Payment Policy Header Card ── */}
+              <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[24px] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <span className="text-[18px] font-bold text-gray-900 dark:text-white tracking-tight">
+                  Payment policy
+                </span>
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    variant={'secondary-outline'}
+                    size={'sm'}
+                    className="rounded-full  dark:hover:bg-gray-750 text-gray-800 dark:text-gray-200 text-xs py-2 px-4 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors select-none"
+                  >
+                    <Icon name="plus" size={14} className="text-gray-500" />
+                    Add policy
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={'secondary-outline'}
+                    size={'sm'}
+                    className="rounded-full  dark:border-gray-700  dark:bg-gray-800  dark:hover:bg-gray-750 text-gray-800 dark:text-gray-200 text-xs py-2 px-4 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors select-none"
+                  >
+                    <Icon name="pencil" size={14} className="text-gray-500" />
+                    Edit policy
+                  </Button>
+                </div>
+              </div>
+
+              {/* ── Policy List Container ── */}
+              <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px] p-6 sm:p-8 space-y-6">
+                {/* Row 1 — Early cancellation */}
+                <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-gray-800">
+                  <div className="flex flex-col gap-1 pr-4">
+                    <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">
+                      Early cancellation
+                    </span>
+                    <span className="text-[13px] text-gray-500 dark:text-gray-400">
+                      All bookings must be paid before access is granted
+                    </span>
+                  </div>
+                  <Switch
+                    checked={policies.earlyCancellation}
+                    onCheckedChange={(checked) =>
+                      setPolicies((prev) => ({ ...prev, earlyCancellation: checked }))
+                    }
+                  />
+                </div>
+
+                {/* Row 2 — Late cancellation */}
+                <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-gray-800">
+                  <div className="flex flex-col gap-1 pr-4">
+                    <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">
+                      Late cancellation
+                    </span>
+                    <span className="text-[13px] text-gray-500 dark:text-gray-400">
+                      Weekly renewals locked if not paid by this time
+                    </span>
+                  </div>
+                  <Switch
+                    checked={policies.lateCancellation}
+                    onCheckedChange={(checked) =>
+                      setPolicies((prev) => ({ ...prev, lateCancellation: checked }))
+                    }
+                  />
+                </div>
+
+                {/* Row 3 — Auto-send Thursday reminders */}
+                <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-gray-800">
+                  <div className="flex flex-col gap-1 pr-4">
+                    <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">
+                      Auto-send Thursday reminders
+                    </span>
+                    <span className="text-[13px] text-gray-500 dark:text-gray-400">
+                      Automatically remind clients with due payments every Thursday
+                    </span>
+                  </div>
+                  <Switch
+                    checked={policies.thursdayReminders}
+                    onCheckedChange={(checked) =>
+                      setPolicies((prev) => ({ ...prev, thursdayReminders: checked }))
+                    }
+                  />
+                </div>
+
+                {/* Row 4 — Auto-lock overdue spaces */}
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1 pr-4">
+                    <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">
+                      Auto-lock overdue spaces
+                    </span>
+                    <span className="text-[13px] text-gray-500 dark:text-gray-400">
+                      Flag spaces for locking after Friday 6 PM if unpaid
+                    </span>
+                  </div>
+                  <Switch
+                    checked={policies.lockOverdueSpaces}
+                    onCheckedChange={(checked) =>
+                      setPolicies((prev) => ({ ...prev, lockOverdueSpaces: checked }))
+                    }
+                  />
+                </div>
               </div>
             </div>
           )}
