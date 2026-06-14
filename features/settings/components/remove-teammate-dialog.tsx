@@ -78,10 +78,10 @@ export function RemoveTeammateDialog({
       dialogTitle=""
       isShowTopSeparator={false}
       showClose={view === "confirm"}
-      contentClassName="sm:max-w-[440px] px-0"
+      contentClassName="sm:max-w-[450px] py-5 !px-0"
     >
       {view === "confirm" ? (
-        <div className="flex flex-col items-center text-center px-4 pt-4 pb-2">
+        <div className="flex flex-col items-center text-center psx-4 pt-4 pb-2">
           {/* Circular Trash Icon */}
           <div className="size-14 rounded-full bg-secondary flex items-center justify-center mb-5">
             <Icon name="trash2" size={24} className="text-gray-500" />
@@ -113,16 +113,18 @@ export function RemoveTeammateDialog({
           </div>
         </div>
       ) : (
-        <div className="px-4 pt-2 pb-2">
+        <div className="px-s4 pt-2 pb-2">
           {/* Back Button */}
-          <button
+          <Button
             type="button"
+            variant={'secondary'}
+            size={'sm'}
             onClick={handleBack}
-            className="flex items-center gap-1.5 text-[13px] font-semibold text-gray-500 hover:text-gray-800 transition-colors cursor-pointer mb-6 border border-gray-200 dark:border-gray-700 rounded-full px-3.5 py-1.5 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-850"
+            className="flex items-center  text-[14px]  transition-colors cursor-pointer mb-6 border border-gray-200 dark:border-gray-700 rounded-full px-3.5 py-1.5  dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-850"
           >
-            <Icon name="chevronLeft" size={12} className="text-gray-400" />
+            <Icon name="chevronLeft" size={18} className="text-icon-default" />
             Back
-          </button>
+          </Button>
 
           <h3 className="text-[20px] font-bold text-gray-900 dark:text-gray-100 tracking-tight mb-1">
             Enter your password
