@@ -16,6 +16,7 @@ import {
   useRemoveTeammate,
 } from "../hooks/use-settings"
 import type { TeammateActivityType } from "../types"
+import { Button } from "@/shared/components/ui/button"
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -176,38 +177,40 @@ export function TeammateDetailContent({ id }: { id: string }) {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2">
-              <button
+              <Button
                 type="button"
-                className="rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-[13px] px-5 h-[38px] transition-colors cursor-pointer select-none whitespace-nowrap"
+                variant={'secondary-outline'}
+                // className="rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-[13px] px-5 h-[38px] transition-colors cursor-pointer select-none whitespace-nowrap"
               >
                 Permissions
-              </button>
+              </Button>
 
-              <button
+              <Button
                 type="button"
                 onClick={handleSuspend}
                 disabled={isSuspending || isLoading}
-                className={cn(
-                  "rounded-full border text-[13px] px-5 h-[38px] transition-colors cursor-pointer select-none whitespace-nowrap",
-                  isActive
-                    ? "border-gray-200 bg-white hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 text-gray-700"
-                    : "border-green-200 bg-green-50 hover:bg-green-100 text-green-700",
-                  (isSuspending || isLoading) && "opacity-60 cursor-not-allowed"
-                )}
+                variant={'secondary-outline'}
+                // className={cn(
+                //   "rounded-full border text-[13px] px-5 h-[38px] transition-colors cursor-pointer select-none whitespace-nowrap",
+                //   isActive
+                //     ? "border-gray-200 bg-white hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 text-gray-700"
+                //     : "border-green-200 bg-green-50 hover:bg-green-100 text-green-700",
+                //   (isSuspending || isLoading) && "opacity-60 cursor-not-allowed"
+                // )}
               >
                 {isSuspending
                   ? "Updating..."
                   : isActive
                     ? "Suspend team member"
                     : "Reactivate team member"}
-              </button>
+              </Button>
 
-              <button
+              <Button
                 type="button"
                 onClick={handleRemove}
                 disabled={isRemoving || isLoading}
                 className={cn(
-                  "rounded-full border text-[13px] px-5 h-[38px] transition-colors cursor-pointer select-none whitespace-nowrap",
+                  "rounded-full border  transition-colors cursor-pointer select-none whitespace-nowrap",
                   isConfirmRemove
                     ? "border-red-500 bg-red-500 text-white hover:bg-red-600"
                     : "bg-[#FFF0F0] text-red-500 hover:bg-red-50 border border-red-100",
@@ -215,7 +218,7 @@ export function TeammateDetailContent({ id }: { id: string }) {
                 )}
               >
                 {isRemoving ? "Removing..." : isConfirmRemove ? "Confirm remove?" : "Remove team member"}
-              </button>
+              </Button>
             </div>
           </div>
 
