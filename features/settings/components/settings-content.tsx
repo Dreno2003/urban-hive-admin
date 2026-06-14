@@ -15,6 +15,7 @@ import { Badge } from "@/shared/components/ui/badge"
 import { useProfile, useUpdateProfile, useTeammatesList } from "../hooks/use-settings"
 import { ChangePasswordDialog } from "./change-password-dialog"
 import { Switch } from "@/shared/components/ui/switch"
+import { PaymentPolicyDialog } from "./payment-policy-dialog"
 import { InviteTeammateDialog } from "./invite-dialog"
 import { ViewPermissionsDialog, ViewRolesDialog } from "./permissions-roles-dialogs"
 import { toast } from "sonner"
@@ -46,6 +47,10 @@ export function SettingsContent() {
     thursdayReminders: true,
     lockOverdueSpaces: true,
   })
+
+  // Payment policy dialog state
+  const [isAddPolicyOpen, setIsAddPolicyOpen] = useState(false)
+  const [isEditPolicyOpen, setIsEditPolicyOpen] = useState(false)
 
   // Profile Form States
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -597,7 +602,8 @@ export function SettingsContent() {
                     type="button"
                     variant={'secondary-outline'}
                     size={'sm'}
-                    className="rounded-full  dark:hover:bg-gray-750 text-gray-800 dark:text-gray-200 text-xs py-2 px-4 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors select-none"
+                    onClick={() => setIsAddPolicyOpen(true)}
+                    className="rounded-full dark:hover:bg-gray-750 text-gray-800 dark:text-gray-200 text-xs py-2 px-4 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors select-none"
                   >
                     <Icon name="plus" size={14} className="text-gray-500" />
                     Add policy
@@ -606,7 +612,8 @@ export function SettingsContent() {
                     type="button"
                     variant={'secondary-outline'}
                     size={'sm'}
-                    className="rounded-full  dark:border-gray-700  dark:bg-gray-800  dark:hover:bg-gray-750 text-gray-800 dark:text-gray-200 text-xs py-2 px-4 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors select-none"
+                    onClick={() => setIsEditPolicyOpen(true)}
+                    className="rounded-full dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-750 text-gray-800 dark:text-gray-200 text-xs py-2 px-4 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors select-none"
                   >
                     <Icon name="pencil" size={14} className="text-gray-500" />
                     Edit policy
@@ -704,6 +711,25 @@ export function SettingsContent() {
 
       {/* Team: View Roles Dialog */}
       <ViewRolesDialog open={isRolesDialogOpen} onOpenChange={setIsRolesDialogOpen} />
+
+      {/* Policy: Add Payment Policy dialog */}
+      <PaymentPolicyDialog
+        open={isAddPolicyOpen}
+        onOpenChange={setIsAddPolicyOpen}
+        onSubmit={({ title, description }) => {
+          toast.success(`Payment policy "${title}" created`)
+        }}
+      />
+
+      {/* Policy: Edit Payment Policy dialog */}
+      <PaymentPolicyDialog
+        open={isEditPolicyOpen}
+        onOpenChange={setIsEditPolicyOpen}
+        policy={null}
+        onSubmit={({ title, description }) => {
+          toast.success(`Payment policy updated`)
+        }}
+      />
     </div>
   )
 }
