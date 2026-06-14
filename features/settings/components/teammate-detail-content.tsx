@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Icon } from "@/shared/components/ui/icon"
+import { Badge } from "@/shared/components/ui/badge"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { Separator } from "@/shared/components/ui/separator"
@@ -131,14 +132,14 @@ export function TeammateDetailContent({ id }: { id: string }) {
   const isActive = teammate?.status === "Active"
 
   return (
-    <div className="flex-1 flex bg-white flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex-1 flex flex-col min-h-screen bg-white dark:bg-gray-900">
       <div className="w-full container-wrapper pt-8 pb-12 mt-[76px]">
 
         {/* ── Profile Card ─────────────────────────────────── */}
-        <div className="bg-white border border-gray-100 rounded-[24px] px-6 py-6 mb-5">
+        <div className="bg-white border border-gray-100 rounded-[24px] px-6 py-5 mb-5">
 
           {/* Top row: avatar + name + action buttons */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-6">
+          <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-4">
               {isLoading ? (
                 <Skeleton className="size-[64px] rounded-full bg-gray-200" />
@@ -162,7 +163,7 @@ export function TeammateDetailContent({ id }: { id: string }) {
               )}
 
               <div>
-                <p className="text-[12px] text-gray-400 font-medium mb-0.5">Name</p>
+                <p className="text-[13px] text-secondary-foreground mb-0.5">Name</p>
                 {isLoading ? (
                   <Skeleton className="h-6 w-40 bg-gray-200" />
                 ) : (
@@ -174,10 +175,10 @@ export function TeammateDetailContent({ id }: { id: string }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-[12.5px] font-semibold px-4 py-2 transition-colors cursor-pointer select-none whitespace-nowrap"
+                className="rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-[13px] px-5 h-[38px] transition-colors cursor-pointer select-none whitespace-nowrap"
               >
                 Permissions
               </button>
@@ -187,7 +188,7 @@ export function TeammateDetailContent({ id }: { id: string }) {
                 onClick={handleSuspend}
                 disabled={isSuspending || isLoading}
                 className={cn(
-                  "rounded-full border text-[12.5px] font-semibold px-4 py-2 transition-colors cursor-pointer select-none whitespace-nowrap",
+                  "rounded-full border text-[13px] px-5 h-[38px] transition-colors cursor-pointer select-none whitespace-nowrap",
                   isActive
                     ? "border-gray-200 bg-white hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 text-gray-700"
                     : "border-green-200 bg-green-50 hover:bg-green-100 text-green-700",
@@ -206,10 +207,10 @@ export function TeammateDetailContent({ id }: { id: string }) {
                 onClick={handleRemove}
                 disabled={isRemoving || isLoading}
                 className={cn(
-                  "rounded-full border text-[12.5px] font-semibold px-4 py-2 transition-colors cursor-pointer select-none whitespace-nowrap",
+                  "rounded-full border text-[13px] px-5 h-[38px] transition-colors cursor-pointer select-none whitespace-nowrap",
                   isConfirmRemove
                     ? "border-red-500 bg-red-500 text-white hover:bg-red-600"
-                    : "border-red-200 bg-transparent hover:bg-red-50 text-red-500",
+                    : "bg-[#FFF0F0] text-red-500 hover:bg-red-50 border border-red-100",
                   (isRemoving || isLoading) && "opacity-60 cursor-not-allowed"
                 )}
               >
@@ -218,63 +219,60 @@ export function TeammateDetailContent({ id }: { id: string }) {
             </div>
           </div>
 
-          <Separator className="mb-6" />
+          <Separator className="mb-5" />
 
           {/* Info Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-5 gap-x-6">
+          <div className="grid grid-cols-4 gap-6">
             {/* Status */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[11.5px] text-gray-400 font-medium">Status</span>
+            <div>
+              <p className="text-[12px] text-secondary-foreground mb-1">Status</p>
               {isLoading ? (
                 <Skeleton className="h-5 w-16 bg-gray-200" />
               ) : (
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className={cn(
-                      "size-[7px] rounded-full shrink-0",
-                      isActive ? "bg-green-500" : "bg-gray-400"
-                    )}
-                  />
-                  <span className="text-[14px] font-semibold text-gray-900">
-                    {teammate?.status}
-                  </span>
-                </div>
+                <Badge
+                  variant={isActive ? "success-outline" : "default-outline"}
+                  iconName="circle"
+                  iconClassName="!size-2.5"
+                  className="!py-3"
+                >
+                  {teammate?.status}
+                </Badge>
               )}
             </div>
 
             {/* Role */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[11.5px] text-gray-400 font-medium">Role</span>
+            <div>
+              <p className="text-[12px] text-secondary-foreground mb-1">Role</p>
               {isLoading ? (
                 <Skeleton className="h-5 w-20 bg-gray-200" />
               ) : (
-                <span className="text-[14px] font-semibold text-gray-900">
+                <p className="text-[14px] font-medium">
                   {teammate?.role}
-                </span>
+                </p>
               )}
             </div>
 
             {/* Client Email */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[11.5px] text-gray-400 font-medium">Client email</span>
+            <div>
+              <p className="text-[12px] text-secondary-foreground mb-1">Client email</p>
               {isLoading ? (
                 <Skeleton className="h-5 w-44 bg-gray-200" />
               ) : (
-                <span className="text-[14px] font-semibold text-gray-900 break-all">
+                <p className="text-[14px] font-medium">
                   {teammate?.email}
-                </span>
+                </p>
               )}
             </div>
 
             {/* Client Phone */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[11.5px] text-gray-400 font-medium">Client phone number</span>
+            <div>
+              <p className="text-[12px] text-secondary-foreground mb-1">Client phone number</p>
               {isLoading ? (
                 <Skeleton className="h-5 w-32 bg-gray-200" />
               ) : (
-                <span className="text-[14px] font-semibold text-gray-900">
+                <p className="text-[14px] font-medium">
                   {teammate?.phone ?? "—"}
-                </span>
+                </p>
               )}
             </div>
           </div>
@@ -285,9 +283,7 @@ export function TeammateDetailContent({ id }: { id: string }) {
 
           {/* Activity Log Header */}
           <div className="flex items-center justify-between px-6 pt-5 pb-4">
-            <h3 className="text-[16px] font-bold text-gray-900 tracking-tight">
-              Activity log
-            </h3>
+            <h4 className="text-[17px] font-bold tracking-tight">Activity log</h4>
 
             {/* Filter Dropdown */}
             <div ref={filterRef} className="relative">
