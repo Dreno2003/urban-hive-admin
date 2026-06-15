@@ -12,7 +12,7 @@ import { Separator } from "@/shared/components/ui/separator"
 import { Pagination } from "@/shared/components/ui/pagination"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { Badge } from "@/shared/components/ui/badge"
-import { useProfile, useUpdateProfile, useTeammatesList } from "../hooks/use-settings"
+import { useProfile, useUpdateProfile, useTeammatesList, useNotifications, useUpdateNotifications } from "../hooks/use-settings"
 import { ChangePasswordDialog } from "./change-password-dialog"
 import { Switch } from "@/shared/components/ui/switch"
 import {
@@ -45,7 +45,7 @@ export function SettingsContent() {
   const router = useRouter()
 
   // Navigation & Tab State
-  const [activeTab, setActiveTab] = useState<"profile" | "team" | "policy" | "space">("profile")
+  const [activeTab, setActiveTab] = useState<"profile" | "team" | "policy" | "space" | "notifications">("profile")
 
   // Policies State
   const [policies, setPolicies] = useState({
@@ -62,6 +62,20 @@ export function SettingsContent() {
     showPricing: true,
   })
   const [bookingNotice, setBookingNotice] = useState<string>("no-minimum")
+
+  // Notifications State
+  const { data: notificationsData, isLoading: isNotificationsLoading } = useNotifications()
+  const { mutateAsync: updateNotifications, isPending: isSavingNotifications } = useUpdateNotifications()
+  const [notifications, setNotifications] = useState({
+    newInquiryAlerts: true,
+    paymentConfirmations: true,
+    overdueWarnings: true,
+    dailyScheduleDigest: true,
+  })
+
+  useEffect(() => {
+    if (notificationsData) setNotifications(notificationsData)
+  }, [notificationsData])
 
   // Payment policy dialog state
   const [isAddPolicyOpen, setIsAddPolicyOpen] = useState(false)
@@ -249,13 +263,18 @@ export function SettingsContent() {
             Space settings
           </button>
 
-          {/* Notifications - Disabled Tab */}
+          {/* Notifications Tab button */}
           <button
             type="button"
-            disabled
-            className="rounded-full px-4 py-2 text-sm font-semibold flex items-center gap-2 text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-60 whitespace-nowrap"
+            onClick={() => setActiveTab("notifications")}
+            className={cn(
+              "rounded-full px-4 py-2 text-sm font-semibold flex items-center gap-2 cursor-pointer transition-all whitespace-nowrap",
+              activeTab === "notifications"
+                ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+            )}
           >
-            <Icon name="bell3" size={16} />
+            <Icon name="bell3" size={16} className={cn(activeTab === "notifications" ? "text-primary-300" : "text-gray-400")} />
             Notifications
           </button>
         </div>
@@ -821,11 +840,106 @@ export function SettingsContent() {
               </div>
             </div>
           )}
+          {/* NOTIFICATIONS VIEW */}
+          {activeTab === "notifications" && (
+            <div className="max-w-[720px] space-y-6">
+              {/* Header */}
+              <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[24px] p-5 flex items-center justify-between">
+                <span className="text-[18px] font-bold text-gray-900 dark:text-white tracking-tight">
+                  Notifications
+                </span>
+              </div>
+
+              {/* Toggles card */}
+              <div className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[28px] p-6 sm:p-8 space-y-6">
+                {isNotificationsLoading ? (
+                  Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className={cn("flex items-center justify-between", i < 3 && "pb-6 border-b border-gray-100 dark:border-gray-800")}>
+                      <div className="space-y-2 flex-1 pr-4">
+                        <Skeleton className="h-4 w-40 rounded-full" />
+                        <Skeleton className="h-3 w-56 rounded-full" />
+                      </div>
+                      <Skeleton className="h-6 w-11 rounded-full" />
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    {/* Row 1 — New inquiry alerts */}
+                    <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-gray-800">
+                      <div className="flex flex-col gap-1 pr-4">
+                        <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">New inquiry alerts</span>
+                        <span className="text-[13px] text-gray-500 dark:text-gray-400">Notify on new form submission</span>
+                      </div>
+                      <Switch
+                        checked={notifications.newInquiryAlerts}
+                        onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, newInquiryAlerts: checked }))}
+                      />
+                    </div>
+
+                    {/* Row 2 — Payment confirmations */}
+                    <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-gray-800">
+                      <div className="flex flex-col gap-1 pr-4">
+                        <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">Payment confirmations</span>
+                        <span className="text-[13px] text-gray-500 dark:text-gray-400">Alert when a payment is received</span>
+                      </div>
+                      <Switch
+                        checked={notifications.paymentConfirmations}
+                        onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, paymentConfirmations: checked }))}
+                      />
+                    </div>
+
+                    {/* Row 3 — Overdue warnings */}
+                    <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-gray-800">
+                      <div className="flex flex-col gap-1 pr-4">
+                        <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">Overdue warnings</span>
+                        <span className="text-[13px] text-gray-500 dark:text-gray-400">Alert on Friday if payment not received</span>
+                      </div>
+                      <Switch
+                        checked={notifications.overdueWarnings}
+                        onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, overdueWarnings: checked }))}
+                      />
+                    </div>
+
+                    {/* Row 4 — Daily schedule digest */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col gap-1 pr-4">
+                        <span className="text-[15px] font-bold text-gray-900 dark:text-white leading-tight">Daily schedule digest</span>
+                        <span className="text-[13px] text-gray-500 dark:text-gray-400">Morning summary of today&apos;s clients</span>
+                      </div>
+                      <Switch
+                        checked={notifications.dailyScheduleDigest}
+                        onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, dailyScheduleDigest: checked }))}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Save button */}
+              {!isNotificationsLoading && (
+                <Button
+                  type="button"
+                  loading={isSavingNotifications}
+                  disabled={isSavingNotifications}
+                  onClick={async () => {
+                    try {
+                      await updateNotifications(notifications)
+                      toast.success("Notification settings saved")
+                    } catch {
+                      toast.error("Failed to save notification settings")
+                    }
+                  }}
+                  className="w-full bg-primary hover:bg-primary-600 text-white font-bold rounded-full h-[48px] transition-all cursor-pointer select-none"
+                >
+                  Save changes
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Profile: Change Password dialog */}
-      <ChangePasswordDialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen} />
 
       {/* Team: Invite Teammate dialog */}
       <InviteTeammateDialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen} />

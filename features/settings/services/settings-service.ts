@@ -1,8 +1,16 @@
-import type { UserProfile, Teammate, TeammateFilters, TeammateActivity, TeammateActivityType } from "../types"
+import type { UserProfile, Teammate, TeammateFilters, TeammateActivity, TeammateActivityType, NotificationSettings } from "../types"
 
 const PROFILE_STORAGE_KEY = "urban_hive_profile"
 const PASSWORD_STORAGE_KEY = "urban_hive_password"
 const TEAMMATES_STORAGE_KEY = "urban_hive_teammates"
+const NOTIFICATIONS_STORAGE_KEY = "urban_hive_notifications"
+
+const DEFAULT_NOTIFICATIONS: NotificationSettings = {
+  newInquiryAlerts: true,
+  paymentConfirmations: true,
+  overdueWarnings: true,
+  dailyScheduleDigest: true,
+}
 
 const DEFAULT_PROFILE: UserProfile = {
   firstName: "Frieda",
@@ -484,5 +492,28 @@ export const settingsService = {
 
     teammates = teammates.filter((t) => t.id !== teammateId)
     localStorage.setItem(TEAMMATES_STORAGE_KEY, JSON.stringify(teammates))
+  },
+
+  getNotifications: async (): Promise<NotificationSettings> => {
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    if (typeof window === "undefined") return DEFAULT_NOTIFICATIONS
+    const stored = localStorage.getItem(NOTIFICATIONS_STORAGE_KEY)
+    if (!stored) {
+      localStorage.setItem(NOTIFICATIONS_STORAGE_KEY, JSON.stringify(DEFAULT_NOTIFICATIONS))
+      return DEFAULT_NOTIFICATIONS
+    }
+    try {
+      return JSON.parse(stored) as NotificationSettings
+    } catch {
+      return DEFAULT_NOTIFICATIONS
+    }
+  },
+
+  updateNotifications: async (settings: NotificationSettings): Promise<NotificationSettings> => {
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    if (typeof window !== "undefined") {
+      localStorage.setItem(NOTIFICATIONS_STORAGE_KEY, JSON.stringify(settings))
+    }
+    return settings
   },
 }

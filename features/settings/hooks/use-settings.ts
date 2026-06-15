@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { settingsService } from "../services/settings-service"
-import type { UserProfile, Teammate, TeammateFilters } from "../types"
+import type { UserProfile, Teammate, TeammateFilters, NotificationSettings } from "../types"
 
 export function useProfile() {
   return useQuery<UserProfile, Error>({
@@ -77,6 +77,24 @@ export function useRemoveTeammate() {
     mutationFn: (teammateId) => settingsService.removeTeammate(teammateId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["settings", "teammates"] })
+    },
+  })
+}
+
+export function useNotifications() {
+  return useQuery<NotificationSettings, Error>({
+    queryKey: ["settings", "notifications"],
+    queryFn: () => settingsService.getNotifications(),
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useUpdateNotifications() {
+  const queryClient = useQueryClient()
+  return useMutation<NotificationSettings, Error, NotificationSettings>({
+    mutationFn: (settings) => settingsService.updateNotifications(settings),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["settings", "notifications"], data)
     },
   })
 }

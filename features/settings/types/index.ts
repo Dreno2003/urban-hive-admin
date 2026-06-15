@@ -43,3 +43,10 @@ export type TeammateFilters = {
   role?: string
   search?: string
 }
+
+export type NotificationSettings = {
+  newInquiryAlerts: boolean
+  paymentConfirmations: boolean
+  overdueWarnings: boolean
+  dailyScheduleDigest: boolean
+}
